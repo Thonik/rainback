@@ -1,0 +1,92 @@
+# ===========================================================================
+#    @PACKAGE_URL@
+# ===========================================================================
+#
+# SYNOPSIS
+#
+#   AX_HAVE_RAINBACK
+#
+# DESCRIPTION
+#
+#   Test for @PACKAGE_NAME@
+#
+#   This macro calls:
+#
+#     AC_SUBST(RAINBACK_INCLUDE)
+#     AC_SUBST(RAINBACK_LIBS)
+#
+#   And sets:
+#
+#     HAVE_RAINBACK
+#
+# LICENSE
+#
+#   Copyright (c) 2013 Aaron Faanes <@PACKAGE_BUGREPORT@>
+#
+#   Copying and distribution of this file, with or without modification, are
+#   permitted in any medium without royalty provided the copyright notice
+#   and this notice are preserved. This file is offered as-is, without any
+#   warranty.
+
+AC_DEFUN([AX_HAVE_RAINBACK],
+[
+	AC_ARG_WITH([rainback],
+    AS_HELP_STRING([--with-rainback], [use @PACKAGE_NAME@]),
+    [
+      if test x"$withval" = "xno"; then
+        want_RAINBACK="no";
+      else
+        want_RAINBACK="yes";
+      fi
+    ],
+    [want_RAINBACK="yes"]
+  )
+
+  if test x"$want_RAINBACK" = "xyes"; then
+    AC_MSG_CHECKING([for rainback])
+
+    # Ensure we have a suitable C++ compiler
+    AC_REQUIRE([AC_PROG_CC])
+
+    ax_RAINBACK_saved_CPPFLAGS="$CPPFLAGS"
+    ax_RAINBACK_INCLUDE=""
+    CPPFLAGS="$CPPFLAGS $ax_RAINBACK_INCLUDE"
+    export CPPFLAGS
+
+    ax_RAINBACK_saved_LIBS="$LIBS"
+    ax_RAINBACK_LIBS=""
+    LIBS="$LIBS $ax_RAINBACK_LIBS"
+    export LIBS
+
+    AC_LANG_PUSH([C++])
+    AC_COMPILE_IFELSE([
+      AC_LANG_PROGRAM(
+        [[@%:@include <rainback/Rainback.hpp>]],
+        [[
+          Rainback obj;
+          return 0;
+        ]]
+      )],
+      ax_have_RAINBACK=yes,
+      ax_have_RAINBACK=no
+    )
+    AC_LANG_POP([C++])
+
+    AC_MSG_RESULT([$ax_have_RAINBACK])
+    if test x"$ax_have_RAINBACK" = "xyes"; then
+      AC_DEFINE(HAVE_RAINBACK,,[define if rainback is available])
+      RAINBACK_INCLUDE="$ax_RAINBACK_INCLUDE"
+      dnl This doesn't yet test the location of this project
+      RAINBACK_LIBS="$ax_RAINBACK_LIBS -l@PACKAGE_NAME@"
+    else
+      AC_MSG_ERROR([Could not find rainback])
+      RAINBACK_INCLUDE=""
+      RAINBACK_LIBS=""
+    fi
+    AC_SUBST(RAINBACK_INCLUDE)
+    AC_SUBST(RAINBACK_LIBS)
+
+    CPPFLAGS="$ax_RAINBACK_saved_CPPFLAGS"
+    LIBS="$ax_RAINBACK_saved_LIBS"
+  fi;
+])
