@@ -21,6 +21,10 @@ AX_HAVE_QT_GUI
 AX_HAVE_QT_MOC
 AX_HAVE_QT_TEST
 
+AX_LUA_LIBS
+AX_LUA_HEADERS
+AX_HAVE_LUA_CXX
+
 if test x"$have_qt_core" = xno || test x"$have_qt_gui" = xno || test x"$have_qt_moc" = xno; then
     AC_MSG_ERROR([Qt is required to build rainback])
 fi;
@@ -32,6 +36,9 @@ AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 
 AC_LANG([C++])
+
+AX_CXX_COMPILE_STDCXX_11(,[AM_CXXFLAGS])
+AC_SUBST([AM_CXXFLAGS])
 
 # Checks for library functions.
 

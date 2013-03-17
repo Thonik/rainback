@@ -18,6 +18,9 @@ rpm: rpm.spec dist-gzip | $(RPMDIR)
 done
 .PHONY: rpm
 
+run:
+	cd src && ./rainback
+
 $(RPMDIR):
 	mkdir -p $@
 	cd $@ && mkdir -p SOURCES SPECS BUILD RPMS SRPMS

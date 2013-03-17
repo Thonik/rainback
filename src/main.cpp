@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include <QSize>
 
+#include <Desktop.hpp>
+
 void centerApp(QMainWindow& window)
 {
     QSize appSize(800, 600);
@@ -38,11 +40,9 @@ int main(int argc, char *argv[])
     gui.setWindowTitle("rainback");
     centerApp(gui);
 
-    QPushButton quit("Quit", &gui);
-    quit.setGeometry(10, 40, 180, 40);
-    QObject::connect(&quit, SIGNAL(clicked()), &app, SLOT(quit()));
+    Desktop desktop;
 
-    gui.setCentralWidget(&quit);
+    gui.setCentralWidget(&desktop);
 
     return app.exec();
 }
