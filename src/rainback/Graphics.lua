@@ -1,9 +1,25 @@
 require "fritomod/OOP-Class";
+require "rainback/AnchoredBound";
 
 Rainback = Rainback or {};
 
 local Graphics = OOP.Class();
 Rainback.Graphics = Graphics;
+
+function Graphics:Constructor()
+    self.bounds = {};
+
+    local a = Rainback.AnchoredBound:New();
+    a:SetWidth(50);
+    a:SetHeight(50);
+    a:SetPoint("TOPLEFT", self, "TOPLEFT", 10, 10);
+
+    table.insert(self.bounds, a);
+end;
+
+function Graphics:GetBounds()
+    return 0, 0, self.painter:width(), self.painter:height();
+end;
 
 function Graphics:Dump()
     print "Hello from Rainback.";
@@ -127,5 +143,13 @@ function Graphics:DrawEllipse(painter)
 end;
 
 function Graphics:Render(painter)
+    self.painter = painter;
 
+    painter:setFillColor(255, 0, 0);
+    for _, bound in ipairs(self.bounds) do
+        local x, y, width, height = bound:GetBounds();
+        painter:position(x, y);
+        painter:drawRect(width, height);
+    end;
+    self.painter = nil;
 end;
