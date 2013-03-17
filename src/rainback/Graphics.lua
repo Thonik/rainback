@@ -15,16 +15,10 @@ function Graphics:RenderText(painter)
     painter:setPenColor(0, 0, 0);
     painter:position(5, 14);
     painter:setFontWeight(52);
-    painter:drawText("for (int i = 1; i <= points.length(); ++i) {");
+    painter:drawText("Hello from Rainback");
 end;
 
-function Graphics:Render(painter)
-    self:RenderText(painter);
-
-    if true then
-        return;
-    end;
-
+function Graphics:RenderLines(painter)
     local alpha = 50;
     painter:setPenAlpha(alpha);
     painter:setFillAlpha(alpha);
@@ -45,6 +39,13 @@ function Graphics:Render(painter)
             math.random(0, painter:height())
         );
     end;
+end;
+
+function Graphics:RenderRects(painter)
+    local alpha = 50;
+    painter:setPenAlpha(alpha);
+    painter:setFillAlpha(alpha);
+
 
     for i=1, 50 do
         painter:setFillColor(255, 255, 255);
@@ -65,7 +66,9 @@ function Graphics:Render(painter)
             25
         );
     end;
+end;
 
+function Graphics:RenderTriangle(painter)
     painter:setJoinStyle("miter");
 
     painter:setPenColor(255, 255, 255, 255);
@@ -80,7 +83,9 @@ function Graphics:Render(painter)
         {50, 0},
         {50, 50},
     });
+end;
 
+function Graphics:RenderPolyline(painter)
     painter:position(150, 50);
 
     painter:setCapStyle("round");
@@ -95,9 +100,9 @@ function Graphics:Render(painter)
     });
 
     painter:position(50, 150);
+end;
 
-    painter:drawEllipse(50, 50);
-
+function Graphics:RenderSmiley(painter)
     painter:position(262, 150);
     painter:drawPoint();
 
@@ -110,7 +115,17 @@ function Graphics:Render(painter)
 
     local diff = 10;
     painter:drawArc(50, 50, -diff * 16, 16 * -(180 - diff * 2));
+end;
 
+function Graphics:RenderPixmap(painter)
     painter:position(250, 250);
     painter:drawPixmap("/home/dafrito/tmp/warrior_icon1.png");
+end;
+
+function Graphics:DrawEllipse(painter)
+    painter:drawEllipse(50, 50);
+end;
+
+function Graphics:Render(painter)
+
 end;
