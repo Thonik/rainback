@@ -13,13 +13,13 @@ Desktop::Desktop()
     fritomodLoader.setRoot(QDir(QDir::home().filePath("src/fritomod/fritomod")));
     fritomodLoader.setPrefix("fritomod/");
 
-    rainbackLoader.setRoot(QDir("rainback"));
+    rainbackLoader.setRoot(QDir("../../rainback"));
     rainbackLoader.setPrefix("rainback/");
 
     lua.addModuleLoader(&fritomodLoader);
     lua.addModuleLoader(&rainbackLoader);
 
-    lua::load_dir(lua, QDir("scripts"), true);
+    lua::load_dir(lua, QDir("../../scripts"), true);
 
     QPalette p(palette());
     p.setColor(QPalette::Background, QColor(255, 255, 221));
