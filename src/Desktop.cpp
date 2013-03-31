@@ -8,6 +8,22 @@
 #include <lua-cxx/userdata.hpp>
 
 #include "LuaPainter.hpp"
+#include "LuaFont.hpp"
+
+std::shared_ptr<LuaFont> newFont(LuaStack& stack)
+{
+    switch (stack.size()) {
+    case 0:
+        return std::make_shared<LuaFont>();
+    case 1:
+        return std::make_shared<LuaFont>(stack.as<QString>(1));
+    default:
+        return std::make_shared<LuaFont>(
+            stack.as<QString>(1),
+            stack.as<int>(2)
+        );
+    }
+}
 
 Desktop::Desktop()
 {
@@ -26,6 +42,9 @@ Desktop::Desktop()
     );
     wowLoader.setPrefix("wow/");
     lua.addModuleLoader(&wowLoader);
+
+    lua["Rainback"] = lua::value::table;
+    lua["Rainback"]["Font"] = newFont;
 
     // Load WoW compatibility methods
     lua::load_dir(lua, QDir("../../wow"), true);

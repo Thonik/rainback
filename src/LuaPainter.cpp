@@ -1,6 +1,9 @@
 #include "LuaPainter.hpp"
 
+#include "LuaFont.hpp"
+
 #include <lua-cxx/LuaEnvironment.hpp>
+#include <lua-cxx/LuaException.hpp>
 #include <lua-cxx/LuaStack.hpp>
 #include <lua-cxx/LuaValue.hpp>
 
@@ -150,6 +153,25 @@ void LuaPainter::setJoinStyle(const QString& joinStyle)
 void LuaPainter::setOpacity(const double& opacity)
 {
     painter()->setOpacity(opacity);
+}
+
+#include <iostream>
+
+void LuaPainter::setFont(LuaStack& stack)
+{
+    if (stack.size() == 1 && stack.type(1) == lua::Type::USERDATA) {
+        std::shared_ptr<LuaFont> font;
+        stack >> font;
+        if (font) {
+            painter()->setFont(font->getFont());
+            return;
+        } else {
+            throw LuaException("Userdata provided was not a font");
+        }
+    }
+    if (stack.type(1) == lua::Type::STRING) {
+        setFontFamily(stack.as<QString>(1));
+    }
 }
 
 void LuaPainter::setFontFamily(const QString& fontFamily)

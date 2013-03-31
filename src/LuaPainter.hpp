@@ -49,6 +49,7 @@ public slots:
 
     void setOpacity(const double& opacity);
 
+    void setFont(LuaStack& stack);
     void setFontFamily(const QString& fontFamily);
     void setFontSize(const int fontSize);
     void setFontWeight(const int weight);
