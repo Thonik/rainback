@@ -21,6 +21,12 @@ done
 run:
 	cd src && ./rainback
 
+rundebug:
+	cd src && gdb ./rainback
+
+runvalgrind:
+	cd src && valgrind ./rainback
+
 $(RPMDIR):
 	mkdir -p $@
 	cd $@ && mkdir -p SOURCES SPECS BUILD RPMS SRPMS
