@@ -43,10 +43,7 @@ local function getBounds(ref)
     return ref:GetBounds();
 end;
 
-local function getPositionFromAnchor(ref, anchor)
-    local x, y, width, height = getBounds(ref);
-    assert(x ~= nil, "Ref did not return useful bounds");
-
+local function getPositionFromAnchor(anchor, x, y, width, height)
     if anchor == "TOPLEFT" then
         return x, y;
     elseif anchor == "TOP" then
@@ -70,11 +67,16 @@ local function getPositionFromAnchor(ref, anchor)
     error("Invalid anchor name: " .. tostring(anchor));
 end;
 
+local boundId = 1;
 function AnchoredBound:Constructor()
     self.anchors = {};
+    self.name = "[AnchoredBound " .. boundId .. "]";
+    boundId = boundId + 1;
 end;
 
 function AnchoredBound:SetPoint(anchor, ref, anchorTo, x, y)
+    self.hasAnchors = true;
+
     anchor = canonicalAnchorName(anchor);
     anchorTo = canonicalAnchorName(anchorTo or anchor);
 
@@ -87,18 +89,55 @@ function AnchoredBound:SetPoint(anchor, ref, anchorTo, x, y)
         for i=1, #convenienceAnchors[anchor] do
             self:SetPoint(convenienceAnchors[anchor][i], ref, anchorTo, x, y);
         end;
+        return;
     end;
 
+    trace("SetPoint", self, anchor, ref, anchorTo, x, y);
     self.anchors[anchor] = {ref, anchorTo, x, y};
 end;
 
+function AnchoredBound:HasBounds()
+    return self.hasAnchors;
+end;
+
+local boundsCache;
+function Rainback.ClearCache()
+    boundsCache = setmetatable({}, {
+        __mode = "k"
+    });
+end;
+Rainback.ClearCache();
+
+function Rainback.GetCached(bound)
+    return boundsCache[bound];
+end;
+
+function Rainback.SetCache(bound, value)
+    boundsCache[bound] = value;
+end;
+
 function AnchoredBound:GetBounds()
+    if not self:HasBounds() then
+        return;
+    end;
+
+    local cached = Rainback.GetCached(self);
+    if cached then
+        return unpack(cached);
+    end;
+
+    trace(tostring(self) .. " is calculating its bounds");
+
     local left, top, right, bottom;
 
     for anchor, params in pairs(self.anchors) do
+        if not hasAnchors then
+        end;
         local ref, anchorTo, offsetX, offsetY = unpack(params);
-        local refX, refY = getPositionFromAnchor(ref, anchorTo);
-        local refWidth, refHeight = select(3, getBounds(ref));
+        local rx, ry, refWidth, refHeight = getBounds(ref);
+        local refX, refY = getPositionFromAnchor(
+            anchorTo, rx, ry, refWidth, refHeight
+        );
         if anchor == "TOP" then
             top = refY + offsetY;
         elseif anchor == "LEFT" then
@@ -109,8 +148,8 @@ function AnchoredBound:GetBounds()
             bottom = refY + offsetY;
         elseif anchor == "CENTER" then
             if self.width and self.height then
-                left = refX + refWidth / 2 - self.width / 2 + offsetX;
-                top = refY + refHeight / 2 - self.height / 2 + offsetY;
+                left = refX - self.width / 2 + offsetX;
+                top = refY - self.height / 2 + offsetY;
             end;
         end;
     end;
@@ -122,6 +161,7 @@ function AnchoredBound:GetBounds()
     elseif right ~= nil and self.width then
         x = right - self.width;
     else
+        print("No X");
         return;
     end;
 
@@ -130,6 +170,7 @@ function AnchoredBound:GetBounds()
     elseif bottom ~= nil and self.height then
         y = bottom - self.height;
     else
+        print("No Y");
         return;
     end;
 
@@ -137,8 +178,8 @@ function AnchoredBound:GetBounds()
         width = self.width;
     elseif left ~= nil and right ~= nil then
         width = right - left;
-        trace("Coercing width from left (" .. left .. ") and right (" .. right .. ") anchors");
     else
+        print("No width");
         return;
     end;
 
@@ -147,16 +188,31 @@ function AnchoredBound:GetBounds()
     elseif top ~= nil and bottom ~= nil then
         height = bottom - top;
     else
+        print("No height");
         return;
     end;
 
+    Rainback.SetCache(self, {x, y, width, height});
+
     return x, y, width, height;
+end;
+
+function AnchoredBound:GetWidth()
+    return self.width;
 end;
 
 function AnchoredBound:SetWidth(width)
     self.width = width;
 end;
 
+function AnchoredBound:GetHeight()
+    return self.height;
+end;
+
 function AnchoredBound:SetHeight(height)
     self.height = height;
+end;
+
+function AnchoredBound:ToString()
+    return self.name;
 end;

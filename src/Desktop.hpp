@@ -11,6 +11,7 @@ class Desktop : public QWidget
 
     Lua lua;
     DirectoryModuleLoader fritomodLoader;
+    DirectoryModuleLoader wowLoader;
     DirectoryModuleLoader rainbackLoader;
 
 protected:

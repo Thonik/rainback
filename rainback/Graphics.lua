@@ -1,4 +1,5 @@
 require "fritomod/OOP-Class";
+require "fritomod/Lists";
 require "rainback/AnchoredBound";
 
 Rainback = Rainback or {};
@@ -7,22 +8,15 @@ local Graphics = OOP.Class();
 Rainback.Graphics = Graphics;
 
 function Graphics:Constructor()
-    self.bounds = {};
+    self.delegates = {};
+end;
 
-    local a = Rainback.AnchoredBound:New();
-    a:SetWidth(50);
-    a:SetHeight(50);
-    a:SetPoint("TOPLEFT", self, "TOPLEFT", 10, 10);
-
-    table.insert(self.bounds, a);
+function Graphics:HasBounds()
+    return true;
 end;
 
 function Graphics:GetBounds()
     return 0, 0, self.painter:width(), self.painter:height();
-end;
-
-function Graphics:Dump()
-    print "Hello from Rainback.";
 end;
 
 function Graphics:RenderText(painter)
@@ -31,7 +25,6 @@ function Graphics:RenderText(painter)
     painter:setPenColor(0, 0, 0);
     painter:position(5, 14);
     painter:setFontWeight(52);
-    painter:drawText("Hello from Rainback");
 end;
 
 function Graphics:RenderLines(painter)
@@ -142,14 +135,43 @@ function Graphics:DrawEllipse(painter)
     painter:drawEllipse(50, 50);
 end;
 
+function Graphics:AddDelegate(delegate)
+    return Lists.Insert(self.delegates, delegate);
+end;
+
 function Graphics:Render(painter)
+    trace("FRAME start");
     self.painter = painter;
 
+    Rainback.ClearCache();
+
     painter:setFillColor(255, 0, 0);
-    for _, bound in ipairs(self.bounds) do
-        local x, y, width, height = bound:GetBounds();
-        painter:position(x, y);
-        painter:drawRect(width, height);
+    for _, delegate in ipairs(self.delegates) do
+        local bound = delegate:GetBounds();
+        if type(bound) == "table" and bound:HasBounds() then
+            local x, y, width, height = bound:GetBounds();
+            painter:position(x, y);
+            if delegate.frame.GetColor then
+                local r, g, b, a = delegate.frame:GetColor();
+                r = r * 255;
+                g = g * 255;
+                b = b * 255;
+                if a ~= nil then
+                    a = a * 255;
+                else
+                    a = 255
+                end;
+                painter:setFillColor(r, g, b, a);
+                painter:drawRect(width, height);
+            end;
+        end;
     end;
     self.painter = nil;
+
+    painter:reset();
+    painter:setPenColor(0, 0, 0, 255);
+    painter:position(2, 12);
+    painter:drawText("Rainback v1.0");
+
+    trace("FRAME complete");
 end;

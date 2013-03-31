@@ -11,14 +11,24 @@
 
 Desktop::Desktop()
 {
-    fritomodLoader.setRoot(QDir(QDir::home().filePath("src/fritomod/fritomod")));
+    fritomodLoader.setRoot(
+        QDir(QDir::home().filePath("src/fritomod/fritomod"))
+    );
     fritomodLoader.setPrefix("fritomod/");
+    lua.addModuleLoader(&fritomodLoader);
 
     rainbackLoader.setRoot(QDir("../../rainback"));
     rainbackLoader.setPrefix("rainback/");
-
-    lua.addModuleLoader(&fritomodLoader);
     lua.addModuleLoader(&rainbackLoader);
+
+    wowLoader.setRoot(
+        QDir(QDir::home().filePath("src/fritomod/wow"))
+    );
+    wowLoader.setPrefix("wow/");
+    lua.addModuleLoader(&wowLoader);
+
+    // Load WoW compatibility methods
+    lua::load_dir(lua, QDir("../../wow"), true);
 
     lua::load_dir(lua, QDir("../../scripts"), true);
 
