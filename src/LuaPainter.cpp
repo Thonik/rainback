@@ -211,6 +211,16 @@ void LuaPainter::drawText(const QString& text)
     painter()->drawText(x(), y(), text);
 }
 
+int LuaPainter::textWidth(const QString& text)
+{
+    return painter()->fontMetrics().width(text);
+}
+
+int LuaPainter::textHeight()
+{
+    return painter()->fontMetrics().height();
+}
+
 void LuaPainter::drawPoint()
 {
     painter()->drawPoint(x(), y());

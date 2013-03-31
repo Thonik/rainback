@@ -60,6 +60,8 @@ public slots:
     void position(const int x, const int y);
 
     void drawText(const QString& text);
+    int textWidth(const QString& text);
+    int textHeight();
 
     void drawPoint();
     void drawLine(const int toX, const int toY);
