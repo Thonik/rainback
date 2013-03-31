@@ -5,6 +5,7 @@
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
+#include <lua-cxx/userdata.hpp>
 
 #include "LuaPainter.hpp"
 
@@ -29,9 +30,7 @@ Desktop::Desktop()
 
 void Desktop::paintEvent(QPaintEvent* event)
 {
-    LuaPainter luaPainter(this);
-
-    lua["paint"](&luaPainter);
+    lua["paint"](LuaPainter(this));
 }
 
 // vim: set ts=4 sw=4 :

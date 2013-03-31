@@ -25,15 +25,15 @@ void LuaPainter::position(const int x, const int y)
     _y = y;
 }
 
-void LuaPainter::setFillColor(Lua& lua, LuaStack& stack)
+void LuaPainter::setFillColor(LuaStack& stack)
 {
     setFillColor(
-        stack.number(1),
-        stack.number(2),
-        stack.number(3)
+        stack.as<int>(1),
+        stack.as<int>(2),
+        stack.as<int>(3)
     );
     if (stack.size() == 4) {
-        setFillAlpha(stack.number(4));
+        setFillAlpha(stack.as<int>(4));
     }
 }
 
@@ -64,15 +64,15 @@ void LuaPainter::setFillAlpha(const int alpha)
     painter()->setBrush(brush);
 }
 
-void LuaPainter::setPenColor(Lua& lua, LuaStack& stack)
+void LuaPainter::setPenColor(LuaStack& stack)
 {
     setPenColor(
-        stack.number(1),
-        stack.number(2),
-        stack.number(3)
+        stack.as<int>(1),
+        stack.as<int>(2),
+        stack.as<int>(3)
     );
     if (stack.size() == 4) {
-        setPenAlpha(stack.number(4));
+        setPenAlpha(stack.as<int>(4));
     }
 }
 
@@ -267,33 +267,33 @@ QPolygon getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
     return polygon;
 }
 
-void LuaPainter::drawPolygon(Lua&, LuaStack& stack)
+void LuaPainter::drawPolygon(LuaStack& stack)
 {
     painter()->drawPolygon(getPolygonFromStack(*this, stack));
 }
 
-void LuaPainter::drawPolyline(Lua&, LuaStack& stack)
+void LuaPainter::drawPolyline(LuaStack& stack)
 {
     painter()->drawPolyline(getPolygonFromStack(*this, stack));
 }
 
-void LuaPainter::drawPixmap(Lua&, LuaStack& stack)
+void LuaPainter::drawPixmap(LuaStack& stack)
 {
     switch (stack.size()) {
         case 1:
-            painter()->drawPixmap(x(), y(), QPixmap(stack.qstring(1)));
+            painter()->drawPixmap(x(), y(), QPixmap(stack.as<QString>(1)));
             break;
         case 3:
-            painter()->drawPixmap(x(), y(), stack.number(2), stack.number(3), QPixmap(stack.qstring(1)));
+            painter()->drawPixmap(x(), y(), stack.as<int>(2), stack.as<int>(3), QPixmap(stack.as<QString>(1)));
             break;
         case 7:
             painter()->drawPixmap(x(), y(),
-                stack.number(2), stack.number(3),
-                QPixmap(stack.qstring(1)),
-                stack.number(4), // sx
-                stack.number(5), // sy
-                stack.number(6), // sw
-                stack.number(7)  // sh
+                stack.as<int>(2), stack.as<int>(3),
+                QPixmap(stack.as<QString>(1)),
+                stack.as<int>(4), // sx
+                stack.as<int>(5), // sy
+                stack.as<int>(6), // sw
+                stack.as<int>(7)  // sh
             );
             break;
     }

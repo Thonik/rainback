@@ -35,11 +35,11 @@ public:
 
 public slots:
 
-    void setFillColor(Lua& lua, LuaStack& stack);
+    void setFillColor(LuaStack& stack);
     void setFillColor(const int r, const int g, const int b);
     void setFillAlpha(const int alpha);
 
-    void setPenColor(Lua& lua, LuaStack& stack);
+    void setPenColor(LuaStack& stack);
     void setPenColor(const int r, const int g, const int b);
     void setPenAlpha(const int alpha);
 
@@ -73,10 +73,10 @@ public slots:
     void drawChord(const int width, const int height, const int startAngle, const int spanAngle);
     void drawPie(const int width, const int height, const int startAngle, const int spanAngle);
 
-    void drawPolygon(Lua& lua, LuaStack& stack);
-    void drawPolyline(Lua& lua, LuaStack& stack);
+    void drawPolygon(LuaStack& stack);
+    void drawPolyline(LuaStack& stack);
 
-    void drawPixmap(Lua&, LuaStack& stack);
+    void drawPixmap(LuaStack& stack);
 
     int x()
     {
