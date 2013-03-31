@@ -6,6 +6,7 @@
 #include <QDir>
 
 #include <cstdlib>
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
@@ -19,7 +20,7 @@ int main(int argc, char* argv[])
     lua.addModuleLoader(&fritomodLoader);
 
     DirectoryModuleLoader rainbackLoader;
-    rainbackLoader.setRoot(QDir(QString(srcdir.c_str()) + "/../src/rainback"));
+    rainbackLoader.setRoot(QDir(QString(srcdir.c_str()) + "/../rainback"));
     rainbackLoader.setPrefix("rainback/");
     lua.addModuleLoader(&rainbackLoader);
 
