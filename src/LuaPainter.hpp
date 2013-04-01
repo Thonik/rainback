@@ -13,12 +13,22 @@ class LuaPainter : public QObject
 
     QPainter _painter;
 
-    int _x;
-    int _y;
+    qreal _x;
+    qreal _y;
 
     QPainter* painter()
     {
         return &_painter;
+    }
+
+    const QPainter* painter() const
+    {
+        return &_painter;
+    }
+
+    const QPen& pen() const
+    {
+        return painter()->pen();
     }
 
 public:
@@ -33,6 +43,11 @@ public:
 
     void initialize();
 
+    Q_PROPERTY(QString joinStyle READ joinStyle WRITE setJoinStyle)
+    Q_PROPERTY(QString capStyle READ capStyle WRITE setCapStyle)
+    Q_PROPERTY(qreal miterLimit READ miterLimit WRITE setMiterLimit)
+    Q_PROPERTY(qreal penWidth READ penWidth WRITE setPenWidth)
+
 public slots:
 
     void setFillColor(LuaStack& stack);
@@ -43,9 +58,17 @@ public slots:
     void setPenColor(const int r, const int g, const int b);
     void setPenAlpha(const int alpha);
 
-    void setPenWidth(const int width);
+    void setPenWidth(const qreal& width);
+    qreal penWidth() const;
+
+    QString capStyle() const;
     void setCapStyle(const QString& capStyle);
+
+    QString joinStyle() const;
     void setJoinStyle(const QString& joinStyle);
+
+    double miterLimit() const;
+    void setMiterLimit(const double& limit);
 
     void setOpacity(const double& opacity);
 
@@ -58,35 +81,35 @@ public slots:
     void setBold(const bool isItalic);
     void setUnderline(const bool isUnderline);
 
-    void position(const int x, const int y);
+    void position(const qreal& x, const qreal& y);
 
     void drawText(const QString& text);
     int textWidth(const QString& text);
     int textHeight();
 
     void drawPoint();
-    void drawLine(const int toX, const int toY);
+    void drawLine(const qreal& toX, const qreal& toY);
 
-    void drawRect(const int width, const int height);
-    void drawRoundedRect(const int width, const int height, const int xRadius, const int yRadius);
+    void drawRect(const qreal& width, const qreal& height);
+    void drawRoundedRect(const qreal& width, const qreal& height, const qreal& xRadius, const qreal& yRadius);
 
-    void drawEllipse(const int width, const int height);
+    void drawEllipse(const qreal& width, const qreal& height);
 
-    void drawArc(const int width, const int height, const int startAngle, const int spanAngle);
-    void drawChord(const int width, const int height, const int startAngle, const int spanAngle);
-    void drawPie(const int width, const int height, const int startAngle, const int spanAngle);
+    void drawArc(const qreal& width, const qreal& height, const int startAngle, const int spanAngle);
+    void drawChord(const qreal& width, const qreal& height, const int startAngle, const int spanAngle);
+    void drawPie(const qreal& width, const qreal& height, const int startAngle, const int spanAngle);
 
     void drawPolygon(LuaStack& stack);
     void drawPolyline(LuaStack& stack);
 
     void drawPixmap(LuaStack& stack);
 
-    int x()
+    const qreal& x()
     {
         return _x;
     }
 
-    int y()
+    const qreal& y()
     {
         return _y;
     }

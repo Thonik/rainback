@@ -22,7 +22,7 @@ void LuaPainter::initialize()
     setFontWeight(QFont::Normal);
 }
 
-void LuaPainter::position(const int x, const int y)
+void LuaPainter::position(const qreal& x, const qreal& y)
 {
     _x = x;
     _y = y;
@@ -103,11 +103,30 @@ void LuaPainter::setPenAlpha(const int alpha)
     painter()->setPen(pen);
 }
 
-void LuaPainter::setPenWidth(const int width)
+qreal LuaPainter::penWidth() const
+{
+    return pen().width();
+}
+
+void LuaPainter::setPenWidth(const qreal& width)
 {
     QPen pen(painter()->pen());
     pen.setWidth(width);
     painter()->setPen(pen);
+}
+
+QString LuaPainter::capStyle() const
+{
+    switch (pen().capStyle()) {
+    case Qt::SquareCap:
+        return "square";
+    case Qt::FlatCap:
+        return "flat";
+    case Qt::RoundCap:
+        return "round";
+    default:
+        return "";
+    }
 }
 
 void LuaPainter::setCapStyle(const QString& capStyle)
@@ -130,6 +149,20 @@ void LuaPainter::setCapStyle(const QString& capStyle)
     painter()->setPen(pen);
 }
 
+QString LuaPainter::joinStyle() const
+{
+    switch (painter()->pen().joinStyle()) {
+    case Qt::BevelJoin:
+        return "bevel";
+    case Qt::MiterJoin:
+        return "miter";
+    case Qt::RoundJoin:
+        return "round";
+    default:
+        return "";
+    }
+}
+
 void LuaPainter::setJoinStyle(const QString& joinStyle)
 {
     QPen pen(painter()->pen());
@@ -150,12 +183,22 @@ void LuaPainter::setJoinStyle(const QString& joinStyle)
     painter()->setPen(pen);
 }
 
-void LuaPainter::setOpacity(const double& opacity)
+qreal LuaPainter::miterLimit() const
+{
+    return pen().miterLimit();
+}
+
+void LuaPainter::setMiterLimit(const qreal& limit)
+{
+    QPen pen(painter()->pen());
+    pen.setMiterLimit(limit);
+    painter()->setPen(pen);
+}
+
+void LuaPainter::setOpacity(const qreal& opacity)
 {
     painter()->setOpacity(opacity);
 }
-
-#include <iostream>
 
 void LuaPainter::setFont(LuaStack& stack)
 {
@@ -245,53 +288,53 @@ int LuaPainter::textHeight()
 
 void LuaPainter::drawPoint()
 {
-    painter()->drawPoint(x(), y());
+    painter()->drawPoint(QPointF(x(), y()));
 }
 
-void LuaPainter::drawRect(const int width, const int height)
+void LuaPainter::drawRect(const qreal& width, const qreal& height)
 {
-    painter()->drawRect(x(), y(), width, height);
+    painter()->drawRect(QRectF(x(), y(), width, height));
 }
 
-void LuaPainter::drawRoundedRect(const int width, const int height, const int xRadius, const int yRadius)
+void LuaPainter::drawRoundedRect(const qreal& width, const qreal& height, const qreal& xRadius, const qreal& yRadius)
 {
-    painter()->drawRoundedRect(x(), y(), width, height, xRadius, yRadius);
+    painter()->drawRoundedRect(QRectF(x(), y(), width, height), xRadius, yRadius);
 }
 
-void LuaPainter::drawEllipse(const int width, const int height)
+void LuaPainter::drawEllipse(const qreal& width, const qreal& height)
 {
-    painter()->drawEllipse(x(), y(), width, height);
+    painter()->drawEllipse(QRectF(x(), y(), width, height));
 }
 
-void LuaPainter::drawArc(const int width, const int height, const int startAngle, const int spanAngle)
+void LuaPainter::drawArc(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
-    painter()->drawArc(x(), y(), width, height, startAngle, spanAngle);
+    painter()->drawArc(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawChord(const int width, const int height, const int startAngle, const int spanAngle)
+void LuaPainter::drawChord(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
-    painter()->drawChord(x(), y(), width, height, startAngle, spanAngle);
+    painter()->drawChord(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawPie(const int width, const int height, const int startAngle, const int spanAngle)
+void LuaPainter::drawPie(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
-    painter()->drawPie(x(), y(), width, height, startAngle, spanAngle);
+    painter()->drawPie(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawLine(const int toX, const int toY)
+void LuaPainter::drawLine(const qreal& toX, const qreal& toY)
 {
-    painter()->drawLine(x(), y(), toX, toY);
+    painter()->drawLine(QPointF(x(), y()), QPointF(toX, toY));
 }
 
-QPolygon getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
+QPolygonF getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
 {
     LuaValue points(stack.save());
 
-    QPolygon polygon;
+    QPolygonF polygon;
 
     for (int i = 1; i <= points.length(); ++i) {
         auto point = points[i];
-        polygon << QPoint(painter.x() + (int)point[1], painter.y() + (int)point[2]);
+        polygon << QPointF(painter.x() + (qreal)point[1], painter.y() + (qreal)point[2]);
     }
 
     stack.clear();
@@ -313,20 +356,32 @@ void LuaPainter::drawPixmap(LuaStack& stack)
 {
     switch (stack.size()) {
         case 1:
-            painter()->drawPixmap(x(), y(), QPixmap(stack.as<QString>(1)));
+            painter()->drawPixmap(QPointF(x(), y()), QPixmap(stack.as<QString>(1)));
             break;
         case 3:
-            painter()->drawPixmap(x(), y(), stack.as<int>(2), stack.as<int>(3), QPixmap(stack.as<QString>(1)));
+            {
+                QPixmap image(stack.as<QString>(1));
+                painter()->drawPixmap(
+                    QRectF(x(), y(), stack.as<qreal>(2), stack.as<qreal>(3)),
+                    image,
+                    QRectF(0, 0, image.width(), image.height())
+                );
+            }
             break;
         case 7:
-            painter()->drawPixmap(x(), y(),
-                stack.as<int>(2), stack.as<int>(3),
-                QPixmap(stack.as<QString>(1)),
-                stack.as<int>(4), // sx
-                stack.as<int>(5), // sy
-                stack.as<int>(6), // sw
-                stack.as<int>(7)  // sh
-            );
+            {
+                QPixmap image(stack.as<QString>(1));
+                painter()->drawPixmap(
+                    QRectF(x(), y(), stack.as<qreal>(2), stack.as<qreal>(3)),
+                    image,
+                    QRectF(
+                        stack.as<qreal>(4), // sx
+                        stack.as<qreal>(5), // sy
+                        stack.as<qreal>(6), // sw
+                        stack.as<qreal>(7)  // sh
+                    )
+                );
+            }
             break;
     }
 
