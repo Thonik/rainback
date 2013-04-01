@@ -400,6 +400,7 @@ int LuaPainter::height()
 
 void LuaPainter::reset()
 {
+    _x = _y = 0;
     painter()->end();
     painter()->begin(painter()->device());
     initialize();
