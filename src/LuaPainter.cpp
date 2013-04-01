@@ -13,8 +13,6 @@ void LuaPainter::initialize()
 {
     // Set some high-quality defaults. I haven't benchmarked these
     // so I don't know how much they'll affect performance.
-    painter()->setRenderHint(QPainter::Antialiasing, true);
-    painter()->setRenderHint(QPainter::HighQualityAntialiasing, true);
     painter()->setRenderHint(QPainter::SmoothPixmapTransform, true);
 
     painter()->setRenderHint(QPainter::TextAntialiasing, true);
