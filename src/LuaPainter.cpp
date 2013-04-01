@@ -273,7 +273,7 @@ void LuaPainter::setUnderline(const bool isUnderline)
 
 void LuaPainter::drawText(const QString& text)
 {
-    painter()->drawText(x(), y(), text);
+    painter()->drawText(x(), y(), INT_MAX, INT_MAX, 0, text);
 }
 
 int LuaPainter::textWidth(const QString& text)

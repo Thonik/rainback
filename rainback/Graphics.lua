@@ -170,7 +170,6 @@ function Graphics:Render(painter)
 
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
-    painter:position(2, 12);
     painter:drawText("Rainback v1.0");
 
     trace("FRAME complete");
