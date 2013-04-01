@@ -150,27 +150,45 @@ function Graphics:Render(painter)
         local bound = delegate:GetBounds();
         if type(bound) == "table" and bound:HasBounds() then
             local x, y, width, height = bound:GetBounds();
-            painter:position(x, y);
-            if delegate.frame.GetColor then
-                local r, g, b, a = delegate.frame:GetColor();
-                r = r * 255;
-                g = g * 255;
-                b = b * 255;
-                if a ~= nil then
-                    a = a * 255;
-                else
-                    a = 255
+            if x ~= nil then
+                painter:reset();
+                painter:position(x, y);
+                if delegate.frame.GetText then
+                    local r, g, b, a = delegate.frame:GetTextColor();
+                    r = r * 255;
+                    g = g * 255;
+                    b = b * 255;
+                    if a ~= nil then
+                        a = a * 255;
+                    else
+                        a = 255
+                    end;
+                    painter:setFont(delegate.frame:GetDelegate("text"):GetInternalFont());
+                    painter:setPenColor(r, g, b, a);
+                    painter:drawText(delegate.frame:GetText());
+                elseif delegate.frame.GetColor then
+                    local r, g, b, a = delegate.frame:GetColor();
+                    r = r * 255;
+                    g = g * 255;
+                    b = b * 255;
+                    if a ~= nil then
+                        a = a * 255;
+                    else
+                        a = 255
+                    end;
+                    painter:setPenColor(0, 0, 0, a);
+                    painter.joinStyle = "miter";
+                    painter.penWidth = 1;
+                    painter:setFillColor(r, g, b, a);
+                    painter:drawRect(width, height);
                 end;
-                painter:setFillColor(r, g, b, a);
-                painter:drawRect(width, height);
             end;
         end;
     end;
-    self.painter = nil;
-
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
     painter:drawText("Rainback v1.0");
 
+    self.painter = nil;
     trace("FRAME complete");
 end;

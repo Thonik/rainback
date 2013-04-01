@@ -24,15 +24,43 @@ const QFont& LuaFont::getFont() const
     return _font;
 }
 
-int LuaFont::height(LuaStack& stack)
+QString LuaFont::family() const
 {
-    if (stack.size() == 1) {
-        return height(stack.as<QString>(1), INT_MAX);
-    }
-    return height(stack.as<QString>(1), stack.as<int>(2));
+    return _font.family();
 }
 
-int LuaFont::height(const QString& text, const int width)
+void LuaFont::setFamily(const QString& font)
+{
+    _font.setFamily(font);
+}
+
+int LuaFont::pointSize() const
+{
+    return _font.pointSize();
+}
+
+void LuaFont::setPointSize(const int pointSize)
+{
+    _font.setPointSize(pointSize);
+}
+
+int LuaFont::width(const QString& text) const
+{
+    QFontMetrics metrics(getFont());
+
+    return metrics.boundingRect(0, 0, INT_MAX, INT_MAX, Qt::TextWordWrap, text).width();
+}
+
+int LuaFont::height(LuaStack& stack) const
+{
+    int width = INT_MAX;
+    if (stack.size() == 2 && !stack.isNil(2)) {
+        width = stack.as<int>(2);
+    }
+    return height(stack.as<QString>(1), width);
+}
+
+int LuaFont::height(const QString& text, const int width) const
 {
     QFontMetrics metrics(getFont());
 
