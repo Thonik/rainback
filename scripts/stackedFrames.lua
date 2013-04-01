@@ -3,19 +3,19 @@ require "fritomod/Frames-Mouse";
 require "fritomod/Anchors";
 
 local colors = {
-   "red",
-   "orange",
-   "yellow",
-   "green",
-   "blue",
-   "purple"
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple"
 };
 
 local directions = {
-   {"TOPLEFT", Anchors.HStackFrom},
-   {"TOPRIGHT", Anchors.JustifyFrom},
-   {"BOTTOMRIGHT", Anchors.VJustifyFrom},
-   {"BOTTOMLEFT", Anchors.StackFrom},
+    {"TOPLEFT", Anchors.HStackFrom},
+    {"TOPRIGHT", Anchors.JustifyFrom},
+    {"BOTTOMRIGHT", Anchors.VJustifyFrom},
+    {"BOTTOMLEFT", Anchors.StackFrom},
 };
 
 UIParent:GetDelegate("layout").bound = gfx;
@@ -28,14 +28,17 @@ Anchors.Center(center);
 
 local frames = {};
 for _, direction in ipairs(directions) do
-   local directionFrames={}
-   for _, color in ipairs(colors) do
-      local f = Frames.New(center);
-      Frames.Size(f, 20);
-      Frames.Color(f, color);
-      table.insert(frames, f);
-      table.insert(directionFrames, f);
-   end;
-   local anchored = direction[2](direction[1], 5, directionFrames);
-   Anchors.FlipTo(anchored, center, direction[1]);
+    local directionFrames = {}
+    for _, color in ipairs(colors) do
+        local f = Frames.New(center);
+        Frames.Size(f, 20);
+        Frames.Color(f, color);
+        table.insert(frames, f);
+        table.insert(directionFrames, f);
+    end;
+    local anchor = direction[1];
+    local anchorFunc = direction[2];
+    local gap = 3;
+    local anchored = anchorFunc(anchor, gap, directionFrames);
+    Anchors.FlipTo(anchored, center, anchor, gap);
 end;
