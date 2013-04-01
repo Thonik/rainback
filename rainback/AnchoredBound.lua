@@ -130,65 +130,80 @@ function AnchoredBound:GetBounds()
 
     local left, top, right, bottom;
 
+    -- These center values are used as fallbacks if absolute values cannot be determined
+    local centerX, centerY;
+
     for anchor, params in pairs(self.anchors) do
-        if not hasAnchors then
-        end;
         local ref, anchorTo, offsetX, offsetY = unpack(params);
         local rx, ry, refWidth, refHeight = getBounds(ref);
-        local refX, refY = getPositionFromAnchor(
-            anchorTo, rx, ry, refWidth, refHeight
-        );
-        if anchor == "TOP" then
-            top = refY + offsetY;
-        elseif anchor == "LEFT" then
-            left = refX + offsetX;
-        elseif anchor == "RIGHT" then
-            right = refX + offsetX;
-        elseif anchor == "BOTTOM" then
-            bottom = refY + offsetY;
-        elseif anchor == "CENTER" then
-            if self.width and self.height then
-                left = refX - self.width / 2 + offsetX;
-                top = refY - self.height / 2 + offsetY;
+        if rx ~= nil then
+            local refX, refY = getPositionFromAnchor(
+                anchorTo, rx, ry, refWidth, refHeight
+            );
+            if anchor == "TOP" then
+                top = refY + offsetY;
+                centerX = refX;
+            elseif anchor == "LEFT" then
+                left = refX + offsetX;
+                centerY = refY;
+            elseif anchor == "RIGHT" then
+                right = refX + offsetX;
+                centerY = refY;
+            elseif anchor == "BOTTOM" then
+                bottom = refY + offsetY;
+                centerX = refX;
+            elseif anchor == "CENTER" then
+                centerX = refX;
+                centerY = refY;
             end;
+        else
+            trace("Reference '" .. tostring(ref) .. "' has no bounds, ignoring '" .. anchor .. "' anchor");
         end;
     end;
 
-    local x, y, width, height;
+    local x, y, width, height = left, top, self.width, self.height;
 
-    if left ~= nil then
-        x = left;
-    elseif right ~= nil and self.width then
-        x = right - self.width;
-    else
-        print("No X");
-        return;
-    end;
-
-    if top ~= nil then
-        y = top;
-    elseif bottom ~= nil and self.height then
-        y = bottom - self.height;
-    else
-        print("No Y");
-        return;
-    end;
-
-    if self.width then
-        width = self.width;
-    elseif left ~= nil and right ~= nil then
+    if width == nil and left ~= nil and right ~= nil then
         width = right - left;
-    else
-        print("No width");
+    end;
+
+    if height == nil and top ~= nil and bottom ~= nil then
+        height = bottom - top;
+    end;
+
+    if width == nil then
+        width = self:GetNaturalWidth(height);
+    end;
+
+    if height == nil then
+        height = self:GetNaturalHeight(width);
+    end;
+
+    if width == nil or height == nil then
+        trace("Dimensions (w:" .. tostring(width) .. ", h:" .. tostring(height) ..") " ..
+            "could not be deduced for bound '" .. tostring(self) .. "'");
         return;
     end;
 
-    if self.height then
-        height = self.height;
-    elseif top ~= nil and bottom ~= nil then
-        height = bottom - top;
-    else
-        print("No height");
+    if x == nil then
+        if right ~= nil then
+            x = right - width;
+        elseif centerX then
+            x = centerX - width / 2;
+        end;
+    end;
+
+    if y == nil then
+        if bottom ~= nil then
+            y = bottom - height;
+        elseif centerY then
+            y = centerY - height / 2;
+        end;
+    end;
+
+    if x == nil or y == nil then
+        trace("Position (x:" .. tostring(x) .. ", y:" .. tostring(y) .. ") " ..
+            "could not be deduced for bound '" .. tostring(self) .. "'");
         return;
     end;
 
@@ -203,6 +218,14 @@ end;
 
 function AnchoredBound:SetWidth(width)
     self.width = width;
+end;
+
+function AnchoredBound:GetNaturalWidth(height)
+    -- Feel free to implement this method for bounds that can provide natural dimensions
+end;
+
+function AnchoredBound:GetNaturalHeight(width)
+    -- Feel free to implement this method for bounds that can provide natural dimensions
 end;
 
 function AnchoredBound:GetHeight()
