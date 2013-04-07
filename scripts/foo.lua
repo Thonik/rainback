@@ -1,6 +1,7 @@
 require "fritomod/currying";
 require "rainback/Graphics";
 
-gfx = Rainback.Graphics:New();
+require "fritomod/Events";
 
-paint = Curry(gfx, "Render");
+local gfx = Rainback.Graphics:New();
+Events.RENDER(gfx, "Render");

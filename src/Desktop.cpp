@@ -1,6 +1,5 @@
 #include "Desktop.hpp"
 
-#include <QPainter>
 #include <functional>
 
 #include <lua-cxx/LuaValue.hpp>
@@ -67,7 +66,11 @@ Desktop::Desktop()
 
 void Desktop::paintEvent(QPaintEvent* event)
 {
-    lua["paint"](LuaPainter(this));
+    auto dispatcher = lua["Rainback"]["DispatchEvent"];
+    if (dispatcher.isNil()) {
+        return;
+    }
+    dispatcher("RENDER", LuaPainter(this));
 }
 
 // vim: set ts=4 sw=4 :
