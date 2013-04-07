@@ -139,12 +139,7 @@ function Graphics:AddDelegate(delegate)
     return Lists.Insert(self.delegates, delegate);
 end;
 
-function Graphics:Render(painter)
-    trace("FRAME start");
-    self.painter = painter;
-
-    Rainback.ClearCache();
-
+function Graphics:RenderFrames(painter)
     painter:setFillColor(255, 0, 0);
     for _, delegate in ipairs(self.delegates) do
         local bound = delegate:GetBounds();
@@ -185,6 +180,16 @@ function Graphics:Render(painter)
             end;
         end;
     end;
+end;
+
+function Graphics:Render(painter)
+    trace("FRAME start");
+    self.painter = painter;
+
+    Rainback.ClearCache();
+
+    self:RenderFrames(self.painter);
+
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
     painter:drawText("Rainback v1.0");
