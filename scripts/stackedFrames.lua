@@ -18,8 +18,6 @@ local directions = {
     {"BOTTOMLEFT", Anchors.StackFrom},
 };
 
-UIParent:GetDelegate("layout").bound = gfx;
-
 local center = Frames.New();
 Frames.Size(center, 40);
 Frames.Color(center, "white");

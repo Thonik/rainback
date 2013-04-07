@@ -11,14 +11,6 @@ function Graphics:Constructor()
     self.delegates = {};
 end;
 
-function Graphics:HasBounds()
-    return true;
-end;
-
-function Graphics:GetBounds()
-    return 0, 0, self.painter:width(), self.painter:height();
-end;
-
 function Graphics:RenderText(painter)
     painter:setFontSize(10);
     painter:setFontFamily("Inconsolata");

@@ -46,6 +46,14 @@ Desktop::Desktop()
     lua["Rainback"] = lua::value::table;
     lua["Rainback"]["Font"] = newFont;
 
+    lua["Rainback" ]["ScreenWidth"] = std::function<int()>([this]() {
+        return width();
+    });
+
+    lua["Rainback" ]["ScreenHeight"] = std::function<int()>([this]() {
+        return height();
+    });
+
     // Load WoW compatibility methods
     lua::load_dir(lua, QDir("../../wow"), true);
 
