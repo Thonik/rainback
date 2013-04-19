@@ -5,6 +5,9 @@
 
 #include <lua-cxx/DirectoryModuleLoader.hpp>
 
+#include <QElapsedTimer>
+#include <QBasicTimer>
+
 class Bootstrapper
 {
     Desktop _desktop;
@@ -13,6 +16,9 @@ class Bootstrapper
     DirectoryModuleLoader fritomodLoader;
     DirectoryModuleLoader wowLoader;
     DirectoryModuleLoader rainbackLoader;
+
+    QElapsedTimer elapsed;
+    QBasicTimer timer;
 
 public:
     Bootstrapper();

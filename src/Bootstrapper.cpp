@@ -54,10 +54,25 @@ Bootstrapper::Bootstrapper() :
         return _desktop.height();
     });
 
+    lua["Rainback"]["GetTime"] = std::function<double()>([this]() {
+        return elapsed.elapsed() / 1000;
+    });
+
+    lua["Rainback"]["StartTick"] =
+    std::function<std::function<void()>(const int)>([this](const int framerate) {
+        timer.stop();
+        timer.start(1000 / framerate, &_desktop);
+        return [this]() {
+            timer.stop();
+        };
+    });
+
     // Load WoW compatibility methods
     lua::load_dir(lua, QDir("../../wow"), true);
 
     lua::load_dir(lua, QDir("../../scripts"), true);
+
+    elapsed.start();
 }
 
 QWidget& Bootstrapper::mainWidget()

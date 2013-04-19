@@ -74,4 +74,9 @@ void Desktop::mouseMoveEvent(QMouseEvent* const event)
     dispatch(_lua, "MOUSEMOVE", event->x(), event->y());
 }
 
+void Desktop::timerEvent(QTimerEvent* const event)
+{
+    dispatch(_lua, "UPDATE");
+}
+
 // vim: set ts=4 sw=4 :

@@ -18,6 +18,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent* const event);
     void mouseMoveEvent(QMouseEvent* const event);
 
+    void timerEvent(QTimerEvent* const event);
 public:
     Desktop(Lua& lua);
 };
