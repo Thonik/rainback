@@ -153,8 +153,8 @@ function AnchoredBound:GetBounds()
                 bottom = refY + offsetY;
                 centerX = refX;
             elseif anchor == "CENTER" then
-                centerX = refX;
-                centerY = refY;
+                centerX = refX + offsetX;
+                centerY = refY + offsetY;
             end;
         else
             trace("Reference '" .. tostring(ref) .. "' has no bounds, ignoring '" .. anchor .. "' anchor");
