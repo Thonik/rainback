@@ -135,6 +135,7 @@ function AnchoredBound:GetBounds()
 
     for anchor, params in pairs(self.anchors) do
         local ref, anchorTo, offsetX, offsetY = unpack(params);
+        trace("Working with " .. anchor .. ":" .. anchorTo .. " " .. offsetX .. ", " .. offsetY);
         local rx, ry, refWidth, refHeight = getBounds(ref);
         if rx ~= nil then
             local refX, refY = getPositionFromAnchor(
@@ -208,6 +209,9 @@ function AnchoredBound:GetBounds()
     end;
 
     Rainback.SetCache(self, {x, y, width, height});
+
+    trace(tostring(self) .. " finished calculated bounds. "
+        .. "(x: " .. x .. ", y: " .. y .. ", width: " .. width .. ", height: " .. height .. ")");
 
     return x, y, width, height;
 end;
