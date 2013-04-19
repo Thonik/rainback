@@ -3,7 +3,7 @@ require "wow/Frame";
 function WoW.CreateUIParent()
     local root = WoW.Frame:New();
 
-    local ScreenBound = {};
+    local ScreenBound = Rainback.AnchoredBound:New();
 
     function ScreenBound:GetBounds()
         return 0, 0, Rainback.ScreenWidth(), Rainback.ScreenHeight();
