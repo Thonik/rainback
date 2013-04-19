@@ -61,12 +61,12 @@ std::string buttonName(const Qt::MouseButton& button)
 
 void Desktop::mousePressEvent(QMouseEvent* const event)
 {
-    dispatch(_lua, "MOUSEPRESS", buttonName(event->button()));
+    dispatch(_lua, "MOUSEPRESS", buttonName(event->button()), event->x(), event->y());
 }
 
 void Desktop::mouseReleaseEvent(QMouseEvent* const event)
 {
-    dispatch(_lua, "MOUSERELEASE", buttonName(event->button()));
+    dispatch(_lua, "MOUSERELEASE", buttonName(event->button()), event->x(), event->y());
 }
 
 void Desktop::mouseMoveEvent(QMouseEvent* const event)
