@@ -1,48 +1,21 @@
-// To build this file from scratch, use something like the following:
-// g++ -lQtCore -lQtGui -I/usr/include/QtCore -I/usr/include/QtGui main.cpp
+#include "Bootstrapper.hpp"
+#include "util.hpp"
 
 #include <QApplication>
 #include <QMainWindow>
-#include <QDesktopWidget>
-#include <QPushButton>
-#include <QSize>
 
-#include <Desktop.hpp>
-
-void centerApp(QMainWindow& window)
-{
-    QSize appSize(800, 600);
-    window.resize(appSize);
-
-    QDesktopWidget* desktop = QApplication::desktop();
-
-    int desktopArea = desktop->width() * desktop->height();
-    int appArea = appSize.width() * appSize.height();
-    if (((float)appArea / (float)desktopArea) > 0.75f) {
-        // Just maximize it if the desktop isn't significantly
-        // bigger than our app's area.
-        window.showMaximized();
-    } else {
-        // Center the app on the primary monitor.
-        QPoint windowLocation = desktop->screenGeometry(desktop->primaryScreen()).center();
-        windowLocation.setX(windowLocation.x() - appSize.width() / 2);
-        windowLocation.setY(windowLocation.y() - appSize.height() / 2);
-        window.move(windowLocation);
-        window.show();
-    }
-}
-
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
     QMainWindow gui;
     gui.setWindowTitle("rainback");
-    centerApp(gui);
+    gui.resize(800, 600);
 
-    Desktop desktop;
+    Bootstrapper bootstrapper;
+    gui.setCentralWidget(&bootstrapper.mainWidget());
 
-    gui.setCentralWidget(&desktop);
+    centerWindow(gui);
 
     return app.exec();
 }

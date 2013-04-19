@@ -3,22 +3,18 @@
 
 #include <QWidget>
 #include <lua-cxx/LuaEnvironment.hpp>
-#include <lua-cxx/DirectoryModuleLoader.hpp>
 
 class Desktop : public QWidget
 {
     Q_OBJECT
 
-    Lua lua;
-    DirectoryModuleLoader fritomodLoader;
-    DirectoryModuleLoader wowLoader;
-    DirectoryModuleLoader rainbackLoader;
+    Lua& lua;
 
 protected:
     void paintEvent(QPaintEvent* event);
 
 public:
-    Desktop();
+    Desktop(Lua& lua);
 };
 
 #endif // RAINBACK_DESKTOP_HEADER
