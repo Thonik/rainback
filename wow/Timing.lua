@@ -2,7 +2,7 @@ require "fritomod/Timing";
 
 local Delegate = OOP.Class();
 
-local FRAMERATE = 30;
+local FRAMERATE = 60;
 
 function Delegate:Start()
     local elapsed = Rainback.GetTime();
