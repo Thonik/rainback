@@ -61,6 +61,13 @@ function Delegate:GetBounds()
     return self.bound;
 end;
 
+function Delegate:HitTest(x, y)
+    local left, bottom, right, top = self:GetLeft(), self:GetBottom(), self:GetRight(), self:GetTop();
+    return
+        x >= left and x <= right
+        and y >= bottom and y <= top;
+end;
+
 function Delegate:ToString()
     return "[Rainback Layout Delegate]";
 end;

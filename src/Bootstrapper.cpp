@@ -67,6 +67,14 @@ Bootstrapper::Bootstrapper() :
         };
     });
 
+    lua["Rainback"]["GetCursorPosition"] =
+    std::function<void(LuaStack&)>([this](LuaStack& stack) {
+        QPoint pos(_desktop.mapFromGlobal(QCursor::pos()));
+        stack.clear();
+        lua::push(stack, pos.x());
+        lua::push(stack, pos.y());
+    });
+
     lua["Rainback"]["Update"] = std::function<void()>([this]() {
         _desktop.update();
     });
