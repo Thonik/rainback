@@ -12,7 +12,11 @@ class Desktop : public QWidget
     Lua& _lua;
 
 protected:
-    void paintEvent(QPaintEvent* event);
+    void paintEvent(QPaintEvent* const event);
+    void wheelEvent(QWheelEvent* const event);
+    void mousePressEvent(QMouseEvent* const event);
+    void mouseReleaseEvent(QMouseEvent* const event);
+    void mouseMoveEvent(QMouseEvent* const event);
 
 public:
     Desktop(Lua& lua);
