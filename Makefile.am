@@ -12,12 +12,6 @@ checkdebug: $(TESTS)
 checkvalgrind:
 	cd tests && valgrind -v --leak-check=full .libs/lt-runtest
 
-debug: $(TESTS)
-	cd src && gdb rainback
-
-valgrind:
-	cd src && valgrind -v --leak-check=full --trace-children=yes rainback
-
 # This is a common typo for me
 cehck: check
 .PHONY: cehck
@@ -25,11 +19,11 @@ cehck: check
 run:
 	cd src && ./rainback
 
-rundebug:
-	cd src && gdb ./rainback
+debug:
+	cd src && gdb .libs/lt-rainback
 
-runvalgrind:
-	cd src && valgrind ./rainback
+valgrind:
+	cd src && valgrind -v --leak-check=full --trace-children=yes .libs/lt-rainback
 
 RPMFLAGS ?= --ba
 SRCRPM=rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@.src.rpm
