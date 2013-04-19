@@ -67,6 +67,10 @@ Bootstrapper::Bootstrapper() :
         };
     });
 
+    lua["Rainback"]["Update"] = std::function<void()>([this]() {
+        _desktop.update();
+    });
+
     // Load WoW compatibility methods
     lua::load_dir(lua, QDir("../../wow"), true);
 

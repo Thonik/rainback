@@ -94,6 +94,8 @@ function AnchoredBound:SetPoint(anchor, ref, anchorTo, x, y)
 
     trace("SetPoint", self, anchor, ref, anchorTo, x, y);
     self.anchors[anchor] = {ref, anchorTo, x, y};
+
+    Rainback.Update();
 end;
 
 function AnchoredBound:HasBounds()
@@ -117,6 +119,7 @@ function Rainback.SetCache(bound, value)
 end;
 
 function AnchoredBound:Clear()
+    Rainback.Update();
     self.anchors = {};
     self.hasAnchors = false;
 end;
