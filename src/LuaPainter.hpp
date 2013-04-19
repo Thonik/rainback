@@ -4,8 +4,8 @@
 #include <QPainter>
 #include <QObject>
 
-class LuaStack;
-class Lua;
+#include <lua-cxx/LuaStack.hpp>
+#include <lua-cxx/userdata.hpp>
 
 class LuaPainter : public QObject
 {
@@ -120,6 +120,21 @@ public slots:
 
     void reset();
 };
+
+namespace lua {
+
+template<>
+struct UserdataType<LuaPainter>
+{
+    constexpr static const char* name = "LuaPainter";
+
+    static void initialize(LuaStack& stack, LuaPainter& painter)
+    {
+        lua::userdata::qobject(stack, painter);
+    }
+};
+
+} // namespace lua
 
 #endif // RAINBACK_LUAPAINTER_HEADER
 

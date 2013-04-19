@@ -326,7 +326,7 @@ void LuaPainter::drawLine(const qreal& toX, const qreal& toY)
 
 QPolygonF getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
 {
-    LuaValue points(stack.save());
+    LuaReference points(stack.save());
 
     QPolygonF polygon;
 

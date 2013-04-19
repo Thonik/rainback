@@ -5,7 +5,8 @@
 #include <QFont>
 #include <memory>
 
-class LuaStack;
+#include <lua-cxx/LuaStack.hpp>
+#include <lua-cxx/userdata.hpp>
 
 class LuaFont : public QObject
 {
@@ -35,8 +36,20 @@ public slots:
     int width(const QString& text) const;
 };
 
-LuaStack& operator>>(LuaStack& stack, std::shared_ptr<LuaFont>& ptr);
-LuaStack& operator<<(LuaStack& stack, const std::shared_ptr<LuaFont>& ptr);
+namespace lua {
+
+template<>
+struct UserdataType<LuaFont>
+{
+    constexpr static const char* name = "LuaFont";
+
+    static void initialize(LuaStack& stack, LuaFont& font)
+    {
+        lua::userdata::qobject(stack, font);
+    }
+};
+
+} // namespace lua
 
 #endif // RAINBACK_LUAFONT_HEADER
 

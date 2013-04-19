@@ -67,19 +67,4 @@ int LuaFont::height(const QString& text, const int width) const
     return metrics.boundingRect(0, 0, width, INT_MAX, Qt::TextWordWrap, text).height();
 }
 
-LuaStack& operator<<(LuaStack& stack, const std::shared_ptr<LuaFont>& ptr)
-{
-    stack << LuaUserdata(ptr, "LuaFont");
-
-    stack.pushMetatable();
-    lua::userdata::qobject(stack, ptr.get());
-    stack.setMetatable();
-    return stack;
-}
-
-LuaStack& operator>>(LuaStack& stack, std::shared_ptr<LuaFont>& ptr)
-{
-    return lua::userdata::convertUserdata(stack, ptr, "LuaFont");
-}
-
 // vim: set ts=4 sw=4 :
