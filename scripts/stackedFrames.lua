@@ -29,6 +29,7 @@ for _, direction in ipairs(directions) do
     local directionFrames = {}
     for _, color in ipairs(colors) do
         local f = Frames.New(center);
+        Frames.Draggable(f);
         Frames.Size(f, 20);
         Frames.Color(f, color);
         table.insert(frames, f);
