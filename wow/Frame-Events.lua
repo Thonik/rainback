@@ -14,7 +14,7 @@ end;
 function Delegate:FireEvent(event, ...)
     local handler = self.eventHandlers[event];
     if handler then
-        handler(self.frame, event, ...);
+        handler(self.frame, ...);
     end;
 end;
 
