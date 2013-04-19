@@ -34,50 +34,50 @@ AC_DEFUN([AX_HAVE_RAINBACK],
     AS_HELP_STRING([--with-rainback], [use @PACKAGE_NAME@]),
     [
       if test x"$withval" = "xno"; then
-        want_RAINBACK="no";
+        want_rainback="no";
       else
-        want_RAINBACK="yes";
+        want_rainback="yes";
       fi
     ],
-    [want_RAINBACK="yes"]
+    [want_rainback="yes"]
   )
 
-  if test x"$want_RAINBACK" = "xyes"; then
+  if test x"$want_rainback" = "xyes"; then
     AC_MSG_CHECKING([for rainback])
 
     # Ensure we have a suitable C++ compiler
     AC_REQUIRE([AC_PROG_CC])
 
-    ax_RAINBACK_saved_CPPFLAGS="$CPPFLAGS"
-    ax_RAINBACK_INCLUDE=""
-    CPPFLAGS="$CPPFLAGS $ax_RAINBACK_INCLUDE"
+    ax_rainback_saved_CPPFLAGS="$CPPFLAGS"
+    ax_rainback_INCLUDE=""
+    CPPFLAGS="$CPPFLAGS $ax_rainback_INCLUDE"
     export CPPFLAGS
 
-    ax_RAINBACK_saved_LIBS="$LIBS"
-    ax_RAINBACK_LIBS=""
-    LIBS="$LIBS $ax_RAINBACK_LIBS"
+    ax_rainback_saved_LIBS="$LIBS"
+    ax_rainback_LIBS=""
+    LIBS="$LIBS $ax_rainback_LIBS"
     export LIBS
 
     AC_LANG_PUSH([C++])
     AC_COMPILE_IFELSE([
       AC_LANG_PROGRAM(
-        [[@%:@include <rainback/Rainback.hpp>]],
+        [[@%:@include <rainback/Bootstrapper.hpp>]],
         [[
-          Rainback obj;
+          Bootstrapper bs;
           return 0;
         ]]
       )],
-      ax_have_RAINBACK=yes,
-      ax_have_RAINBACK=no
+      ax_have_rainback=yes,
+      ax_have_rainback=no
     )
     AC_LANG_POP([C++])
 
-    AC_MSG_RESULT([$ax_have_RAINBACK])
-    if test x"$ax_have_RAINBACK" = "xyes"; then
+    AC_MSG_RESULT([$ax_have_rainback])
+    if test x"$ax_have_rainback" = "xyes"; then
       AC_DEFINE(HAVE_RAINBACK,,[define if rainback is available])
-      RAINBACK_INCLUDE="$ax_RAINBACK_INCLUDE"
+      RAINBACK_INCLUDE="$ax_rainback_INCLUDE"
       dnl This doesn't yet test the location of this project
-      RAINBACK_LIBS="$ax_RAINBACK_LIBS -l@PACKAGE_NAME@"
+      RAINBACK_LIBS="$ax_rainback_LIBS -l@PACKAGE_NAME@"
     else
       AC_MSG_ERROR([Could not find rainback])
       RAINBACK_INCLUDE=""
@@ -86,7 +86,7 @@ AC_DEFUN([AX_HAVE_RAINBACK],
     AC_SUBST(RAINBACK_INCLUDE)
     AC_SUBST(RAINBACK_LIBS)
 
-    CPPFLAGS="$ax_RAINBACK_saved_CPPFLAGS"
-    LIBS="$ax_RAINBACK_saved_LIBS"
+    CPPFLAGS="$ax_rainback_saved_CPPFLAGS"
+    LIBS="$ax_rainback_saved_LIBS"
   fi;
 ])
