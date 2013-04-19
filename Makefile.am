@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src tests
+SUBDIRS = src include tests
 
 pkgdata_DATA = \
 	rainback.m4
@@ -22,6 +22,15 @@ valgrind:
 cehck: check
 .PHONY: cehck
 
+run:
+	cd src && ./rainback
+
+rundebug:
+	cd src && gdb ./rainback
+
+runvalgrind:
+	cd src && valgrind ./rainback
+
 RPMFLAGS ?= --ba
 SRCRPM=rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@.src.rpm
 
@@ -39,15 +48,6 @@ $(SRCRPM): rpm.spec $(DISTFILES)
 	rm -f $@
 	ln -s $(RPMDIR)/SRPMS/rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@`rpmbuild -E '%{?dist}' rpm.spec`.src.rpm $@
 .PHONY: rpm
-
-run:
-	cd src && ./rainback
-
-rundebug:
-	cd src && gdb ./rainback
-
-runvalgrind:
-	cd src && valgrind ./rainback
 
 $(RPMDIR):
 	mkdir -p $@

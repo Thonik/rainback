@@ -4,7 +4,7 @@ librainback_la_LIBADD = @LUA_CXX_LIBS@ @QT_LIBS@ @LUA_LIB@
 librainback_la_LDFLAGS = -version-info 0:0:0
 
 # moc-generated source files
-librainback_la_MOC_SOURCES =
+librainback_la_MOC_SOURCES = \
 	moc_Desktop.cpp \
 	moc_LuaFont.cpp \
 	moc_LuaPainter.cpp
@@ -12,14 +12,11 @@ librainback_la_MOC_SOURCES =
 nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
 librainback_la_SOURCES = \
+	Bootstrapper.cpp \
+	util.cpp \
 	Desktop.cpp \
 	LuaFont.cpp \
 	LuaPainter.cpp
-
-pkginclude_HEADERS = \
-	Desktop.hpp \
-	LuaFont.hpp \
-	LuaPainter.hpp
 
 bin_PROGRAMS = rainback
 rainback_CPPFLAGS = $(librainback_la_CPPFLAGS)
@@ -33,9 +30,6 @@ nodist_rainback_SOURCES = $(rainback_MOC_SOURCES)
 mostlyclean-local:
 	rm -f $(librainback_la_MOC_SOURCES)
 .PHONY: mostlyclean-local
-
-moc_%.cpp: $(top_srcdir)/src/%.hpp
-	@QT_MOC@ -o $@ $<
 
 moc_%.cpp: $(top_srcdir)/include/%.hpp
 	@QT_MOC@ -o $@ $<

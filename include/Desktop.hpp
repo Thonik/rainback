@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include <lua-cxx/LuaEnvironment.hpp>
+#include <lua-cxx/LuaValue.hpp>
 
 class Desktop : public QWidget
 {
     Q_OBJECT
 
-    Lua& lua;
+    Lua& _lua;
 
 protected:
     void paintEvent(QPaintEvent* event);

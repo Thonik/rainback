@@ -25,7 +25,7 @@ std::shared_ptr<LuaFont> newFont(LuaStack& stack)
 }
 
 Bootstrapper::Bootstrapper() :
-    _desktop()
+    _desktop(lua)
 {
     fritomodLoader.setRoot(
         QDir(QDir::home().filePath("src/fritomod/fritomod"))
@@ -47,11 +47,11 @@ Bootstrapper::Bootstrapper() :
     lua["Rainback"]["Font"] = newFont;
 
     lua["Rainback" ]["ScreenWidth"] = std::function<int()>([this]() {
-        return width();
+        return _desktop.width();
     });
 
     lua["Rainback" ]["ScreenHeight"] = std::function<int()>([this]() {
-        return height();
+        return _desktop.height();
     });
 
     // Load WoW compatibility methods

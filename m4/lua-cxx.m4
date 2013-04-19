@@ -49,7 +49,7 @@ AC_DEFUN([AX_HAVE_LUA_CXX],
     AC_REQUIRE([AC_PROG_CXX])
 
     # Check for dependencies
-    AX_CXX_COMPILE_STDCXX_11([],[ax_lua_cxx_cxx11_flags])
+    AX_CXX_COMPILE_STDCXX_11([noext],[ax_lua_cxx_cxx11_flags])
     AX_HAVE_QT_CORE
 
     AC_MSG_CHECKING([for lua-cxx])

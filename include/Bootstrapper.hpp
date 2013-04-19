@@ -3,6 +3,8 @@
 
 #include "Desktop.hpp"
 
+#include <lua-cxx/DirectoryModuleLoader.hpp>
+
 class Bootstrapper
 {
     Desktop _desktop;

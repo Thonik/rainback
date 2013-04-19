@@ -24,7 +24,7 @@ AC_PROG_LIBTOOL
 AC_HEADER_STDBOOL
 AC_TYPE_SIZE_T
 AC_LANG([C++])
-AX_CXX_COMPILE_STDCXX_11(,[AM_CXXFLAGS])
+AX_CXX_COMPILE_STDCXX_11([noext],[AM_CXXFLAGS])
 AC_SUBST([AM_CXXFLAGS])
 
 # Check for Boost
@@ -37,6 +37,7 @@ AX_HAVE_QT_GUI
 AX_HAVE_QT_MOC
 AX_HAVE_QT_TEST
 
+# Check for Lua
 AX_LUA_LIBS
 AX_LUA_HEADERS
 AX_HAVE_LUA_CXX
@@ -45,6 +46,5 @@ if test x"$have_qt_core" = xno || test x"$have_qt_gui" = xno || test x"$have_qt_
     AC_MSG_ERROR([Qt is required to build rainback])
 fi;
 
-
-AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile tests/Makefile rpm.spec])
+AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile include/Makefile tests/Makefile rpm.spec])
 AC_OUTPUT

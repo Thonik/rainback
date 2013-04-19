@@ -1,17 +1,19 @@
 #include "Desktop.hpp"
 
+#include "LuaPainter.hpp"
+
 Desktop::Desktop(Lua& lua) :
     _lua(lua)
 {
     QPalette p(palette());
     p.setColor(QPalette::Background, QColor(255, 255, 221));
-    _desktop.setAutoFillBackground(true);
-    _desktop.setPalette(p);
+    setAutoFillBackground(true);
+    setPalette(p);
 }
 
 void Desktop::paintEvent(QPaintEvent* event)
 {
-    auto dispatcher = lua["Rainback"]["DispatchEvent"];
+    auto dispatcher = _lua["Rainback"]["DispatchEvent"];
     if (dispatcher.isNil()) {
         return;
     }
