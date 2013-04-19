@@ -116,6 +116,11 @@ function Rainback.SetCache(bound, value)
     boundsCache[bound] = value;
 end;
 
+function AnchoredBound:Clear()
+    self.anchors = {};
+    self.hasAnchors = false;
+end;
+
 function AnchoredBound:GetBounds()
     if not self:HasBounds() then
         return;
@@ -216,6 +221,13 @@ function AnchoredBound:GetBounds()
     return x, y, width, height;
 end;
 
+function AnchoredBound:GetExtents()
+    return self:GetLeft(),
+        self:GetBottom(),
+        self:GetRight(),
+        self:GetTop();
+end;
+
 function AnchoredBound:GetWidth()
     return self.width;
 end;
@@ -238,6 +250,31 @@ end;
 
 function AnchoredBound:SetHeight(height)
     self.height = height;
+end;
+
+function AnchoredBound:GetCenter()
+    local x, y, width, height = self:GetBounds();
+    return x + width / 2, y + height / 2;
+end;
+
+function AnchoredBound:GetLeft()
+    local x, y, width, height = self:GetBounds();
+    return x;
+end;
+
+function AnchoredBound:GetRight()
+    local x, y, width, height = self:GetBounds();
+    return x + width;
+end;
+
+function AnchoredBound:GetTop()
+    local x, y, width, height = self:GetBounds();
+    return y;
+end;
+
+function AnchoredBound:GetBottom()
+    local x, y, width, height = self:GetBounds();
+    return y + height;
 end;
 
 function AnchoredBound:ToString()
