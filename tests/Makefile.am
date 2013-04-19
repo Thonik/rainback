@@ -1,36 +1,21 @@
 check_PROGRAMS = runtest runluatest
-runtest_CXXFLAGS = $(AM_CXXFLAGS) @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ @LUA_INCLUDE@ -I$(top_srcdir)/src
-runtest_LDADD = @QT_LIBS@ @LUA_CXX_LIBS@ @LUA_LIB@
+TESTS = $(check_PROGRAMS)
+
+runtest_CXXFLAGS = $(AM_CXXFLAGS) @QT_CXXFLAGS@ -I$(top_srcdir)/include @LUA_CXX_INCLUDE@ @LUA_INCLUDE@ -DBOOST_TEST_DYN_LINK
+
+# Don't try changing "../src" to use "top_srcdir" - this is referring to the
+# built artifact, not something in the source directory
+runtest_LDADD = ../src/librainback.la @LUA_CXX_LIBS@ @LUA_LIB@ @QT_LIBS@ @BOOST_UNIT_TEST_FRAMEWORK_LIB@
 
 runluatest_CXXFLAGS = $(runtest_CXXFLAGS)
 runluatest_LDADD = $(runtest_LDADD)
 
-TESTS = $(check_PROGRAMS)
+noinst_HEADERS = \
+	init.hpp
 
-test_suites =         \
-	BasicTests
-
-runtest_SOURCES =         \
-	tests.cpp             \
-	BasicTests.hpp
-
-runtest_MOC_SOURCES = \
-	moc_BasicTests.cpp
-
-nodist_runtest_SOURCES = $(runtest_MOC_SOURCES)
+runtest_SOURCES = \
+	basic.cpp \
+	main.cpp
 
 runluatest_SOURCES = \
 	test_lua.cpp
-
-mostlyclean-local:
-	rm -f $(runtest_MOC_SOURCES)
-.PHONY: mostlyclean-local
-
-tests.cpp: $(top_srcdir)/tests/make_wrapper.sh $(addsuffix .hpp, $(test_suites))
-	rm -f $@
-	$(top_srcdir)/tests/make_wrapper.sh $^ >$@-wip
-	mv $@-wip $@
-	chmod -w $@
-
-moc_%.cpp: %.hpp
-	@QT_MOC@ -o $@ $<
