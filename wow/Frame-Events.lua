@@ -8,7 +8,7 @@ function Delegate:Constructor(frame)
 end;
 
 function Delegate:HasScript(event)
-    return true;
+    return event ~= "OnClick";
 end;
 
 function Delegate:FireEvent(event, ...)
