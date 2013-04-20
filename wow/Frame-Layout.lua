@@ -15,6 +15,7 @@ function Delegate:GetWidth()
 end;
 
 function Delegate:SetWidth(width)
+    Rainback.Update();
     return self.bound:SetWidth(width);
 end;
 
@@ -23,14 +24,17 @@ function Delegate:GetHeight()
 end;
 
 function Delegate:SetHeight(height)
+    Rainback.Update();
     return self.bound:SetHeight(height);
 end;
 
 function Delegate:ClearAllPoints()
+    Rainback.Update();
     self.bound:Clear();
 end;
 
 function Delegate:SetPoint(anchor, ref, anchorTo, x, y)
+    Rainback.Update();
     return self.bound:SetPoint(anchor, ref:GetDelegate("layout"):GetBounds(), anchorTo, x, -y);
 end;
 

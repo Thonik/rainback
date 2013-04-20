@@ -44,6 +44,7 @@ end;
 
 function Delegate:SetText(text)
     self.text = tostring(text);
+    Rainback.Update();
 end;
 
 function Delegate:GetNaturalWidth(height)
@@ -69,6 +70,7 @@ end;
 function Delegate:SetFont(family, size)
     self.font.family = family;
     self.font.pointSize = size;
+    Rainback.Update();
 end;
 
 function Delegate:GetFont()
@@ -77,6 +79,7 @@ end;
 
 function Delegate:SetTextColor(r, g, b, a)
     self.color = {r, g, b, a};
+    Rainback.Update();
 end;
 
 function Delegate:GetTextColor()
