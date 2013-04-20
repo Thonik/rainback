@@ -34,8 +34,8 @@ function Delegate:AttachLayout(delegate)
     if not bounds.GetNaturalHeight or not bounds.GetNaturalWidth then
         return;
     end;
-    bounds.GetNaturalHeight = Curry(self, "GetNaturalHeight");
-    bounds.GetNaturalWidth = Curry(self, "GetNaturalWidth");
+    bounds.GetNaturalHeight = Override(self, "GetNaturalHeight");
+    bounds.GetNaturalWidth = Override(self, "GetNaturalWidth");
 end;
 
 function Delegate:GetText()
