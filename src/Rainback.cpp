@@ -94,6 +94,16 @@ Rainback::Rainback(Lua& lua) :
         _widget->update();
     });
 
+    _lua["Rainback"]["SetBackgroundColor"] = std::function<void(const int, const int, const int)>(
+        [this](const int r, const int g, const int b) {
+            assertWidget();
+            _widget->setAutoFillBackground(true);
+            QPalette p(_widget->palette());
+            p.setColor(QPalette::Background, QColor(r, g, b));
+            _widget->setPalette(p);
+        }
+    );
+
     elapsed.start();
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));

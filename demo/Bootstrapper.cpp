@@ -15,12 +15,6 @@ Bootstrapper::Bootstrapper() :
     _rainback(_lua)
 {
     _rainback.setWidget(&_desktop);
-
-    _desktop.setAutoFillBackground(true);
-    QPalette p(_desktop.palette());
-    p.setColor(QPalette::Background, QColor(255, 255, 221));
-    _desktop.setPalette(p);
-
     lua::load_file(_lua, "../../demo/init.lua");
 }
 
