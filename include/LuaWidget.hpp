@@ -1,11 +1,11 @@
-#ifndef RAINBACK_DESKTOP_HEADER
-#define RAINBACK_DESKTOP_HEADER
+#ifndef RAINBACK_LUAWIDGET_HEADER
+#define RAINBACK_LUAWIDGET_HEADER
 
 #include <QWidget>
 #include <lua-cxx/LuaEnvironment.hpp>
 #include <lua-cxx/LuaValue.hpp>
 
-class Desktop : public QWidget
+class LuaWidget : public QWidget
 {
     Q_OBJECT
 
@@ -17,12 +17,10 @@ protected:
     void mousePressEvent(QMouseEvent* const event);
     void mouseReleaseEvent(QMouseEvent* const event);
     void mouseMoveEvent(QMouseEvent* const event);
-
-    void timerEvent(QTimerEvent* const event);
 public:
-    Desktop(Lua& lua);
+    LuaWidget(Lua& lua);
 };
 
-#endif // RAINBACK_DESKTOP_HEADER
+#endif // RAINBACK_LUAWIDGET_HEADER
 
 // vim: set ts=4 sw=4 :

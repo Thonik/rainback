@@ -1,6 +1,6 @@
 pkginclude_HEADERS = \
-	Bootstrapper.hpp \
 	util.hpp \
-	Desktop.hpp \
+	Rainback.hpp \
+	LuaWidget.hpp \
 	LuaFont.hpp \
 	LuaPainter.hpp

@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include tests
+SUBDIRS = src include demo tests
 
 pkgdata_DATA = \
 	rainback.m4
@@ -7,7 +7,7 @@ pkgdata_DATA = \
 export RPMDIR ?= $$HOME/rpmbuild
 
 checkdebug: $(TESTS)
-	cd tests && gdb .libs/lt-runtest
+	cd tests && gdb .libs/lt-runluatest
 
 checkvalgrind:
 	cd tests && valgrind -v --leak-check=full .libs/lt-runtest
@@ -17,13 +17,13 @@ cehck: check
 .PHONY: cehck
 
 run:
-	cd src && ./rainback
+	cd demo && ./rainback
 
 debug:
-	cd src && gdb .libs/lt-rainback
+	cd demo && gdb .libs/lt-rainback
 
 valgrind:
-	cd src && valgrind -v --leak-check=full --trace-children=yes .libs/lt-rainback
+	cd demo && valgrind -v --leak-check=full --trace-children=yes .libs/lt-rainback
 
 RPMFLAGS ?= --ba
 SRCRPM=rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@.src.rpm

@@ -4,7 +4,7 @@ AC_PREREQ([2.68])
 AC_INIT([rainback], [1.0], [dafrito@gmail.com], [rainback], [http://www.dafrito.com])
 AC_SUBST([PACKAGE_RELEASE], [1])
 AM_INIT_AUTOMAKE([-Wall foreign])
-AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_SRCDIR([demo/main.cpp])
 AC_CONFIG_HEADERS([src/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -46,5 +46,5 @@ if test x"$have_qt_core" = xno || test x"$have_qt_gui" = xno || test x"$have_qt_
     AC_MSG_ERROR([Qt is required to build rainback])
 fi;
 
-AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile include/Makefile tests/Makefile rpm.spec])
+AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile include/Makefile demo/Makefile tests/Makefile rpm.spec])
 AC_OUTPUT

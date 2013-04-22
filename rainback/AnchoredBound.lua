@@ -94,8 +94,6 @@ function AnchoredBound:SetPoint(anchor, ref, anchorTo, x, y)
 
     trace("SetPoint", self, anchor, ref, anchorTo, x, y);
     self.anchors[anchor] = {ref, anchorTo, x, y};
-
-    Rainback.Update();
 end;
 
 function AnchoredBound:HasBounds()

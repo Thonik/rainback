@@ -5,7 +5,8 @@ librainback_la_LDFLAGS = -version-info 0:0:0
 
 # moc-generated source files
 librainback_la_MOC_SOURCES = \
-	moc_Desktop.cpp \
+	moc_Rainback.cpp \
+	moc_LuaWidget.cpp \
 	moc_LuaFont.cpp \
 	moc_LuaPainter.cpp
 
@@ -13,20 +14,10 @@ nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
 librainback_la_SOURCES = \
 	util.cpp \
-	Desktop.cpp \
+	Rainback.cpp \
+	LuaWidget.cpp \
 	LuaFont.cpp \
 	LuaPainter.cpp
-
-bin_PROGRAMS = rainback
-rainback_CPPFLAGS = $(librainback_la_CPPFLAGS)
-rainback_LDADD = librainback.la $(librainback_la_LIBADD)
-
-rainback_SOURCES = \
-	Bootstrapper.cpp \
-	../include/Bootstrapper.hpp \
-	main.cpp
-
-nodist_rainback_SOURCES = $(rainback_MOC_SOURCES)
 
 mostlyclean-local:
 	rm -f $(librainback_la_MOC_SOURCES)
