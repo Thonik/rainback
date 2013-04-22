@@ -12,7 +12,6 @@ librainback_la_MOC_SOURCES = \
 nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
 librainback_la_SOURCES = \
-	Bootstrapper.cpp \
 	util.cpp \
 	Desktop.cpp \
 	LuaFont.cpp \
@@ -23,6 +22,8 @@ rainback_CPPFLAGS = $(librainback_la_CPPFLAGS)
 rainback_LDADD = librainback.la $(librainback_la_LIBADD)
 
 rainback_SOURCES = \
+	Bootstrapper.cpp \
+	../include/Bootstrapper.hpp \
 	main.cpp
 
 nodist_rainback_SOURCES = $(rainback_MOC_SOURCES)
