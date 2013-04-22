@@ -9,6 +9,8 @@ rainback_LDADD = ../src/librainback.la @LUA_CXX_LIBS@ @QT_LIBS@ @LUA_LIB@
 rainback_SOURCES = \
 	Bootstrapper.cpp \
 	Bootstrapper.hpp \
+	util.cpp \
+	util.hpp \
 	main.cpp
 
 nodist_rainback_SOURCES = $(rainback_MOC_SOURCES)

@@ -13,7 +13,6 @@ librainback_la_MOC_SOURCES = \
 nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
 librainback_la_SOURCES = \
-	util.cpp \
 	Rainback.cpp \
 	LuaWidget.cpp \
 	LuaFont.cpp \
