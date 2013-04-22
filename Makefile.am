@@ -28,8 +28,7 @@ valgrind:
 RPMFLAGS ?= --ba
 SRCRPM=rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@.src.rpm
 
-rpm: $(SRCRPM)
-$(SRCRPM): rpm.spec $(DISTFILES)
+rpm:
 	$(MAKE) dist-gzip $(RPMDIR)
 	cp -u $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz $(RPMDIR)/SOURCES
 	cp -u rpm.spec $(RPMDIR)/SPECS/$(PACKAGE_NAME).spec
@@ -39,8 +38,8 @@ $(SRCRPM): rpm.spec $(DISTFILES)
 		filename="$(RPMDIR)/RPMS/$$arch/$$package.rpm"; \
 		[ -e `basename $$filename` ] || ln -s $$filename; \
 	done
-	rm -f $@
-	ln -s $(RPMDIR)/SRPMS/rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@`rpmbuild -E '%{?dist}' rpm.spec`.src.rpm $@
+	rm -f $(SRCRPM)
+	ln -s $(RPMDIR)/SRPMS/rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@`rpmbuild -E '%{?dist}' rpm.spec`.src.rpm $(SRCRPM)
 .PHONY: rpm
 
 $(RPMDIR):
