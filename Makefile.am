@@ -1,6 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = src include demo tests
 
+EXTRA_DIST = rainback wow
+
 pkgdata_DATA = \
 	rainback.m4
 
@@ -24,6 +26,22 @@ debug:
 
 valgrind:
 	cd demo && valgrind -v --leak-check=full --trace-children=yes .libs/lt-rainback
+
+luadir=$(datadir)/lua/5.1
+
+install-data-hook: $(DESTDIR)/$(luadir)/rainback $(DESTDIR)/$(luadir)/wow
+
+$(DESTDIR)/$(luadir)/rainback:
+	mkdir -p $@
+	cp -r $(top_srcdir)/rainback $@
+
+$(DESTDIR)/$(luadir)/wow:
+	mkdir -p $@
+	cp -r $(top_srcdir)/wow $@
+
+uninstall-hook:
+	rm -rf $(DESTDIR)/$(luadir)/wow
+	rm -rf $(DESTDIR)/$(luadir)/rainback
 
 RPMFLAGS ?= --ba
 SRCRPM=rainback-@PACKAGE_VERSION@-@PACKAGE_RELEASE@.src.rpm

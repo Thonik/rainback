@@ -22,4 +22,6 @@ runluatest_SOURCES = \
 	test_lua.cpp
 
 EXTRA_DIST = \
-	rainback/AnchoredBound.lua
+	rainback \
+	test_lua.lua \
+	testrunner.lua
