@@ -1,5 +1,3 @@
-print("hello!");
-
 local FRITOMOD = "/home/dafrito/src/fritomod";
 local TOP_SRCDIR = "../.."
 
