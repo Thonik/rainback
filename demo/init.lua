@@ -1,4 +1,6 @@
-local FRITOMOD = "/home/dafrito/src/fritomod";
+local HOME = "/home/dafrito"
+local FRITOMOD = HOME .. "/src/fritomod";
+local TMPDIR = HOME .. "/tmp";
 local TOP_SRCDIR = "../.."
 
 Rainback.AddModuleDirectory(FRITOMOD .. "/fritomod", "fritomod/");
