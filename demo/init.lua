@@ -3,6 +3,12 @@ local FRITOMOD = HOME .. "/src/fritomod";
 local TMPDIR = HOME .. "/tmp";
 local TOP_SRCDIR = "../.."
 
+local globals = {};
+globals.home = HOME;
+globals.top_srcdir = TOP_SRCDIR;
+globals.tmpdir = TMPDIR;
+Rainback.Globals = globals;
+
 Rainback.AddModuleDirectory(FRITOMOD .. "/fritomod", "fritomod/");
 Rainback.AddModuleDirectory(FRITOMOD .. "/wow", "wow/");
 Rainback.AddModuleDirectory(TOP_SRCDIR .. "/rainback", "rainback/");
