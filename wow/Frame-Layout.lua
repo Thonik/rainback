@@ -1,6 +1,7 @@
 require "wow/Frame";
 require "rainback/AnchoredBound";
 require "rainback/Graphics";
+require "fritomod/Tables"
 
 local Delegate = OOP.Class();
 
@@ -26,6 +27,18 @@ end;
 function Delegate:SetHeight(height)
     Rainback.Update();
     return self.bound:SetHeight(height);
+end;
+
+function Delegate:GetNumPoints()
+    return Tables.Size(self.bound:GetAnchors());
+end;
+
+function Delegate:GetPoint(n)
+    local anchors = self.bound:GetAnchors();
+    local anchorName = Tables.Keys(anchors)[n];
+
+    local ref, anchorTo, x, y = unpack(anchors[anchorName]);
+    return anchorName, ref, anchorTo, x, -y;
 end;
 
 function Delegate:ClearAllPoints()
