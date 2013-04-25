@@ -96,6 +96,10 @@ function AnchoredBound:SetPoint(anchor, ref, anchorTo, x, y)
     self.anchors[anchor] = {ref, anchorTo, x, y};
 end;
 
+function AnchoredBound:GetAnchors()
+    return self.anchors;
+end;
+
 function AnchoredBound:HasBounds()
     return self.hasAnchors;
 end;
