@@ -1,5 +1,6 @@
 require "fritomod/Frames";
 require "fritomod/Frames-Mouse";
+require "fritomod/Frames-Position";
 require "fritomod/Anchors";
 
 local colors = {
@@ -22,7 +23,7 @@ local center = Frames.New();
 Frames.Size(center, 40);
 Frames.Color(center, "white");
 Frames.Draggable(center);
-Anchors.Center(center);
+Frames.Position(center, "Center", Headless(Anchors.Share, "TOPLEFT"));
 
 local frames = {};
 for _, direction in ipairs(directions) do
