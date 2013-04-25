@@ -50,6 +50,7 @@ public:
 
 private slots:
     void timeout();
+    void close();
 };
 
 template <typename... Args>

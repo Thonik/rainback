@@ -1,6 +1,7 @@
 #include "Rainback.hpp"
 
 #include <functional>
+#include <QApplication>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -107,11 +108,17 @@ Rainback::Rainback(Lua& lua) :
     elapsed.start();
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
+    connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(close()));
 }
 
 void Rainback::timeout()
 {
     rainback::dispatch(_lua, "UPDATE");
+}
+
+void Rainback::close()
+{
+    rainback::dispatch(_lua, "CLOSE");
 }
 
 } // namespace rainback
