@@ -1,6 +1,8 @@
 #include "Rainback.hpp"
 
 #include <functional>
+#include <QTextStream>
+#include <QFile>
 #include <QApplication>
 
 #include <lua-cxx/LuaValue.hpp>
@@ -102,6 +104,42 @@ Rainback::Rainback(Lua& lua) :
             QPalette p(_widget->palette());
             p.setColor(QPalette::Background, QColor(r, g, b));
             _widget->setPalette(p);
+        }
+    );
+
+    _lua["Rainback"]["FileExists"] = std::function<bool(const QString&)>(
+        [this](const QString& fileName) {
+            return QFile(fileName).exists();
+        }
+    );
+
+    _lua["Rainback"]["ReadFile"] = std::function<QString(const QString&)>(
+        [this](const QString& fileName) {
+            QFile file(fileName);
+            if (!file.exists()) {
+                throw LuaException(
+                    (QString("The specified file '") + fileName + "' does not exist").toStdString()
+                );
+            }
+            if (!file.open(QIODevice::ReadOnly)) {
+                throw LuaException(
+                    (QString("The specified file '") + fileName + "' failed to open: " + file.error()).toStdString()
+                );
+            }
+            // Using QTextStream here breaks for Unicode strings
+            return QString(file.readAll());
+        }
+    );
+
+    _lua["Rainback"]["WriteFile"] = std::function<void(const QString&, const QString&)>(
+        [this](const QString& fileName, const QString& data) {
+            QFile file(fileName);
+            if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                throw LuaException(
+                    (QString("The specified file '") + fileName + "' failed to open: " + file.error()).toStdString()
+                );
+            }
+            QTextStream(&file) << data;
         }
     );
 
