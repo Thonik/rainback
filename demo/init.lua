@@ -12,4 +12,14 @@ Rainback.SetBackgroundColor(255, 255, 221);
 -- Be sure to load the WoW stuff before scripts
 Rainback.LoadDirectory(TOP_SRCDIR .. "/wow", true);
 
-Rainback.LoadDirectory(TOP_SRCDIR .. "/scripts", true);
+Rainback.LoadPersistence(TMPDIR .. "/persistence");
+
+Callbacks.PersistValue("DEBUG_TRACE", function(value)
+    DEBUG_TRACE = value;
+    return function()
+        return DEBUG_TRACE;
+    end;
+end);
+
+-- Finally, load the scripts themselves
+Callbacks.Later(Rainback.LoadDirectory, TOP_SRCDIR .. "/scripts", true);
