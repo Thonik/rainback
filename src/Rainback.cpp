@@ -2,7 +2,6 @@
 
 #include <functional>
 #include <QTextStream>
-#include <QFile>
 #include <QApplication>
 
 #include <lua-cxx/LuaValue.hpp>
@@ -116,30 +115,33 @@ Rainback::Rainback(Lua& lua) :
     _lua["Rainback"]["ReadFile"] = std::function<QString(const QString&)>(
         [this](const QString& fileName) {
             QFile file(fileName);
-            if (!file.exists()) {
-                throw LuaException(
-                    (QString("The specified file '") + fileName + "' does not exist").toStdString()
-                );
-            }
-            if (!file.open(QIODevice::ReadOnly)) {
-                throw LuaException(
-                    (QString("The specified file '") + fileName + "' failed to open: " + file.error()).toStdString()
-                );
-            }
+            openFile(file, QIODevice::ReadOnly, true);
             // Using QTextStream here breaks for Unicode strings
             return QString(file.readAll());
+        }
+    );
+
+    _lua["Rainback"]["ReadCompressedFile"] = std::function<QString(const QString&)>(
+        [this](const QString& fileName) {
+            QFile file(fileName);
+            openFile(file, QIODevice::ReadOnly, true);
+            return QString(qUncompress(file.readAll()));
         }
     );
 
     _lua["Rainback"]["WriteFile"] = std::function<void(const QString&, const QString&)>(
         [this](const QString& fileName, const QString& data) {
             QFile file(fileName);
-            if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-                throw LuaException(
-                    (QString("The specified file '") + fileName + "' failed to open: " + file.error()).toStdString()
-                );
-            }
+            openFile(file, QIODevice::WriteOnly | QIODevice::Truncate, false);
             QTextStream(&file) << data;
+        }
+    );
+
+    _lua["Rainback"]["WriteCompressedFile"] = std::function<void(const QString&, const QString&)>(
+        [this](const QString& fileName, const QString& data) {
+            QFile file(fileName);
+            openFile(file, QIODevice::WriteOnly | QIODevice::Truncate, false);
+            file.write(qCompress(data.toUtf8()));
         }
     );
 
@@ -147,6 +149,20 @@ Rainback::Rainback(Lua& lua) :
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
     connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(close()));
+}
+
+void Rainback::openFile(QFile& file, const QIODevice::OpenMode& flags, const bool checkExists)
+{
+    if (checkExists && !file.exists()) {
+        throw LuaException(
+            (QString("The specified file '") + file.fileName() + "' does not exist").toStdString()
+        );
+    }
+    if (!file.open(flags)) {
+        throw LuaException(
+            (QString("The specified file '") + file.fileName() + "' failed to open: " + file.error()).toStdString()
+        );
+    }
 }
 
 void Rainback::timeout()

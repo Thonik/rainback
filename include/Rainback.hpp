@@ -30,6 +30,7 @@ class Rainback : public QObject
 
     void assertWidget();
 
+    void openFile(QFile& file, const QIODevice::OpenMode& flags, const bool checkExists);
 public:
     Rainback(Lua& lua);
 
