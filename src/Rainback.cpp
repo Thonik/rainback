@@ -50,7 +50,7 @@ struct UserdataType<QWidget>
             ""
             "    local defaultIndex = mt.__index;\n"
             "    function mt.__index(self, key)\n"
-            "        return methods[key] or defaultIndex(self, key);"
+            "        return methods[key] or defaultIndex(self, key);\n"
             "    end;\n"
             "end;\n"
         );

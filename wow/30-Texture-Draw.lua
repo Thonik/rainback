@@ -31,4 +31,3 @@ function Delegate:ToString()
 end;
 
 WoW.SetFrameDelegate("Texture", "draw", Delegate, "New");
-
