@@ -149,6 +149,11 @@ Rainback::Rainback(Lua& lua) :
         _widget->update();
     });
 
+    _lua["Rainback"]["Close"] = std::function<void()>([this]() {
+        assertWidget();
+        qApp->closeAllWindows();
+    });
+
     _lua["Rainback"]["SetBackgroundColor"] = std::function<void(const int, const int, const int)>(
         [this](const int r, const int g, const int b) {
             assertWidget();
