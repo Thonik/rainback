@@ -104,22 +104,6 @@ function AnchoredBound:HasBounds()
     return self.hasAnchors;
 end;
 
-local boundsCache;
-function Rainback.ClearCache()
-    boundsCache = setmetatable({}, {
-        __mode = "k"
-    });
-end;
-Rainback.ClearCache();
-
-function Rainback.GetCached(bound)
-    return boundsCache[bound];
-end;
-
-function Rainback.SetCache(bound, value)
-    boundsCache[bound] = value;
-end;
-
 function AnchoredBound:Clear()
     Rainback.Update();
     self.anchors = {};
