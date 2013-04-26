@@ -4,6 +4,7 @@
 #include <QTextStream>
 #include <QApplication>
 #include <QPushButton>
+#include <QLineEdit>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -34,6 +35,14 @@ struct UserdataType<QWidget>
                 widget.resize(w, h);
             }
         );
+
+        methods["setGeometry"] = std::function<void(QWidget&, const int, const int, const int, const int)>(
+            [](QWidget& widget, const int x, const int y, const int w, const int h) {
+                widget.setGeometry(x, y, w, h);
+            }
+        );
+
+        methods["__methods"] = methods;
 
         auto worker = stack.lua()(""
             "return function(userdata, methods)\n"
@@ -108,7 +117,18 @@ Rainback::Rainback(Lua& lua) :
             lua::push<QWidget*>(stack, btn, true);
             new lua::QObjectObserver(btn, stack.as<LuaUserdata*>(-1));
 
-            btn->setGeometry(50, 50, 150, 50);
+            btn->show();
+        }
+    );
+
+    _lua["Rainback"]["LineEdit"] = lua::LuaCallable([this](LuaStack& stack) {
+            assertWidget();
+            stack.clear();
+
+            auto btn = new QLineEdit(_widget);
+            lua::push<QWidget*>(stack, btn, true);
+            new lua::QObjectObserver(btn, stack.as<LuaUserdata*>(-1));
+
             btn->show();
         }
     );
