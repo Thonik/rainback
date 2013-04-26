@@ -1,5 +1,6 @@
 require "fritomod/OOP-Class";
 require "fritomod/Lists";
+require "fritomod/ListenerList";
 require "rainback/AnchoredBound";
 
 Rainback = Rainback or {};
@@ -131,47 +132,10 @@ function Graphics:AddDelegate(delegate)
     return Lists.Insert(self.delegates, delegate);
 end;
 
-function Graphics:RenderFrames(painter)
-    painter:setFillColor(255, 0, 0);
-    for _, delegate in ipairs(self.delegates) do
-        local bound = delegate:GetBounds();
-        if type(bound) == "table" and bound:HasBounds() then
-            local x, y, width, height = bound:GetBounds();
-            if x ~= nil then
-                painter:reset();
-                painter:position(x, y);
-                if delegate.frame.GetText then
-                    local r, g, b, a = delegate.frame:GetTextColor();
-                    r = r * 255;
-                    g = g * 255;
-                    b = b * 255;
-                    if a ~= nil then
-                        a = a * 255;
-                    else
-                        a = 255
-                    end;
-                    painter:setFont(delegate.frame:GetDelegate("text"):GetInternalFont());
-                    painter:setPenColor(r, g, b, a);
-                    painter:drawText(delegate.frame:GetText());
-                elseif delegate.frame.GetColor then
-                    local r, g, b, a = delegate.frame:GetColor();
-                    r = r * 255;
-                    g = g * 255;
-                    b = b * 255;
-                    if a ~= nil then
-                        a = a * 255;
-                    else
-                        a = 255
-                    end;
-                    painter:setPenColor(0, 0, 0, a);
-                    painter.joinStyle = "miter";
-                    painter.penWidth = 1;
-                    painter:setFillColor(r, g, b, a);
-                    painter:drawRect(width, height);
-                end;
-            end;
-        end;
-    end;
+local renderers = ListenerList:New();
+
+function Rainback.AddRenderer(renderer, ...)
+    return renderers:Add(renderer, ...);
 end;
 
 function Graphics:Render(painter)
@@ -180,7 +144,7 @@ function Graphics:Render(painter)
 
     Rainback.ClearCache();
 
-    self:RenderFrames(self.painter);
+    renderers:Fire(self.painter);
 
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
