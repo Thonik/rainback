@@ -1,11 +1,22 @@
 require "fritomod/ListenerList";
+require "fritomod/Lists";
 
 Rainback = Rainback or {};
 
 local listeners = ListenerList:New();
 
+local queue = {};
+
 function Rainback.DispatchEvent(event, ...)
+    if listeners:IsFiring() then
+        table.insert(queue, Seal(Rainback.DispatchEvent, event, ...));
+        return;
+    end;
     listeners:Fire(event, ...);
+    while #queue > 0 do
+        local firstQueued = Lists.ShiftOne(queue);
+        firstQueued();
+    end;
 end;
 
 function Rainback.OnEvent(func, ...)
