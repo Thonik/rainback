@@ -17,6 +17,11 @@ protected:
     void mousePressEvent(QMouseEvent* const event);
     void mouseReleaseEvent(QMouseEvent* const event);
     void mouseMoveEvent(QMouseEvent* const event);
+
+    void focusInEvent(QFocusEvent* const event);
+    void keyPressEvent(QKeyEvent* const event);
+    void keyReleaseEvent(QKeyEvent* const event);
+    void focusOutEvent(QFocusEvent* const event);
 public:
     LuaWidget(Lua& lua);
 };

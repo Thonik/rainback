@@ -9,6 +9,7 @@ LuaWidget::LuaWidget(Lua& lua) :
     _lua(lua)
 {
     setMouseTracking(true);
+    setFocusPolicy(Qt::ClickFocus);
 }
 
 
@@ -45,6 +46,16 @@ std::string buttonName(const Qt::MouseButton& button)
     }
 }
 
+std::string keyName(const int& key)
+{
+    switch (key) {
+        case Qt::Key_Escape:
+            return "ESCAPE";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 void LuaWidget::mousePressEvent(QMouseEvent* const event)
 {
     rainback::dispatch(_lua, "MOUSEPRESS", buttonName(event->button()), event->x(), event->y());
@@ -53,6 +64,26 @@ void LuaWidget::mousePressEvent(QMouseEvent* const event)
 void LuaWidget::mouseReleaseEvent(QMouseEvent* const event)
 {
     rainback::dispatch(_lua, "MOUSERELEASE", buttonName(event->button()), event->x(), event->y());
+}
+
+void LuaWidget::focusInEvent(QFocusEvent* const event)
+{
+    rainback::dispatch(_lua, "FOCUSIN");
+}
+
+void LuaWidget::keyPressEvent(QKeyEvent* const event)
+{
+    rainback::dispatch(_lua, "KEYPRESS", keyName(event->key()));
+}
+
+void LuaWidget::keyReleaseEvent(QKeyEvent* const event)
+{
+    rainback::dispatch(_lua, "KEYRELEASE", keyName(event->key()));
+}
+
+void LuaWidget::focusOutEvent(QFocusEvent* const event)
+{
+    rainback::dispatch(_lua, "FOCUSOUT");
 }
 
 void LuaWidget::mouseMoveEvent(QMouseEvent* const event)
