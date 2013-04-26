@@ -10,7 +10,7 @@ function Delegate:Constructor(frame)
 
     self.font = Rainback.Font();
 
-    self.color = {1, 1, 1, 1};
+    self.color = {0, 0, 0, 1};
 
     frame:OnDelegateSet(function(category, delegate)
         if category ~= "layout" then
