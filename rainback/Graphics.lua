@@ -138,18 +138,16 @@ function Rainback.AddRenderer(renderer, ...)
     return renderers:Add(renderer, ...);
 end;
 
-function Graphics:Render(painter)
+function Rainback.Render(painter)
     trace("FRAME start");
-    self.painter = painter;
 
     Rainback.ClearCache();
 
-    renderers:Fire(self.painter);
+    renderers:Fire(painter);
 
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
     painter:drawText("Rainback v1.0");
 
-    self.painter = nil;
     trace("FRAME complete");
 end;

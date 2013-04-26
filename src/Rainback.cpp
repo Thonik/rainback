@@ -3,6 +3,7 @@
 #include <functional>
 #include <QTextStream>
 #include <QApplication>
+#include <QPushButton>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -98,6 +99,19 @@ Rainback::Rainback(Lua& lua) :
     );
 
     _lua["Rainback"]["Font"] = newFont;
+
+    _lua["Rainback"]["Button"] = lua::LuaCallable([this](LuaStack& stack) {
+            assertWidget();
+            stack.clear();
+
+            auto btn = new QPushButton(_widget);
+            lua::push<QWidget*>(stack, btn, true);
+            new lua::QObjectObserver(btn, stack.as<LuaUserdata*>(-1));
+
+            btn->setGeometry(50, 50, 150, 50);
+            btn->show();
+        }
+    );
 
     _lua["Rainback" ]["ScreenWidth"] = std::function<int()>([this]() {
         assertWidget();

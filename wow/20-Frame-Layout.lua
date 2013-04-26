@@ -1,6 +1,5 @@
 require "wow/Frame";
 require "rainback/AnchoredBound";
-require "rainback/Graphics";
 require "fritomod/Tables"
 
 local Delegate = OOP.Class();
@@ -8,7 +7,6 @@ local Delegate = OOP.Class();
 function Delegate:Constructor(frame)
     self.frame = frame;
     self.bound = Rainback.AnchoredBound:New();
-    gfx:AddDelegate(self);
 end;
 
 function Delegate:GetWidth()
