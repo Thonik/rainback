@@ -30,21 +30,3 @@ end;
 
 local ref = Anchors.VCJustify("topleft", 5, frames);
 Anchors.Share(ref, "left", 5);
-
-local traceOutput = Frames.Text(UIParent, "default", 10, "black");
-traceOutput:SetText("Debug trace");
-Anchors.Share(traceOutput, "bottomleft");
-
-local function DrawTrace()
-    if DEBUG_TRACE then
-        traceOutput:SetText("Debug trace is on");
-    else
-        traceOutput:SetText("Debug trace is off");
-    end;
-end;
-
-Callbacks.Click(traceOutput, function()
-    DEBUG_TRACE = not DEBUG_TRACE;
-    DrawTrace();
-end);
-DrawTrace();
