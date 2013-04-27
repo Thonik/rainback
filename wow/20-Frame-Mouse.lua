@@ -10,6 +10,7 @@ local Delegate = OOP.Class();
 function Delegate:Constructor(frame)
     self.frame = frame;
     self.enabled = false;
+    self:AddDestructor(self, "EnableMouse", false);
 end;
 
 function Delegate:EnableMouse(enabled)
