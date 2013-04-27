@@ -3,14 +3,7 @@ require "fritomod/Frames-Mouse";
 require "fritomod/Frames-Position";
 require "fritomod/Anchors";
 
-local colors = {
-    "red",
-    "orange",
-    "yellow",
-    "green",
-    "blue",
-    "purple"
-};
+local colors = { "red", "orange", "yellow", "green", "blue", "purple" };
 
 local directions = {
     {"TOPLEFT", Anchors.HStackFrom},
