@@ -143,8 +143,8 @@ Rainback::Rainback(Lua& lua) :
         return _widget->height();
     });
 
-    _lua["Rainback"]["GetTime"] = std::function<double()>([this]() {
-        return elapsed.elapsed() / 1000;
+    _lua["Rainback"]["GetTime"] = std::function<long()>([this]() {
+        return elapsed.elapsed();
     });
 
     _lua["Rainback"]["StartTick"] =
