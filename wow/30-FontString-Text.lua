@@ -18,8 +18,9 @@ function Delegate:Constructor(frame)
         end;
         self:AttachLayout(delegate);
     end);
-    if frame:GetDelegate("layout") then
-        self:AttachLayout(delegate);
+    local delegate = frame:GetDelegate("layout");
+    if delegate then
+        frame:AttachLayout(delegate);
     end;
 end;
 
