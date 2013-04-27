@@ -20,6 +20,9 @@ function Delegate:Draw(painter)
     if x == nil then
         return;
     end;
+    if frame:GetColor() == nil then
+        return;
+    end;
     painter:position(x, y);
     painter:setPenColor(0, 0, 0);
     painter.joinStyle = "miter";
