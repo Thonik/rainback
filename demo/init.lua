@@ -32,3 +32,8 @@ Rainback.OnNamedEvent("RENDER", Rainback.Render);
 
 -- Finally, load the scripts themselves
 Callbacks.Later(Rainback.LoadDirectory, TOP_SRCDIR .. "/scripts", true);
+
+require "fritomod/Callbacks-Timing";
+
+-- Flush any callbacks that we have lingering
+Timing.Flush();
