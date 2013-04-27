@@ -77,6 +77,9 @@ function Delegate:GetBounds()
 end;
 
 function Delegate:HitTest(x, y)
+    if self.bound:GetBounds() == nil then
+        return false;
+    end;
     local left, bottom, right, top = self:GetLeft(), self:GetBottom(), self:GetRight(), self:GetTop();
     return
         x >= left and x <= right
