@@ -26,6 +26,7 @@ end;
 
 function Rainback.Render(painter)
     trace("FRAME start");
+    local start = Rainback.GetTime();
 
     Rainback.ClearCache();
 
@@ -35,5 +36,6 @@ function Rainback.Render(painter)
     painter:setPenColor(0, 0, 0, 255);
     painter:drawText("Rainback v1.0");
 
+    trace("Relative render time: " .. ((Rainback.GetTime() - start) / (1000 / 60)));
     trace("FRAME complete");
 end;
