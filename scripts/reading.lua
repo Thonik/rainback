@@ -11,4 +11,4 @@ local lines = Lists.Map(Strings.Split("\n", data), function(line)
     return text;
 end);
 
-Anchors.Share(Anchors.VJustify("topright", 0, lines), "topright");
+--Anchors.Share(Anchors.VJustify("topleft", 0, lines), "topleft");
