@@ -9,6 +9,8 @@ function Delegate:Constructor(frame)
 end;
 
 function Delegate:Draw(painter)
+    painter:reset();
+
     local frame = self.frame;
     local bound = frame:GetDelegate("layout"):GetBounds();
     if type(bound) ~= "table" or not bound:HasBounds() then
