@@ -130,7 +130,7 @@ struct UserdataType<LuaPainter>
 
     static void initialize(LuaStack& stack, LuaPainter& painter)
     {
-        lua::userdata::qobject(stack, painter);
+        lua::qobject(stack, painter);
     }
 };
 

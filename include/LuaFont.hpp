@@ -45,7 +45,7 @@ struct UserdataType<LuaFont>
 
     static void initialize(LuaStack& stack, LuaFont& font)
     {
-        lua::userdata::qobject(stack, font);
+        lua::qobject(stack, font);
     }
 };
 

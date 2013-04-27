@@ -25,7 +25,7 @@ struct UserdataType<QWidget>
     {
         auto userdata = stack.save();
         lua::push(stack, userdata);
-        lua::userdata::qobject(stack, widget);
+        lua::qobject(stack, widget);
 
         lua::push(stack, lua::value::table);
         auto methods = stack.save();
