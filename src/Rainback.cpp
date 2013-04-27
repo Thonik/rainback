@@ -5,6 +5,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QLineEdit>
+#include <QTextEdit>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -55,6 +56,8 @@ struct UserdataType<QWidget>
             "end;\n"
         );
         worker(userdata, methods);
+
+        new lua::QObjectObserver(&widget, userdata.as<LuaUserdata*>());
     }
 };
 
@@ -112,24 +115,21 @@ Rainback::Rainback(Lua& lua) :
     _lua["Rainback"]["Button"] = lua::LuaCallable([this](LuaStack& stack) {
             assertWidget();
             stack.clear();
-
-            auto btn = new QPushButton(_widget);
-            lua::push<QWidget*>(stack, btn, true);
-            new lua::QObjectObserver(btn, stack.as<LuaUserdata*>(-1));
-
-            btn->show();
+            lua::push<QWidget*>(stack, new QPushButton(_widget), true);
         }
     );
 
     _lua["Rainback"]["LineEdit"] = lua::LuaCallable([this](LuaStack& stack) {
             assertWidget();
             stack.clear();
+            lua::push<QWidget*>(stack, new QLineEdit(_widget), true);
+        }
+    );
 
-            auto btn = new QLineEdit(_widget);
-            lua::push<QWidget*>(stack, btn, true);
-            new lua::QObjectObserver(btn, stack.as<LuaUserdata*>(-1));
-
-            btn->show();
+    _lua["Rainback"]["TextEdit"] = lua::LuaCallable([this](LuaStack& stack) {
+            assertWidget();
+            stack.clear();
+            lua::push<QWidget*>(stack, new QTextEdit(_widget), true);
         }
     );
 
