@@ -10,6 +10,7 @@ globals.tmpdir = TMPDIR;
 Rainback.Globals = globals;
 
 Rainback.AddModuleDirectory(FRITOMOD .. "/fritomod", "fritomod/");
+Rainback.AddModuleDirectory(FRITOMOD .. "/hack", "hack/");
 Rainback.AddModuleDirectory(FRITOMOD .. "/wow", "wow/");
 Rainback.AddModuleDirectory(TOP_SRCDIR .. "/rainback", "rainback/");
 
