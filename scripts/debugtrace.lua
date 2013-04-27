@@ -21,3 +21,25 @@ Callbacks.Click(traceOutput, function()
 end);
 DrawTrace();
 
+local editorFrame = Frames.New(UIParent, "Widget");
+Anchors.Share(editorFrame, UIParent, "bottomleft");
+Anchors.HFlip(editorFrame, traceOutput, "left");
+
+local editor = Rainback.LineEdit();
+editorFrame:SetWidget(editor);
+
+editor:connect("returnPressed", function()
+    if editor.text == "exit" then
+        Rainback.Close();
+    elseif editor.text:match("^lua%s+") then
+        local command = editor.text:gsub("^lua%s+", "");
+        local runner, msg = loadstring(command);
+        if runner then
+            local success, rv = pcall(runner);
+            print(rv);
+        else
+            print(msg);
+        end;
+    end;
+    editor.text = "";
+end);
