@@ -6,7 +6,7 @@ local persisted = {};
 
 function Rainback.LoadPersistence(persistenceFile)
     if Rainback.FileExists(persistenceFile) then
-        persisted = Serializers.ReadSource(Rainback.ReadFile(persistenceFile));
+        persisted = Serializers.ReadSource(Rainback.ReadFile(persistenceFile)) or {};
     end;
     Persistence.Load(persisted);
 
