@@ -30,7 +30,13 @@ function Delegate:Draw(painter)
     if not widget then
         return;
     end;
-    widget:setGeometry(bound:GetBounds());
+    local x, y, width, height = bound:GetBounds();
+    if x ~= nil then
+        widget:show();
+        widget:setGeometry(x, y, width, height);
+    else
+        widget:hide();
+    end;
 end;
 
 function Delegate:ToString()
