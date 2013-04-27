@@ -5,7 +5,7 @@ require "fritomod/Anchors";
 
 local traceOutput = Frames.Text(UIParent, "default", 10, "black");
 traceOutput:SetText("Debug trace");
-Anchors.Share(traceOutput, "bottomleft");
+Anchors.Share(traceOutput, "bottomright", 3);
 
 local function DrawTrace()
     if DEBUG_TRACE then
