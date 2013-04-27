@@ -16,7 +16,7 @@ local center = Frames.New();
 Frames.Size(center, 40);
 Frames.Color(center, "white");
 Frames.Draggable(center);
-Frames.Position(center, "Center", Headless(Anchors.Share, "TOPLEFT"));
+Frames.Position(center, "Center", Anchors.Center);
 
 local frames = {};
 for _, direction in ipairs(directions) do
