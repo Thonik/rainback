@@ -223,6 +223,14 @@ Rainback::Rainback(Lua& lua) :
         }
     );
 
+    lua::qvariantPusher(QVariant::Size, [](LuaStack& stack, const QVariant& source) {
+        lua::push(stack, lua::value::table);
+
+        auto size = source.toSize();
+        stack.set("width", size.width());
+        stack.set("height", size.height());
+    });
+
     elapsed.start();
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
