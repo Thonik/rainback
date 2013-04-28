@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 
     QMainWindow gui;
     gui.setWindowTitle("rainback");
-    gui.resize(800, 600);
+    gui.resize(1024, 768);
 
     Bootstrapper bootstrapper;
     gui.setCentralWidget(&bootstrapper.mainWidget());

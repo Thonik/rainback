@@ -1,5 +1,7 @@
 #include "Rainback.hpp"
 
+#include <iostream>
+
 #include <functional>
 #include <QTextStream>
 #include <QApplication>
