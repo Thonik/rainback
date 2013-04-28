@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QTextEdit>
+#include <QRegExp>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -224,6 +225,20 @@ Rainback::Rainback(Lua& lua) :
             file.write(qCompress(data.toUtf8()));
         }
     );
+
+    _lua["string"]["grep"] = lua::LuaCallable([](LuaStack& stack) {
+        auto str = stack.as<QString>(1);
+        QRegExp re(stack.as<QString>(2));
+        stack.clear();
+
+        if (re.indexIn(str) == -1) {
+            return;
+        }
+
+        for (int i = 0; i <= re.captureCount(); ++i) {
+            lua::push(stack, re.cap(i));
+        }
+    });
 
     lua::qvariantPusher(QVariant::Size, [](LuaStack& stack, const QVariant& source) {
         lua::push(stack, lua::value::table);
