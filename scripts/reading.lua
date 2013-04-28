@@ -28,6 +28,7 @@ font-family: Inconsolata;
 font-size: 13px;
 border: 1px solid black;
 color: black;
+border-top: none;
 ]];
 
 local title = Frames.New(UIParent, "Texture");
@@ -36,7 +37,7 @@ Frames.Draggable(title);
 Frames.Position(title, "Editor Anchor", Anchors.Center);
 Frames.Color(title, "grey");
 
-Anchors.VFlipFromTop(frame, title, -1);
+Anchors.VFlipFromTop(frame, title);
 Frames.Height(frame, 300);
 
 local run = Frames.Text(title, "default", 10);
