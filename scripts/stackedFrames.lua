@@ -21,13 +21,20 @@ Frames.Position(center, "Center", Anchors.Center);
 local frames = {};
 for _, direction in ipairs(directions) do
     local directionFrames = {}
-    for _, color in ipairs(colors) do
+    for i, color in ipairs(colors) do
         local f = Frames.New(center);
+        local name = direction[1] .. color .. i;
         Frames.Draggable(f);
         Frames.Size(f, 20);
         Frames.Color(f, color);
-        table.insert(frames, f);
+
+        frames[name] = f;
+        Callbacks.Script(f, "DragStart", function()
+            f.persisted = true;
+        end);
+
         table.insert(directionFrames, f);
+
     end;
     local anchor = direction[1];
     local anchorFunc = direction[2];
@@ -35,3 +42,24 @@ for _, direction in ipairs(directions) do
     local anchored = anchorFunc(anchor, gap, directionFrames);
     Anchors.FlipTo(anchored, center, anchor, gap);
 end;
+
+Callbacks.PersistentValue("StackedFrames", function(loaded)
+    if loaded then
+        for name, anchors in pairs(loaded) do
+            local frame = frames[name];
+            frame:ClearAllPoints();
+            frame:SetParent(UIParent);
+            Serializers.LoadAllPoints(anchors, frame);
+            frame.persisted = true;
+        end;
+    end;
+    return function()
+        local saved = {};
+        for name, frame in pairs(frames) do
+            if frame.persisted then
+                saved[name] = Serializers.SaveAllPoints(frame);
+            end;
+        end;
+        return saved;
+    end;
+end);
