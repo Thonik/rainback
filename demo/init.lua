@@ -18,6 +18,7 @@ Rainback.SetBackgroundColor(255, 255, 221);
 
 -- Be sure to load the WoW stuff before scripts
 Rainback.LoadDirectory(TOP_SRCDIR .. "/wow", true);
+require "wow/api/UIParent";
 
 Rainback.LoadPersistence(TMPDIR .. "/persistence");
 
