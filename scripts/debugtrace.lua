@@ -40,6 +40,15 @@ editor:connect("returnPressed", function()
         else
             print(msg);
         end;
+    elseif editor.text:match("^eval%s+") then
+        local command = editor.text:gsub("^eval%s+", "");
+        local runner, msg = loadstring("return " .. command);
+        if runner then
+            local success, rv = pcall(runner);
+            print(rv);
+        else
+            print(msg);
+        end;
     end;
     editor.text = "";
 end);
