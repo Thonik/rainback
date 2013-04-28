@@ -23,12 +23,12 @@ function Delegate:Draw(painter)
     if frame:GetColor() == nil then
         return;
     end;
-    painter:position(x, y);
-    painter:setPenColor(0, 0, 0);
-    painter.joinStyle = "miter";
     painter.penWidth = 1;
+    painter.joinStyle = "miter";
+
+    painter:position(x + painter.penWidth / 2, y + painter.penWidth / 2);
     painter:setFillColor(WoW.Convert.ToRainbackColor(frame:GetColor()));
-    painter:drawRect(width, height);
+    painter:drawRect(width - painter.penWidth, height - painter.penWidth);
 end;
 
 function Delegate:ToString()
