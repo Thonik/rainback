@@ -25,11 +25,6 @@ function ScriptPage:SetName(name)
     self:FireUpdate()
 end;
 
-function ScriptPage:SetToolbox(toolbox)
-    self.toolbox = toolbox;
-    self:FireUpdate()
-end;
-
 function ScriptPage:GetScript()
     return self.script;
 end;
