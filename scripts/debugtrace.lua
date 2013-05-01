@@ -2,6 +2,7 @@ require "fritomod/Frames";
 require "fritomod/Frames-Mouse";
 require "fritomod/Media-Font";
 require "fritomod/Anchors";
+require "fritomod/Slash";
 
 local traceOutput = Frames.Text(UIParent, "default", 10, "black");
 traceOutput:SetText("Debug trace");
@@ -49,6 +50,8 @@ editor:connect("returnPressed", function()
         else
             print(msg);
         end;
+    else
+        Slash.Run(unpack(Strings.Split(" ", editor.text, 2)));
     end;
     editor.text = "";
 end);
