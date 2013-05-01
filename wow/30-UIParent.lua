@@ -16,3 +16,5 @@ function WoW.CreateUIParent()
     root:GetDelegate("layout").bound = ScreenBound;
     return root;
 end;
+
+UIParent = WoW.CreateUIParent();
