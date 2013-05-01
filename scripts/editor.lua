@@ -36,17 +36,16 @@ Events.CLOSE(function()
     Lists.Each(pages, "Destroy");
 end);
 
---[[toolbox:OnChange(function()
-    if editor:Get() ~= nil then
+toolbox:OnUpdate(function()
+    if editor:GetPage() ~= nil then
         return;
     end;
     local first = next(toolbox:GetScripts());
     if first == nil then
         return;
     end;
-    editor:SetScript(toolbox:GetScript(first));
-    editor:SetName(first);
-end);]]
+    editor:SetPage(PageForScript(first));
+end);
 
 local function Parser(page, command)
     local script = page:GetScript();
@@ -104,9 +103,23 @@ local function NewScript(content)
             metadata.name = toolbox:NameFor(script);
         end;
     end));
+    script:AddConnector(Hack.Connectors.Global("Undoer", Hack.Assets.Undoer()));
     script:SetContent(content);
 
     return script;
+end;
+
+local function NewPage(name, content)
+    local script = NewScript(content);
+
+    local page = Hack.ScriptPage:New(script);
+    page:SetName(name);
+    page:SetCommandParser(Parser);
+
+    toolbox:AddScript(name, script);
+    table.insert(pages, page);
+
+    return page;
 end;
 
 local listHeader = Frames.New();
@@ -120,7 +133,14 @@ Frames.Color(listBG, "white", .5);
 Anchors.VFlip(listBG, listHeader, "bottomleft", -1);
 Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
 
-local mapper = Mapper:New(function(page)
+local mapper = Mapper:New();
+
+function mapper:CanReuseContent(text, page)
+    text:SetText(page:GetName());
+    return true;
+end;
+
+mapper:SetMapper(function(page)
     local text = Frames.Text(UIParent, "default", 10);
     text:SetText(page:GetName());
     Callbacks.Click(text, function()
@@ -128,6 +148,8 @@ local mapper = Mapper:New(function(page)
     end);
     return text;
 end);
+
+mapper:AddSourceList(pages);
 
 local frames = {};
 mapper:AddDestination(frames);
@@ -152,23 +174,14 @@ mapper:OnUpdate(list, "Update");
 
 Callbacks.PersistentValue("Toolbox", function(pagesData)
     pagesData = pagesData or {};
-    pages = Lists.Map(pagesData, function(pageData)
-        local script = NewScript(pageData.text);
-
-        local page = Hack.ScriptPage:New(script);
-        page:SetName(pageData.name);
-        page:SetCommandParser(Parser);
-
-        page:SetToolbox(toolbox);
-        toolbox:AddScript(page:GetName(), script);
+    Lists.Each(pagesData, function(pageData)
+        local page = NewPage(pageData.name, pageData.text);
 
         if pageData.commands then
             Lists.Each(pageData.commands, page, "AddCommand");
         end;
-
-        return page;
     end);
-    mapper:AddSourceList(pages);
+    mapper:Update();
     return function()
         return Lists.Map(pages, function(page)
             return {
@@ -195,18 +208,49 @@ Callbacks.PersistentValue("Toolbox-Selection", function(selection)
     end;
 end);
 
---[[Slash.scr = function(cmd)
+function Slash.scr(cmd)
     local cmd, name = unpack(Strings.Split(" ", cmd, 2));
-    if cmd == "new" then
-        local script = NewScript();
-        toolbox:AddScript(name, script);
-        editor:SetScript(script);
-        editor:SetName(toolbox:NameFor(script));
+    if cmd == "new" or cmd == "add" then
+        local page = NewPage(name);
+        editor:SetPage(page);
+        mapper:Update();
     elseif cmd == "rename" or cmd == "mv" then
         local old, new = unpack(Strings.Split(" ", name));
+        if not old or not new then
+            return;
+        end;
+        if old == new then
+            -- Nothing to do, so just return
+            return;
+        end;
+        if PageForName(new) then
+            print("Refusing to overwrite a name in use: " .. tostring(new));
+            return;
+        end;
+        PageForName(old):SetName(new);
         toolbox:RenameScript(old, new);
-        frames[new]:SetText(new);
+        mapper:Update();
     elseif cmd == "del" or cmd == "rm" then
+        local page = PageForName(name);
+        if not page then
+            return;
+        end;
+        if editor:GetPage() == page then
+            -- We're currently viewing this page, so try to find another page to look at
+            if #pages == 1 then
+                -- No pages left, so just view nothing
+                editor:Reset();
+            else
+                local i = Lists.KeyFor(pages, page);
+                if i == #pages then
+                    editor:SetPage(pages[i - 1]);
+                else
+                    editor:SetPage(pages[i + 1]);
+                end;
+            end;
+        end;
+        Lists.Remove(pages, page);
         toolbox:RemoveScript(name);
+        mapper:Update();
     end;
-end;]]
+end;
