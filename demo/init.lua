@@ -20,7 +20,7 @@ Rainback.SetBackgroundColor(255, 255, 221);
 Rainback.LoadDirectory(TOP_SRCDIR .. "/wow", true);
 require "wow/api/UIParent";
 
-Rainback.LoadPersistence(TMPDIR .. "/persistence");
+Rainback.LoadPersistence(HOME .. "/etc/rainback/persistence");
 
 Callbacks.PersistValue("DEBUG_TRACE", function(value)
     DEBUG_TRACE = value;
