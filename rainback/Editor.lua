@@ -1,7 +1,8 @@
 require "fritomod/Strings";
 require "fritomod/Lists";
 require "fritomod/Frames-Position";
-require "hack/Script";
+require "fritomod/LuaEnvironment";
+require "rainback/ScriptPage";
 
 UI = UI or {};
 UI.Editor = OOP.Class();
@@ -48,10 +49,6 @@ function Editor:Constructor(parent)
     Anchors.VFlipFromTop(self.editorFrame, self.commandFrame);
     self.editorFrame:SetWidget(self.editor);
 
-    local continual = Frames.Text(self.title, "default", 10);
-    Frames.Color(continual, "white");
-    continual:SetText("Autorun");
-
     local run = Frames.Text(self.title, "default", 10);
     Frames.Color(run, "white");
     run:SetText("Run");
@@ -61,23 +58,13 @@ function Editor:Constructor(parent)
     Frames.Color(reset, "white");
     reset:SetText("Reset");
     Callbacks.Click(reset, function()
-        if self.script then
-            self.script:Reset();
+        if self.page then
+            self.page:Reset();
         end;
+        Frames.Color(self.title, "grey");
     end);
 
-    Callbacks.Click(continual, function()
-        if self.autorun then
-            self.autorun = false;
-            Frames.Color(self.title, "grey");
-            return;
-        end;
-        Frames.Color(self.title, 0, .5, 0);
-        self.autorun = true;
-        self:Run();
-    end);
-
-    local links = {run, continual, reset};
+    local links = {run, reset};
     Anchors.Share(Anchors.HJustify("right", 6, links), "right", self.title, 2);
 
     local scriptName = Frames.Text(self.title, "default", 10);
@@ -126,7 +113,7 @@ function Editor:BuildCommand(command)
     close:SetText("Remove");
     Anchors.Share(close, asset, "right", 3);
     Callbacks.Click(close, function()
-        self.script:RemoveCommand(command);
+        self.page:RemoveCommand(command);
         Frames.Destroy(asset);
         Lists.Remove(self.commands, asset);
 
@@ -136,7 +123,7 @@ function Editor:BuildCommand(command)
 end;
 
 function Editor:AddCommand(command)
-    if not self.script:AddCommand(command) then
+    if not self.page:AddCommand(command) then
         return false;
     end;
 
@@ -154,21 +141,23 @@ function Editor:Reset()
     end;
     self.editor.plainText = "";
     self:SetName("<None>");
-    if #self.commands then
+    if #self.commands > 0 then
         Frames.Destroy(self.commands);
     end;
     self.commands = {};
 end;
 
-function Editor:SetScript(script)
+function Editor:SetPage(page)
     self:Reset();
-    self.script = script;
-    if not self.script then
+    self.page = page;
+    if not self.page then
         return;
     end;
-    self.editor.plainText = self.script:GetContent();
 
-    local commands = self.script:GetCommands();
+    self.editor.plainText = self.page:GetContent();
+    self:SetName(self.page:GetName());
+
+    local commands = self.page:GetCommands();
     for i=1, #commands do
         local ui = self:BuildCommand(commands[i]);
         table.insert(self.commands, ui);
@@ -176,16 +165,16 @@ function Editor:SetScript(script)
     self:LayoutCommands();
 
     self.scriptRemover = Seal(Lists.CallEach, {
+        function()
+            Frames.Color(self.title, "grey");
+        end,
         self.editor:connect("textChanged", function()
-            if self.script then
-                self.script:SetContent(self.editor.plainText);
+            if self.page then
+                self.page:SetContent(self.editor.plainText);
             end;
         end),
-        self.script:OnChange(function()
-            if self.autorun then
-                self:Run();
-            end;
-            local content = self.script:GetContent();
+        self.page:OnChange(function()
+            local content = self.page:GetContent();
             if self.editor.plainText == content then
                 return;
             end;
@@ -194,23 +183,21 @@ function Editor:SetScript(script)
     });
 end;
 
-function Editor:GetScript()
-    return self.script;
+function Editor:GetPage()
+    return self.page;
 end;
 
-function Editor:Run()
-    local success, msg = xpcall(Curry(self.script, "Execute"), debug.traceback);
+function Editor:Run(...)
+    local success, rv = xpcall(
+        Curry(self.page, "Run", ...),
+        debug.traceback
+    );
     if success then
-        if self.autorun then
-            Frames.Color(self.title, 0, .5, 0);
-        else
-            Frames.Color(self.title, "grey");
-        end;
-    end;
-    if not success then
+        Frames.Color(self.title, 0, .5, 0);
+    else
         Frames.Color(self.title, "orange");
-        print(msg);
     end;
+    return success, rv;
 end;
 
 function Editor:Handle()

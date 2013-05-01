@@ -12,13 +12,32 @@ Frames.Position(handle, "EditorFrame", Anchors.Center);
 Frames.Draggable(handle);
 
 local toolbox = Hack.Toolbox:New();
+local pages = {};
+
+function PageForName(name)
+    for i=1, #pages do
+        local page = pages[i];
+        if page:GetName() == name then
+            return page;
+        end;
+    end;
+end;
+
+function PageForScript(script)
+    for i=1, #pages do
+        local page = pages[i];
+        if page:GetScript() == script then
+            return page;
+        end;
+    end;
+end;
 
 Events.CLOSE(function()
-    Lists.Each(toolbox:GetScripts(), "Reset");
+    Lists.Each(pages, "Destroy");
 end);
 
-toolbox:OnChange(function()
-    if editor:GetScript() ~= nil then
+--[[toolbox:OnChange(function()
+    if editor:Get() ~= nil then
         return;
     end;
     local first = next(toolbox:GetScripts());
@@ -27,30 +46,33 @@ toolbox:OnChange(function()
     end;
     editor:SetScript(toolbox:GetScript(first));
     editor:SetName(first);
-end);
+end);]]
 
-local function Parser(script, command)
+local function Parser(page, command)
+    local script = page:GetScript();
+
     local match, name = command:grep([[^use\s+(.+)$]]);
     if match then
         return script:AddConnector(Hack.Connectors.Use(function(env, dtor)
             local usedScript = toolbox:GetScript(name);
             assert(usedScript, "No script was available with name '" .. tostring(name) .. "'");
             dtor(usedScript:OnChange(script, "FireUpdate"));
-            return usedScript:Execute(env, dtor);
+
+            -- Pass env twice, once for the environment where the script
+            -- is ran, and again to provide it as a parameter to the invoked script.
+            return usedScript:Execute(env, env, dtor);
         end));
     end;
     local match, assetName, globalName = command:grep(
         [[^asset\s+([^\s]+)\s+([^\s]+)$]]
     );
     if match then
-        return script:AddConnector(Hack.Connectors.Global(globalName, function(dtor)
+        return script:AddConnector(function(env)
             local assetScript = toolbox:GetScript(assetName);
             assert(assetScript, "No asset was available with name '" .. tostring(assetName) .. "'");
-            dtor(assetScript, "Reset");
-            dtor(assetScript:OnChange(script, "FireUpdate"));
-            local asset = assetScript:Execute();
-            return asset;
-        end));
+            env:AddDestructor(assetScript:OnChange(script, "FireUpdate"));
+            return env:Change(globalName, assetScript:Execute(env));
+        end);
     end;
     local match, name, default = command:grep(
         [[^param\s+([^\s]+)(?:\s*=\s*([^\s].*))?$]]
@@ -64,10 +86,8 @@ local function Parser(script, command)
     );
     if match then
         return script:AddConnector(function(env)
-            print("Listening for change events");
-            env:AddDestructor(script:OnChange(function()
-                print("Running script due to autorun");
-                local success, msg = xpcall(Curry(script.Execute, script), debug.traceback);
+            env:AddDestructor(page:OnChange(function()
+                local success, msg = xpcall(Curry(page.Run, page), debug.traceback);
                 if not success then
                     print(msg);
                 end;
@@ -76,58 +96,18 @@ local function Parser(script, command)
     end;
 end;
 
-local function NewScript(content, commands)
+local function NewScript(content)
     local script = Hack.Script:New();
     script:AddConnector("Set", "require", require);
     script:AddConnector(Hack.Connectors.Metadata(function(metadata)
-        metadata.name = toolbox:NameFor(script);
+        if not metadata.name then
+            metadata.name = toolbox:NameFor(script);
+        end;
     end));
     script:SetContent(content);
-    script:SetCommandParser(Parser);
-
-    if commands then
-        Lists.Each(commands, script, "AddCommand");
-    end;
 
     return script;
 end;
-
-Callbacks.PersistentValue("Toolbox", function(toolboxData)
-    if not toolboxData then
-        toolboxData = {
-            Demo = Persistence.EditorText
-        };
-    end;
-    for name, content in pairs(toolboxData) do
-        toolbox:AddScript(name, NewScript(content.text, content.commands));
-    end;
-    return function()
-        local toolboxData = {};
-        for name, script in pairs(toolbox:GetScripts()) do
-            toolboxData[name] = {
-                text = script:GetContent(),
-                commands = script:GetCommands()
-            };
-        end;
-        return toolboxData;
-    end;
-end);
-
-Callbacks.PersistentValue("Toolbox-Selection", function(selection)
-    if selection ~= nil then
-        local script = toolbox:GetScript(selection);
-        if script then
-            editor:SetScript(script);
-            editor:SetName(toolbox:NameFor(script));
-        end;
-    end;
-    return function()
-        local script = editor:GetScript();
-        if script then
-            return toolbox:NameFor(script);
-        end;
-    end;
-end);
 
 local listHeader = Frames.New();
 Frames.WH(listHeader, 100, 20);
@@ -140,16 +120,14 @@ Frames.Color(listBG, "white", .5);
 Anchors.VFlip(listBG, listHeader, "bottomleft", -1);
 Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
 
-local mapper = Mapper:New(function(script)
+local mapper = Mapper:New(function(page)
     local text = Frames.Text(UIParent, "default", 10);
-    text:SetText(toolbox:NameFor(script));
+    text:SetText(page:GetName());
     Callbacks.Click(text, function()
-        editor:SetScript(script);
-        editor:SetName(toolbox:NameFor(script));
+        editor:SetPage(page);
     end);
     return text;
 end);
-mapper:AddSourceTable(toolbox:GetScripts());
 
 local frames = {};
 mapper:AddDestination(frames);
@@ -172,7 +150,52 @@ list:OnUpdate(function(ref)
 end);
 mapper:OnUpdate(list, "Update");
 
-Slash.scr = function(cmd)
+Callbacks.PersistentValue("Toolbox", function(pagesData)
+    pagesData = pagesData or {};
+    pages = Lists.Map(pagesData, function(pageData)
+        local script = NewScript(pageData.text);
+
+        local page = Hack.ScriptPage:New(script);
+        page:SetName(pageData.name);
+        page:SetCommandParser(Parser);
+
+        page:SetToolbox(toolbox);
+        toolbox:AddScript(page:GetName(), script);
+
+        if pageData.commands then
+            Lists.Each(pageData.commands, page, "AddCommand");
+        end;
+
+        return page;
+    end);
+    mapper:AddSourceList(pages);
+    return function()
+        return Lists.Map(pages, function(page)
+            return {
+                name = page:GetName(),
+                text = page:GetContent(),
+                commands = page:GetCommands(),
+            };
+        end);
+    end;
+end);
+
+Callbacks.PersistentValue("Toolbox-Selection", function(selection)
+    if selection ~= nil then
+        local page = PageForName(selection);
+        if page then
+            editor:SetPage(page);
+        end;
+    end;
+    return function()
+        local page = editor:GetPage();
+        if page then
+            return page:GetName();
+        end;
+    end;
+end);
+
+--[[Slash.scr = function(cmd)
     local cmd, name = unpack(Strings.Split(" ", cmd, 2));
     if cmd == "new" then
         local script = NewScript();
@@ -186,4 +209,4 @@ Slash.scr = function(cmd)
     elseif cmd == "del" or cmd == "rm" then
         toolbox:RemoveScript(name);
     end;
-end;
+end;]]
