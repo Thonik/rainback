@@ -86,6 +86,9 @@ local function Parser(page, command)
     if match then
         return script:AddConnector(function(env)
             env:AddDestructor(page:OnUpdate(function()
+                if not page:GetScript():Compiles() then
+                    return;
+                end;
                 local success, msg = xpcall(Curry(page.Run, page), debug.traceback);
                 if not success then
                     print(msg);
