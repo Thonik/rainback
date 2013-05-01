@@ -56,7 +56,7 @@ local function Parser(page, command)
         return script:AddConnector(Hack.Connectors.Use(function(env, dtor)
             local usedScript = toolbox:GetScript(name);
             assert(usedScript, "No script was available with name '" .. tostring(name) .. "'");
-            dtor(usedScript:OnChange(script, "FireUpdate"));
+            dtor(usedScript:OnUpdate(script, "FireUpdate"));
 
             -- Pass env twice, once for the environment where the script
             -- is ran, and again to provide it as a parameter to the invoked script.
@@ -70,7 +70,7 @@ local function Parser(page, command)
         return script:AddConnector(function(env)
             local assetScript = toolbox:GetScript(assetName);
             assert(assetScript, "No asset was available with name '" .. tostring(assetName) .. "'");
-            env:AddDestructor(assetScript:OnChange(script, "FireUpdate"));
+            env:AddDestructor(assetScript:OnUpdate(script, "FireUpdate"));
             return env:Change(globalName, assetScript:Execute(env));
         end);
     end;
@@ -86,7 +86,7 @@ local function Parser(page, command)
     );
     if match then
         return script:AddConnector(function(env)
-            env:AddDestructor(page:OnChange(function()
+            env:AddDestructor(page:OnUpdate(function()
                 local success, msg = xpcall(Curry(page.Run, page), debug.traceback);
                 if not success then
                     print(msg);
@@ -137,7 +137,7 @@ mapper:AddDestination(function(name, frame)
         Frames.Destroy(frames[name]);
     end;
 end);
-toolbox:OnChange(mapper, "Update");
+toolbox:OnUpdate(mapper, "Update");
 
 local list = UI.List:New();
 list:SetLayout(Anchors.VJustify, "topleft");

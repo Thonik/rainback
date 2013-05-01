@@ -173,7 +173,7 @@ function Editor:SetPage(page)
                 self.page:SetContent(self.editor.plainText);
             end;
         end),
-        self.page:OnChange(function()
+        self.page:OnUpdate(function()
             local content = self.page:GetContent();
             if self.editor.plainText == content then
                 return;

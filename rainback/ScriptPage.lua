@@ -8,7 +8,7 @@ local ScriptPage = Hack.ScriptPage;
 
 function ScriptPage:Constructor(script)
     self.script = script;
-    self.script:OnChange(self, "FireUpdate");
+    self.script:OnUpdate(self, "FireUpdate");
 
     self.listeners = ListenerList:New();
 
@@ -85,7 +85,7 @@ function ScriptPage:Reset()
     end;
 end;
 
-function ScriptPage:OnChange(func, ...)
+function ScriptPage:OnUpdate(func, ...)
     return self.listeners:Add(func, ...);
 end;
 
