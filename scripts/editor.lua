@@ -32,6 +32,38 @@ function PageForScript(script)
     end;
 end;
 
+local mapper = Mapper:New();
+
+local function RenamePage(page, newName)
+    if PageForName(newName) then
+        print("Refusing to overwrite a name in use: " .. tostring(newName));
+        return;
+    end;
+    page:SetName(newName);
+    toolbox:RenameScript(page:GetName(), newName);
+    mapper:Update();
+end;
+
+local function DeletePage(page)
+    if editor:GetPage() == page then
+        -- We're currently viewing this page, so try to find another page to look at
+        if #pages == 1 then
+            -- No pages left, so just view nothing
+            editor:Reset();
+        else
+            local i = Lists.KeyFor(pages, page);
+            if i == #pages then
+                editor:SetPage(pages[i - 1]);
+            else
+                editor:SetPage(pages[i + 1]);
+            end;
+        end;
+    end;
+    Lists.Remove(pages, page);
+    toolbox:RemoveScript(page:GetName());
+    mapper:Update();
+end;
+
 Events.CLOSE(function()
     Lists.Each(pages, "Destroy");
 end);
@@ -50,12 +82,21 @@ end);
 local function Parser(page, command)
     local script = page:GetScript();
 
+    if command == "delete" then
+        DeletePage(page);
+        return true;
+    end;
+    local match, newName = command:grep([[^rename\s+(.+)$]]);
+    if match then
+        RenamePage(page, newName);
+        return true;
+    end;
     local match, name = command:grep([[^use\s+(.+)$]]);
     if match then
         return script:AddConnector(Hack.Connectors.Use(function(env, dtor)
             local usedScript = toolbox:GetScript(name);
             assert(usedScript, "No script was available with name '" .. tostring(name) .. "'");
-            dtor(usedScript:OnUpdate(script, "FireUpdate"));
+            dtor(usedScript:OnCompilingUpdate(script, "FireUpdate"));
 
             -- Pass env twice, once for the environment where the script
             -- is ran, and again to provide it as a parameter to the invoked script.
@@ -69,7 +110,7 @@ local function Parser(page, command)
         return script:AddConnector(function(env)
             local assetScript = toolbox:GetScript(assetName);
             assert(assetScript, "No asset was available with name '" .. tostring(assetName) .. "'");
-            env:AddDestructor(assetScript:OnUpdate(script, "FireUpdate"));
+            env:AddDestructor(assetScript:OnCompilingUpdate(script, "FireUpdate"));
             return env:Change(globalName, assetScript:Execute(env));
         end);
     end;
@@ -78,17 +119,14 @@ local function Parser(page, command)
     );
     if match then
         print(name, default);
-        return Noop;
+        return true;
     end;
-    local match = command:grep(
-        [[^autorun$]]
-    );
-    if match then
+    if command == "autorun" then
         return script:AddConnector(function(env)
-            env:AddDestructor(page:OnUpdate(function()
-                if not page:GetScript():Compiles() then
-                    return;
-                end;
+            if env:Metadata().mainScript ~= script then
+                return;
+            end;
+            env:AddDestructor(script:OnCompilingUpdate(function()
                 local success, msg = xpcall(Curry(page.Run, page), debug.traceback);
                 if not success then
                     print(msg);
@@ -102,7 +140,8 @@ local function NewScript(content)
     local script = Hack.Script:New();
     script:AddConnector("Set", "require", require);
     script:AddConnector(Hack.Connectors.Metadata(function(metadata)
-        if not metadata.name then
+        if not metadata.mainScript then
+            metadata.mainScript = script;
             metadata.name = toolbox:NameFor(script);
         end;
     end));
@@ -135,8 +174,6 @@ Frames.Width(listBG, 100);
 Frames.Color(listBG, "white", .5);
 Anchors.VFlip(listBG, listHeader, "bottomleft", -1);
 Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
-
-local mapper = Mapper:New();
 
 function mapper:CanReuseContent(text, page)
     text:SetText(page:GetName());
@@ -226,34 +263,16 @@ function Slash.scr(cmd)
             -- Nothing to do, so just return
             return;
         end;
-        if PageForName(new) then
-            print("Refusing to overwrite a name in use: " .. tostring(new));
+        local page = PageForName(old);
+        if not page then
+            print("No page with name: " .. tostring(old));
             return;
         end;
-        PageForName(old):SetName(new);
-        toolbox:RenameScript(old, new);
-        mapper:Update();
     elseif cmd == "del" or cmd == "rm" then
         local page = PageForName(name);
         if not page then
             return;
         end;
-        if editor:GetPage() == page then
-            -- We're currently viewing this page, so try to find another page to look at
-            if #pages == 1 then
-                -- No pages left, so just view nothing
-                editor:Reset();
-            else
-                local i = Lists.KeyFor(pages, page);
-                if i == #pages then
-                    editor:SetPage(pages[i - 1]);
-                else
-                    editor:SetPage(pages[i + 1]);
-                end;
-            end;
-        end;
-        Lists.Remove(pages, page);
-        toolbox:RemoveScript(name);
-        mapper:Update();
+        DeletePage(page);
     end;
 end;

@@ -123,8 +123,13 @@ function Editor:BuildCommand(command)
 end;
 
 function Editor:AddCommand(command)
-    if not self.page:AddCommand(command) then
+    local result = self.page:AddCommand(command);
+    if not result then
         return false;
+    end;
+
+    if not IsCallable(result) then
+        return true;
     end;
 
     local ui = self:BuildCommand(command);
@@ -174,6 +179,8 @@ function Editor:SetPage(page)
             end;
         end),
         self.page:OnUpdate(function()
+            self:SetName(self.page:GetName());
+
             local content = self.page:GetContent();
             if self.editor.plainText == content then
                 return;
@@ -197,7 +204,6 @@ function Editor:Run(...)
     else
         Frames.Color(self.title, "orange");
     end;
-    return success, rv;
 end;
 
 function Editor:Handle()

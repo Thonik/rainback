@@ -45,7 +45,15 @@ function ScriptPage:AddCommand(command)
     if Lists.ContainsValue(self.commands, command) then
         return;
     end;
-    self.commandRemovers[command] = self.parser(self, command);
+    local remover = self.parser(self, command);
+    if not remover then
+        return;
+    end;
+    if not IsCallable(remover) then
+        self:FireUpdate();
+        return true;
+    end;
+    self.commandRemovers[command] = remover;
     table.insert(self.commands, command);
     self:FireUpdate();
     return Functions.OnlyOnce(self, "RemoveCommand", command);
