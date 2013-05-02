@@ -61,7 +61,8 @@ struct UserdataType<QWidget>
         );
         worker(userdata, methods);
 
-        new lua::QObjectObserver(&widget, userdata.as<LuaUserdata*>());
+        auto observer = new lua::QObjectObserver(&widget, userdata.as<LuaUserdata*>());
+        observer->setDestroyOnGC(true);
     }
 };
 
