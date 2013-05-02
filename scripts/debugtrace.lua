@@ -27,6 +27,11 @@ Anchors.Share(editorFrame, UIParent, "bottomleft");
 Anchors.HFlip(editorFrame, traceOutput, "left");
 
 local editor = Rainback.LineEdit();
+editor.styleSheet = [[
+font-size: 14px;
+font-family: Inconsolata;
+padding: 2px;
+]];
 editorFrame:SetWidget(editor);
 
 editor:connect("returnPressed", function()
