@@ -39,20 +39,34 @@ function Rainback.Render(painter)
     if elapsed > 0 then
         local fps = 1000 / elapsed;
 
-        local bar = "";
+        local bar = "[";
         local SCALE = 2;
         local GOAL = 1000 / 60;
-        for i=1, math.floor(elapsed / SCALE) do
-            if i * SCALE > GOAL then
+        for i=1, math.max(GOAL / SCALE, math.floor(elapsed / SCALE)) do
+            if i * SCALE > elapsed then
+                bar = bar .. " ";
+            elseif i * SCALE > GOAL then
                 bar = bar .. "!";
             else
                 bar = bar .. ".";
             end;
         end;
+        if elapsed < GOAL then
+            bar = bar .. "]";
+        end;
 
-        printf("%3dms elapsed, %2dfps %s", elapsed, fps, bar);
+        local numRenderers = renderers:GetListenerCount();
+
+        printf("%3dms elapsed, %3dfps %3d renderers %s",
+            elapsed,
+            fps,
+            numRenderers,
+            bar
+        );
     else
-        printf("  0ms elapsed");
+        printf("  0ms elapsed, ---fps %4d renderers",
+            numRenderers
+        );
     end;
     trace("FRAME complete");
 end;
