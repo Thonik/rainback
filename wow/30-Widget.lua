@@ -37,9 +37,9 @@ function Delegate:Draw(painter)
         return;
     end;
     local x, y, width, height = bound:GetBounds();
-    width = math.min(width, 10000);
-    height = math.min(height, 10000);
     if x ~= nil then
+        width = math.min(width, 10000);
+        height = math.min(height, 10000);
         widget:show();
         widget:setGeometry(x, y, width, height);
     else
