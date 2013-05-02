@@ -49,7 +49,7 @@ local function DeletePage(page)
         -- We're currently viewing this page, so try to find another page to look at
         if #pages == 1 then
             -- No pages left, so just view nothing
-            editor:Reset();
+            editor:Clear();
         else
             local i = Lists.KeyFor(pages, page);
             if i == #pages then
