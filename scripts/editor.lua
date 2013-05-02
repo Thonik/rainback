@@ -65,7 +65,7 @@ local function DeletePage(page)
 end;
 
 Events.CLOSE(function()
-    Lists.Each(pages, "Destroy");
+    Lists.Each(pages, "Reset");
 end);
 
 toolbox:OnUpdate(function()
