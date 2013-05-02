@@ -34,7 +34,6 @@ function Rainback.Render(painter)
 
     painter:reset();
     painter:setPenColor(0, 0, 0, 255);
-    painter:drawText("Rainback v1.0");
 
     local elapsed = Rainback.GetTime() - start;
     if elapsed > 0 then

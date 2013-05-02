@@ -9,13 +9,13 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     QMainWindow gui;
-    gui.setWindowTitle("rainback");
-    gui.resize(1024, 768);
+    gui.setWindowTitle("Rainback v1.0");
+    gui.resize(1280, 695);
 
     Bootstrapper bootstrapper;
     gui.setCentralWidget(&bootstrapper.mainWidget());
 
-    centerWindow(gui);
+    gui.show();
 
     return app.exec();
 }

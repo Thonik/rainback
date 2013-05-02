@@ -9,7 +9,7 @@ UI.Editor = OOP.Class();
 local Editor = UI.Editor;
 
 local WIDTH = 500;
-local HEIGHT = 600;
+local HEIGHT = 550;
 
 function Editor:Constructor(parent)
 	parent = Frames.AsRegion(parent);
