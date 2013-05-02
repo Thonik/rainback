@@ -57,12 +57,7 @@ function Editor:Constructor(parent)
     local reset = Frames.Text(self.title, "default", 10);
     Frames.Color(reset, "white");
     reset:SetText("Reset");
-    Callbacks.Click(reset, function()
-        if self.page then
-            self.page:Reset();
-        end;
-        Frames.Color(self.title, "grey");
-    end);
+    Callbacks.Click(reset, self, "Reset");
 
     local links = {run, reset};
     Anchors.Share(Anchors.HJustify("right", 6, links), "right", self.title, 2);
@@ -139,21 +134,8 @@ function Editor:AddCommand(command)
     return true;
 end;
 
-function Editor:Reset()
-    if self.scriptRemover then
-        self.scriptRemover();
-        self.scriptRemover = nil;
-    end;
-    self.editor.plainText = "";
-    self:SetName("<None>");
-    if #self.commands > 0 then
-        Frames.Destroy(self.commands);
-    end;
-    self.commands = {};
-end;
-
 function Editor:SetPage(page)
-    self:Reset();
+    self:Clear();
     self.page = page;
     if not self.page then
         return;
@@ -203,7 +185,34 @@ function Editor:Run(...)
         Frames.Color(self.title, 0, .5, 0);
     else
         Frames.Color(self.title, "orange");
+        print(rv);
     end;
+end;
+
+function Editor:Reset()
+    local success, rv = xpcall(
+        Curry(self.page, "Reset"),
+        debug.traceback
+    );
+    if success then
+        Frames.Color(self.title, "grey");
+    else
+        Frames.Color(self.title, "orange");
+        print(rv);
+    end;
+end;
+
+function Editor:Clear()
+    if self.scriptRemover then
+        self.scriptRemover();
+        self.scriptRemover = nil;
+    end;
+    self.editor.plainText = "";
+    self:SetName("<None>");
+    if #self.commands > 0 then
+        Frames.Destroy(self.commands);
+    end;
+    self.commands = {};
 end;
 
 function Editor:Handle()
@@ -211,7 +220,7 @@ function Editor:Handle()
 end;
 
 function Editor:Destroy()
-    self:Reset();
+    self:Clear();
     Frames.Destroy(
         self.title,
         self.editorFrame
