@@ -9,6 +9,7 @@
 #include <QLineEdit>
 #include <QTextEdit>
 #include <QRegExp>
+#include <QFileSystemWatcher>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -223,6 +224,21 @@ Rainback::Rainback(Lua& lua) :
             QFile file(fileName);
             openFile(file, QIODevice::WriteOnly | QIODevice::Truncate, false);
             file.write(qCompress(data.toUtf8()));
+        }
+    );
+
+    _lua["Rainback"]["WatchFile"] = std::function<void(LuaStack&)>(
+        [this](LuaStack& stack) {
+            auto watcher = new QFileSystemWatcher(this);
+
+            for (int i=1; i <= stack.size(); ++i) {
+                watcher->addPath(stack.as<QString>(i));
+            }
+            stack.clear();
+
+            lua::push<QObject*>(stack, watcher, true);
+            auto observer = new lua::QObjectObserver(watcher, stack.as<LuaUserdata*>(-1));
+            observer->setDestroyOnGC(true);
         }
     );
 
