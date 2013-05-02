@@ -12,7 +12,10 @@ function Rainback.DispatchEvent(event, ...)
         table.insert(queue, Seal(Rainback.DispatchEvent, event, ...));
         return;
     end;
-    listeners:Fire(event, ...);
+    local result, msg = xpcall(Curry(listeners, "Fire", event, ...), debug.traceback);
+    if not result then
+        print(msg);
+    end;
     while #queue > 0 do
         local firstQueued = Lists.ShiftOne(queue);
         firstQueued();
