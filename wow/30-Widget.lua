@@ -6,6 +6,12 @@ local Widget = OOP.Class(WoW.Frame);
 WoW.Widget = Widget;
 WoW.RegisterFrameType("Widget", Widget);
 
+Widget:AddDestructor(function(self)
+    if self:GetWidget() then
+        self:GetWidget():hide();
+    end;
+end);
+
 function Widget:GetWidget()
     return self.widget;
 end;
