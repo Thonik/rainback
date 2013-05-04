@@ -70,7 +70,9 @@ end;
 
 function Delegate:SetFont(family, size)
     self.font.family = family;
-    self.font.pointSize = size;
+    if size then
+        self.font.pointSize = size;
+    end;
     Rainback.Update();
 end;
 
