@@ -120,6 +120,9 @@ function AnchoredBound:GetBounds()
         return unpack(cached);
     end;
 
+    -- First, cache a dummy value in case our layout isn't valid
+    Rainback.SetCache(self, {});
+
     trace(tostring(self) .. " is calculating its bounds");
 
     local left, top, right, bottom;
