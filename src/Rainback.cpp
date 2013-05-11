@@ -96,6 +96,10 @@ Rainback::Rainback(Lua& lua) :
     _widget(nullptr),
     _lua(lua)
 {
+	if (_lua["unpack"].isNil()) {
+		_lua["unpack"] = _lua["table"]["unpack"];
+	}
+
     _lua["Rainback"] = lua::value::table;
 
     _lua["Rainback"]["AddModuleDirectory"] =
