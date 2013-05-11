@@ -1,3 +1,7 @@
+if true then
+    return;
+end;
+
 require "fritomod/Frames";
 require "fritomod/Frames-Mouse";
 require "fritomod/Frames-Position";
