@@ -43,3 +43,6 @@ moc_*
 # Editor artifacts
 *~
 *.swp
+
+# User-specifc Rainback settings
+settings.lua

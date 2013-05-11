@@ -102,6 +102,8 @@ Rainback::Rainback(Lua& lua) :
 
     _lua["Rainback"] = lua::value::table;
 
+    _lua["Rainback"]["globals"] = lua::value::table;
+
     _lua["Rainback"]["AddModuleDirectory"] =
     std::function<void(const std::string&, const std::string&)>(
         [this](const std::string& root, const std::string& prefix) {

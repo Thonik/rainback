@@ -1,25 +1,34 @@
-local HOME = "/home/dafrito"
-local FRITOMOD = HOME .. "/src/fritomod";
-local TMPDIR = HOME .. "/tmp";
-local TOP_SRCDIR = "../.."
+local globals = Rainback.globals;
 
-local globals = {};
-globals.home = HOME;
-globals.top_srcdir = TOP_SRCDIR;
-globals.tmpdir = TMPDIR;
-Rainback.Globals = globals;
+-- The location of Fritomod
+-- Example: /home/dafrito/src/fritomod"
+local FRITOMOD = globals.fritomod;
+if not FRITOMOD then
+	error("Rainback.globals.fritomod must be defined");
+end;
+
+-- The directory that will contain persisted scripts, data, etc.
+-- Example: /home/dafrito/etc/rainback"
+local PERSISTENCE_DIR = globals.persistenceDir;
+if not PERSISTENCE_DIR then
+	error("Rainback.globals.persistenceDir must be defined");
+end;
+
+-- srcdir is provided automatically, so there's no need to provide
+-- it in settings.
+local SRCDIR = globals.srcdir;
 
 Rainback.AddModuleDirectory(FRITOMOD .. "/fritomod", "fritomod/");
 Rainback.AddModuleDirectory(FRITOMOD .. "/hack", "hack/");
 Rainback.AddModuleDirectory(FRITOMOD .. "/wow", "wow/");
-Rainback.AddModuleDirectory(TOP_SRCDIR .. "/rainback", "rainback/");
+Rainback.AddModuleDirectory(SRCDIR .. "/rainback", "rainback/");
 
 Rainback.SetBackgroundColor(255, 255, 221);
 
--- Be sure to load the WoW stuff before scripts
-Rainback.LoadDirectory(TOP_SRCDIR .. "/wow", true);
+-- Load the WoW stuff before scripts
+Rainback.LoadDirectory(SRCDIR .. "/wow", true);
 
-Rainback.LoadPersistence(HOME .. "/etc/rainback/persistence");
+Rainback.LoadPersistence(PERSISTENCE_DIR .. "/persistence");
 
 Callbacks.PersistValue("DEBUG_TRACE", function(value)
     DEBUG_TRACE = value;
@@ -31,7 +40,7 @@ end);
 Rainback.OnNamedEvent("RENDER", Rainback.Render);
 
 -- Finally, load the scripts themselves
-Callbacks.Later(Rainback.LoadDirectory, TOP_SRCDIR .. "/scripts", true);
+Callbacks.Later(Rainback.LoadDirectory, SRCDIR .. "/scripts", true);
 
 require "fritomod/Callbacks-Timing";
 

@@ -1,6 +1,6 @@
 bin_PROGRAMS = rainback
 
-rainback_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ -I$(top_srcdir)/include
+rainback_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ -I$(top_srcdir)/include -DTOP_BUILDDIR='"$(top_builddir)"' -DTOP_SRCDIR='"$(top_srcdir)"'
 
 # Don't try changing "../src" to use "top_srcdir" - this is referring to the
 # built artifact, not something in the source directory
