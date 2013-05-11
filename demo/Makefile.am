@@ -1,10 +1,10 @@
 bin_PROGRAMS = rainback
 
-rainback_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ @LUA_INCLUDE@ -I$(top_srcdir)/include
+rainback_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ -I$(top_srcdir)/include
 
 # Don't try changing "../src" to use "top_srcdir" - this is referring to the
 # built artifact, not something in the source directory
-rainback_LDADD = ../src/librainback.la @LUA_CXX_LIBS@ @QT_LIBS@ @LUA_LIB@
+rainback_LDADD = ../src/librainback.la @LUA_CXX_LIBS@ @QT_LIBS@
 
 rainback_SOURCES = \
 	Bootstrapper.cpp \

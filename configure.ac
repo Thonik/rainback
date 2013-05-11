@@ -31,15 +31,20 @@ AC_SUBST([AM_CXXFLAGS])
 AX_BOOST_BASE
 AX_BOOST_UNIT_TEST_FRAMEWORK
 
+# Check for Lua-cxx
+if ! pkg-config --print-errors --exists "lua-cxx"; then
+    AC_MSG_ERROR([Lua-cxx is required to build Rainback])
+fi
+
+AC_SUBST(LUA_CXX_INCLUDE)
+AC_SUBST(LUA_CXX_LIBS)
+LUA_CXX_INCLUDE=`pkg-config --cflags lua-cxx`
+LUA_CXX_LIBS=`pkg-config --libs lua-cxx`
+
 # Check for Qt
 AX_HAVE_QT_CORE
 AX_HAVE_QT_GUI
 AX_HAVE_QT_MOC
-
-# Check for Lua
-AX_LUA_LIBS
-AX_LUA_HEADERS
-AX_HAVE_LUA_CXX
 
 if test x"$have_qt_core" = xno || test x"$have_qt_gui" = xno || test x"$have_qt_moc" = xno; then
     AC_MSG_ERROR([Qt is required to build rainback])

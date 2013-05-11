@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = librainback.la
-librainback_la_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ @LUA_INCLUDE@ -I$(top_srcdir)/include
-librainback_la_LIBADD = @LUA_CXX_LIBS@ @QT_LIBS@ @LUA_LIB@
+librainback_la_CPPFLAGS = @QT_CXXFLAGS@ @LUA_CXX_INCLUDE@ -I$(top_srcdir)/include
+librainback_la_LIBADD = @LUA_CXX_LIBS@ @QT_LIBS@
 librainback_la_LDFLAGS = -version-info 0:0:0
 
 # moc-generated source files
