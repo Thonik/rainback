@@ -119,7 +119,7 @@ AC_DEFUN([AX_HAVE_QT_CORE], [
   AC_REQUIRE([_AX_QT_BASE])
   AC_MSG_CHECKING([QtCore])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtCore],
+    [Core],
     [QCoreApplication],
     [[
       int    argc;
@@ -144,12 +144,12 @@ AC_DEFUN([AX_HAVE_QT_GUI], [
   AC_REQUIRE([AC_PATH_XTRA])
   AC_REQUIRE([AX_HAVE_QT_CORE])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtGui],
-    [QApplication],
+    [Gui],
+    [QBrush],
     [[
       int    argc;
       char **argv;
-      QApplication app(argc, argv);
+      QBrush brush;
     ]],
     [$X_CFLAGS],
     [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS],
@@ -163,12 +163,38 @@ AC_DEFUN([AX_HAVE_QT_GUI], [
   ])
 ])
 
+AC_DEFUN([AX_HAVE_QT_WIDGETS], [
+  AC_MSG_CHECKING([QtWidgets])
+  AC_REQUIRE([AC_PATH_X])
+  AC_REQUIRE([AC_PATH_XTRA])
+  AC_REQUIRE([AX_HAVE_QT_CORE])
+  AC_REQUIRE([AX_HAVE_QT_GUI])
+  _AX_HAVE_QT_ADD_MODULE(
+    [Widgets],
+    [QApplication],
+    [[
+      int    argc;
+      char **argv;
+      QApplication app(argc, argv);
+    ]],
+    [$X_CFLAGS],
+    [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS],
+    [
+      AC_MSG_RESULT([yes])
+      AC_DEFINE([HAVE_QT_WIDGETS],,[define if the QtWidgets module is available])
+      have_qt_widgets=yes
+    ], [
+    AC_MSG_RESULT([no])
+    have_qt_widgets=no
+  ])
+])
+
 AC_DEFUN([AX_HAVE_QT_TEST], [
   AC_MSG_CHECKING([QtTest])
   AC_REQUIRE([AX_HAVE_QT_CORE])
   AC_REQUIRE([AX_HAVE_QT_MOC])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtTest],
+    [Test],
     [QCoreApplication QTest],
     [[
       int    argc;
@@ -192,7 +218,7 @@ AC_DEFUN([AX_HAVE_QT_SQL], [
   AC_MSG_CHECKING([QtSql])
   AC_REQUIRE([AX_HAVE_QT_CORE])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtSql],
+    [Sql],
     [QCoreApplication QSqlDatabase],
     _AX_HAVE_QT_CORE_PROGRAM([QSqlDatabase]),
     , dnl CXXFLAGS
@@ -211,7 +237,7 @@ AC_DEFUN([AX_HAVE_QT_NETWORK], [
   AC_MSG_CHECKING([QtNetwork])
   AC_REQUIRE([AX_HAVE_QT_CORE])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtNetwork],
+    [Network],
     [QCoreApplication QLocalSocket],
     _AX_HAVE_QT_CORE_PROGRAM([QLocalSocket]),
     , dnl CXXFLAGS
@@ -230,7 +256,7 @@ AC_DEFUN([AX_HAVE_QT_XML], [
   AC_MSG_CHECKING([QtXml])
   AC_REQUIRE([AX_HAVE_QT_CORE])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtXml],
+    [Xml],
     [QCoreApplication QXmlSimpleReader],
     _AX_HAVE_QT_CORE_PROGRAM([QXmlSimpleReader]),
     , dnl CXXFLAGS
@@ -252,7 +278,7 @@ AC_DEFUN([AX_HAVE_QT_OPENGL], [
   AC_REQUIRE([AX_HAVE_OPENGL])
   AC_REQUIRE([AX_HAVE_QT_GUI])
   _AX_HAVE_QT_ADD_MODULE(
-    [QtOpenGL],
+    [OpenGL],
     [QApplication QGLWidget],
     _AX_HAVE_QT_GUI_PROGRAM([QGLWidget]),
     [$X_CFLAGS $GL_CFLAGS],
@@ -336,9 +362,9 @@ AC_DEFUN([_AX_HAVE_QT_ADD_MODULE], [
         if test -r "$ax_dir/$ax_qt_header_name"; then
           ax_qt_module_include_dir="$ax_dir"
           break;
-        elif test -r "$ax_dir/$ax_qt_module/$ax_qt_header_name"; then
+        elif test -r "$ax_dir/Qt$ax_qt_module/$ax_qt_header_name"; then
           _AX_HAVE_QT_INSERT([ax_qt_module_CXXFLAGS], [-I"$ax_dir"])
-          ax_qt_module_include_dir="$ax_dir/$ax_qt_module"
+          ax_qt_module_include_dir="$ax_dir/Qt$ax_qt_module"
           break;
         fi;
       done;
@@ -372,7 +398,7 @@ AC_DEFUN([_AX_HAVE_QT_ADD_MODULE], [
     [$ax_qt_module_prologue],
     [$3],
     [$ax_qt_module_CXXFLAGS],
-    ["$ax_qt_module_LIBS -l$ax_qt_module"], [
+    ["$ax_qt_module_LIBS -lQt$ax_qt_module"], [
       $6
       :
   ],[
@@ -380,8 +406,8 @@ AC_DEFUN([_AX_HAVE_QT_ADD_MODULE], [
     ax_found_a_good_dir=no
     _AX_HAVE_QT_FOR_EACH_DIR([ax_dir_root],[
       for ax_dir in $ax_dir_root $ax_dir_root/lib $ax_dir_root/lib64; do
-        for lib_candidate in `ls $ax_dir/lib$ax_qt_module* 2>/dev/null`; do
-          lib_candidate=`echo $lib_candidate | sed -re "s|^.*/lib($ax_qt_module.*)\\..*|\\1|"`
+        for lib_candidate in `ls $ax_dir/libQt*$ax_qt_module* 2>/dev/null`; do
+          lib_candidate=`echo $lib_candidate | sed -re "s|^.*/lib(Qt.*$ax_qt_module.*)\\..*|\\1|"`
           _AX_HAVE_QT_COMPILE(
             [$ax_qt_module_prologue],
             [$3],
