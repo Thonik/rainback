@@ -15,7 +15,8 @@ Bootstrapper::Bootstrapper() :
     _rainback(_lua)
 {
     _rainback.setWidget(&_desktop);
-    lua::load_file(_lua, "../../demo/init.lua");
+    QFile file("../../demo/init.lua");
+    _lua(file);
 }
 
 QWidget& Bootstrapper::mainWidget()
