@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include demo tests
+SUBDIRS = src include demo tests server
 
 EXTRA_DIST = rainback wow
 
@@ -20,6 +20,9 @@ cehck: check
 
 run:
 	cd demo && ./rainback
+
+runserver:
+	cd server && ./rainbackserver
 
 debug:
 	cd demo && gdb .libs/lt-rainback

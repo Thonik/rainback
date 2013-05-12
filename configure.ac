@@ -43,6 +43,7 @@ LUA_CXX_LIBS=`pkg-config --libs lua-cxx`
 
 # Check for Qt
 AX_HAVE_QT_CORE
+AX_HAVE_QT_NETWORK
 AX_HAVE_QT_GUI
 AX_HAVE_QT_WIDGETS
 AX_HAVE_QT_MOC
@@ -51,5 +52,5 @@ if test x"$have_qt_core" = xno || test x"$have_qt_gui" = xno || test x"$have_qt_
     AC_MSG_ERROR([Qt is required to build rainback])
 fi;
 
-AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile include/Makefile demo/Makefile tests/Makefile rpm.spec])
+AC_CONFIG_FILES([rainback.m4 Makefile src/Makefile include/Makefile demo/Makefile server/Makefile tests/Makefile rpm.spec])
 AC_OUTPUT
