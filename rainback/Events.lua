@@ -14,7 +14,7 @@ function Rainback.DispatchEvent(event, ...)
     end;
     local result, msg = xpcall(Curry(listeners, "Fire", event, ...), traceback);
     if not result then
-        print(msg);
+        print("Error occurred while dispatching '" .. event .. "' event:\n" .. msg);
     end;
     while #queue > 0 do
         local firstQueued = Lists.ShiftOne(queue);
