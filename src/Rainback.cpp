@@ -278,7 +278,7 @@ Rainback::Rainback(Lua& lua) :
     elapsed.start();
 
     connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
-    connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(close()));
+    connect(qApp, SIGNAL(aboutToQuit()), this, SLOT(close()));
 }
 
 void Rainback::openFile(QFile& file, const QIODevice::OpenMode& flags, const bool checkExists)
