@@ -179,7 +179,7 @@ end;
 function Editor:Run(...)
     local success, rv = xpcall(
         Curry(self.page, "Run", ...),
-        debug.traceback
+        traceback
     );
     if success then
         Frames.Color(self.title, 0, .5, 0);
@@ -192,7 +192,7 @@ end;
 function Editor:Reset()
     local success, rv = xpcall(
         Curry(self.page, "Reset"),
-        debug.traceback
+        traceback
     );
     if success then
         Frames.Color(self.title, "grey");

@@ -66,7 +66,7 @@ function Rainback.LoadPersistence(persistenceFile)
         Rainback.WriteFile(persistenceFile .. "." .. GetIndex(), persistedData);
     end;
     local remover = Timing.Every(AUTOSAVE_INTERVAL, function()
-        local success, msg = xpcall(Rainback.Autosave, debug.traceback);
+        local success, msg = xpcall(Rainback.Autosave, traceback);
         if not success then
             print("WARNING: Autosave failed: ".. msg);
         end;

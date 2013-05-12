@@ -12,7 +12,7 @@ function Rainback.DispatchEvent(event, ...)
         table.insert(queue, Seal(Rainback.DispatchEvent, event, ...));
         return;
     end;
-    local result, msg = xpcall(Curry(listeners, "Fire", event, ...), debug.traceback);
+    local result, msg = xpcall(Curry(listeners, "Fire", event, ...), traceback);
     if not result then
         print(msg);
     end;

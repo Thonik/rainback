@@ -127,7 +127,7 @@ local function Parser(page, command)
                 return;
             end;
             env:AddDestructor(script:OnCompilingUpdate(function()
-                local success, msg = xpcall(Curry(page.Run, page), debug.traceback);
+                local success, msg = xpcall(Curry(page.Run, page), traceback);
                 if not success then
                     print(msg);
                 end;
