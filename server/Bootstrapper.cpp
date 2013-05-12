@@ -30,6 +30,7 @@ Bootstrapper::Bootstrapper() :
 		std::cerr << "Look at demo/init.lua for guidance on what globals need to be defined" << std::endl;
 		std::cerr << "defined within that file. Build settings will override source settings." << std::endl;
 		QCoreApplication::exit(1);
+        return;
 	}
 
 	_lua["Rainback"]["globals"]["srcdir"] = srcDir;
