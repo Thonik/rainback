@@ -35,6 +35,10 @@ padding: 2px;
 editorFrame:SetWidget(editor);
 
 editor:connect("returnPressed", function()
+    local loadstring = loadstring;
+    if not loadstring then
+        loadstring = load;
+    end;
     if editor.text == "exit" then
         Rainback.Close();
     elseif editor.text:match("^lua%s+") then
