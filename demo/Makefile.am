@@ -16,7 +16,7 @@ rainback_SOURCES = \
 nodist_rainback_SOURCES = $(rainback_MOC_SOURCES)
 
 mostlyclean-local:
-	rm -f $(librainback_la_MOC_SOURCES)
+	rm -f $(rainback_la_MOC_SOURCES)
 .PHONY: mostlyclean-local
 
 moc_%.cpp: %.hpp
