@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
 
 #include <lua-cxx/DirectoryModuleLoader.hpp>
 #include <lua-cxx/LuaValue.hpp>
@@ -61,7 +62,12 @@ void dispatch(Lua& lua, std::string event, Args&&... args)
     if (dispatcher.isNil()) {
         return;
     }
-    dispatcher(event, args...);
+    try {
+        dispatcher(event, args...);
+    } catch(LuaException& ex) {
+        std::cerr << "Exception during event: " << event << "\n";
+        std::cerr << ex.what() << std::endl;
+    }
 }
 
 } // namespace rainback
