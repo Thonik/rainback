@@ -102,6 +102,10 @@ Rainback::Rainback(Lua& lua) :
 
     _lua["Rainback"] = lua::value::table;
 
+    _lua["error"] = lua::LuaCallable([](LuaStack& stack) {
+        stack.error(stack.as<std::string>(-1));
+    });
+
     _lua["Rainback"]["globals"] = lua::value::table;
 
     _lua["Rainback"]["AddModuleDirectory"] =
