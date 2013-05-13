@@ -7,6 +7,7 @@ librainback_la_LDFLAGS = -version-info 0:0:0
 librainback_la_MOC_SOURCES = \
 	protocol/moc_Human.cpp \
 	protocol/moc_Pascal.cpp \
+	proxy/moc_TCPServer.cpp \
 	moc_Rainback.cpp \
 	moc_LuaWidget.cpp \
 	moc_LuaFont.cpp \
@@ -17,6 +18,7 @@ nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 librainback_la_SOURCES = \
 	protocol/Human.cpp \
 	protocol/Pascal.cpp \
+	proxy/TCPServer.cpp \
 	Rainback.cpp \
 	LuaWidget.cpp \
 	LuaFont.cpp \
@@ -29,6 +31,10 @@ mostlyclean-local:
 protocol/moc_%.cpp: $(top_srcdir)/include/protocol/%.hpp
 	mkdir -p protocol
 	cd protocol && @QT_MOC@ -o `basename $@` ../$<
+
+proxy/moc_%.cpp: $(top_srcdir)/include/proxy/%.hpp
+	mkdir -p `dirname $@`
+	cd `dirname $@` && @QT_MOC@ -o `basename $@` ../$<
 
 moc_%.cpp: $(top_srcdir)/include/%.hpp
 	@QT_MOC@ -o $@ $<

@@ -361,6 +361,27 @@ Rainback::Rainback(Lua& lua) :
         connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     };
 
+    _lua["Rainback"]["Network"]["serveTCP"] = lua::LuaCallable(
+        [this](LuaStack& stack) {
+            if (stack.size() < 1) {
+                throw LuaException("serverTCP requires 1 argument, but the stack has none");
+            }
+
+            auto port = stack.as<int>(1);
+            validatePort(port);
+            stack.clear();
+
+            auto server = new proxy::TCPServer;
+            auto socketServer = new QTcpServer(server);
+            server->setServer(socketServer);
+
+            lua::push<QObject*>(stack, server, true);
+            observeToDestroy(server, stack.as<LuaUserdata*>(-1));
+
+            socketServer->listen(QHostAddress::Any, port);
+        }
+    );
+
     _lua["Rainback"]["Network"]["connectTCP"] = lua::LuaCallable(
         [this, buildSocket](LuaStack& stack) {
             if (stack.size() < 2) {
