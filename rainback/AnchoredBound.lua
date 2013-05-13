@@ -1,4 +1,5 @@
 require "fritomod/OOP-Class";
+require "rainback/Graphics";
 
 Rainback = Rainback or {};
 
