@@ -14,17 +14,30 @@ Human::Human() :
 void Human::listen(QIODevice* const io)
 {
     if (_io) {
-        disconnect(_io, SIGNAL(readyRead()), this, SLOT(readData()));
+        disconnect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
     }
     _io = io;
     if (!_io) {
         return;
     }
-    connect(_io, SIGNAL(readyRead()), this, SLOT(readData()));
+    connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
 }
 
-void Human::readData()
+void Human::close()
 {
+    listen(nullptr);
+}
+
+void Human::write(const QString& line)
+{
+    _io->write(line.toUtf8());
+}
+
+void Human::flush()
+{
+    if (!_io) {
+        return;
+    }
     while (_io->bytesAvailable() > 1 && _io->canReadLine()) {
         // Add 1 for the \0 terminator
         QByteArray lineData = _io->readLine(_io->bytesAvailable() + 1);
@@ -45,10 +58,9 @@ void Human::readData()
         }
 
         std::cout << "Received " << line.length() << " byte(s): " << line.toStdString() << std::endl;
-        emit commandReceived(line);
+        emit lineRead(line);
     }
 }
 
 } // namespace protocol
 } // namespace rainback
-

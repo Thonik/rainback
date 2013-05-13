@@ -15,12 +15,14 @@ class Human : public QObject
 public:
     Human();
     void listen(QIODevice* const io);
+    void close();
 
 public slots:
-    void readData();
+    void write(const QString& line);
+    void flush();
 
 signals:
-    void commandReceived(const QString& cmd);
+    void lineRead(const QString& cmd);
 };
 
 } // namespace protocol

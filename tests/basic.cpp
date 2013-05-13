@@ -10,7 +10,7 @@
 
 using namespace rainback;
 
-BOOST_AUTO_TEST_CASE(checkProtocol)
+BOOST_AUTO_TEST_CASE(checkHumanProtocol)
 {
     TestIODevice io;
     io.open(QIODevice::ReadWrite);
@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(checkProtocol)
 
     StringSink dump;
 
-    QObject::connect(&ptl, SIGNAL(commandReceived(const QString&)), &dump, SLOT(add(const QString&)));
+    QObject::connect(&ptl, SIGNAL(lineRead(const QString&)), &dump, SLOT(add(const QString&)));
 
     ptl.listen(&io);
 
