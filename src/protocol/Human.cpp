@@ -35,10 +35,7 @@ void Human::write(const QString& line)
 
 void Human::flush()
 {
-    if (!_io) {
-        return;
-    }
-    while (_io->bytesAvailable() > 1 && _io->canReadLine()) {
+    while (_io && _io->bytesAvailable() > 1 && _io->canReadLine()) {
         // Add 1 for the \0 terminator
         QByteArray lineData = _io->readLine(_io->bytesAvailable() + 1);
         assert(lineData.size() > 0);

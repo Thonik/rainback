@@ -51,10 +51,14 @@ void Pascal::write(const QString& line)
 
 void Pascal::flush()
 {
+    if (!_io) {
+        return;
+    }
+
     QDataStream stream(_io);
     stream.setVersion(QDataStream::Qt_4_0);
 
-    while (_io->bytesAvailable()) {
+    while (_io && _io->bytesAvailable()) {
         if (!lineSize) {
             if (_io->bytesAvailable() < static_cast<int>(sizeof(packetsize))) {
                 return;
