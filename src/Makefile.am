@@ -6,6 +6,7 @@ librainback_la_LDFLAGS = -version-info 0:0:0
 # moc-generated source files
 librainback_la_MOC_SOURCES = \
 	protocol/moc_Human.cpp \
+	protocol/moc_Pascal.cpp \
 	moc_Rainback.cpp \
 	moc_LuaWidget.cpp \
 	moc_LuaFont.cpp \
@@ -15,6 +16,7 @@ nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
 librainback_la_SOURCES = \
 	protocol/Human.cpp \
+	protocol/Pascal.cpp \
 	Rainback.cpp \
 	LuaWidget.cpp \
 	LuaFont.cpp \
