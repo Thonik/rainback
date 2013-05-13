@@ -23,138 +23,13 @@
 #include "protocol/Human.hpp"
 #include "protocol/Pascal.hpp"
 
+#include "proxy/QObject.hpp"
+#include "proxy/Socket.hpp"
+#include "proxy/TCPServer.hpp"
+#include "proxy/QWidget.hpp"
+#include "proxy/Pascal.hpp"
+
 using namespace rainback;
-
-void observeToDestroy(QObject* obj, LuaUserdata* userdata)
-{
-    auto observer = new lua::QObjectObserver(obj, userdata);
-    observer->setDestroyOnGC(true);
-}
-
-void validatePort(const int port) {
-    if (port > 0 && port <= USHRT_MAX) {
-        return;
-    }
-    std::stringstream str;
-    if (port < 0) {
-        str << "Port must be greater than zero, but was given " << port;
-    } else if (port > USHRT_MAX) {
-        str << "Port must be less than " << USHRT_MAX << ", but was given " << port;
-    }
-    throw LuaException(str.str());
-}
-
-void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods)
-{
-    auto userdata = stack.save();
-    lua::push(stack, userdata);
-    lua::qobject(stack, obj);
-
-    methods["__methods"] = methods;
-
-    auto worker = stack.lua()(""
-        "return function(userdata, methods)\n"
-        "    local mt = getmetatable(userdata);\n"
-        ""
-        "    local defaultIndex = mt.__index;\n"
-        "    function mt.__index(self, key)\n"
-        "        return methods[key] or defaultIndex(self, key);\n"
-        "    end;\n"
-        "end;\n"
-    );
-    worker(userdata, methods);
-
-    observeToDestroy(&obj, userdata.as<LuaUserdata*>());
-}
-
-namespace lua {
-
-template<>
-struct UserdataType<QWidget>
-{
-    constexpr static const char* name = "QWidget";
-
-    static void initialize(LuaStack& stack, QWidget& widget)
-    {
-        lua::push(stack, lua::value::table);
-        auto methods = stack.save();
-
-        methods["resize"] = std::function<void(QWidget&, const int, const int)>(
-            [](QWidget& widget, const int w, const int h) {
-                widget.resize(w, h);
-            }
-        );
-
-        methods["setGeometry"] = std::function<void(QWidget&, const int, const int, const int, const int)>(
-            [](QWidget& widget, const int x, const int y, const int w, const int h) {
-                widget.setGeometry(x, y, w, h);
-            }
-        );
-
-        wrapQObject(stack, widget, methods);
-    }
-};
-
-template<>
-struct UserdataType<protocol::Pascal>
-{
-    constexpr static const char* name = "PascalProtocol";
-
-    static void initialize(LuaStack& stack, protocol::Pascal& ptl)
-    {
-        lua::push(stack, lua::value::table);
-        auto methods = stack.save();
-
-        methods["listen"] = std::function<void(protocol::Pascal&, QObject*)>(
-            [](protocol::Pascal& ptl, QObject* obj) {
-                auto socket = qobject_cast<QIODevice*>(obj);
-                if (!socket) {
-                    throw LuaException("Listen must be provided with a socket or other IO device");
-                }
-                ptl.listen(socket);
-            }
-        );
-
-        wrapQObject(stack, ptl, methods);
-    }
-};
-
-template<>
-struct UserdataType<QAbstractSocket>
-{
-    constexpr static const char* name = "Socket";
-
-    static void initialize(LuaStack& stack, QAbstractSocket& socket)
-    {
-        lua::push(stack, lua::value::table);
-        auto methods = stack.save();
-
-        methods["state"] = std::function<std::string(QAbstractSocket& socket)>(
-            [](QAbstractSocket& socket) {
-                switch (socket.state()) {
-                    case QAbstractSocket::UnconnectedState:
-                        return "unconnected";
-                    case QAbstractSocket::HostLookupState:
-                        return "hostlookup";
-                    case QAbstractSocket::ConnectingState:
-                        return "connecting";
-                    case QAbstractSocket::ConnectedState:
-                        return "connected";
-                    case QAbstractSocket::BoundState:
-                        return "bound";
-                    case QAbstractSocket::ClosingState:
-                        return "closing";
-                    default:
-                        return "unknown";
-                }
-            }
-        );
-
-        wrapQObject(stack, socket, methods);
-    }
-};
-
-} // namespace lua
 
 std::shared_ptr<LuaFont> newFont(LuaStack& stack)
 {
@@ -336,7 +211,7 @@ Rainback::Rainback(Lua& lua) :
             stack.clear();
 
             lua::push<QObject*>(stack, watcher, true);
-            observeToDestroy(watcher, stack.as<LuaUserdata*>(-1));
+            proxy::observeToDestroy(watcher, stack.as<LuaUserdata*>(-1));
         }
     );
 
@@ -357,7 +232,7 @@ Rainback::Rainback(Lua& lua) :
     _lua["Rainback"]["Network"] = lua::value::table;
 
     auto buildSocket = [](LuaStack& stack, QAbstractSocket* socket) {
-        observeToDestroy(socket, stack.as<LuaUserdata*>(-1));
+        proxy::observeToDestroy(socket, stack.as<LuaUserdata*>(-1));
         connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
     };
 
@@ -368,7 +243,7 @@ Rainback::Rainback(Lua& lua) :
             }
 
             auto port = stack.as<int>(1);
-            validatePort(port);
+            proxy::validatePort(port);
             stack.clear();
 
             auto server = new proxy::TCPServer;
@@ -376,7 +251,7 @@ Rainback::Rainback(Lua& lua) :
             server->setServer(socketServer);
 
             lua::push<QObject*>(stack, server, true);
-            observeToDestroy(server, stack.as<LuaUserdata*>(-1));
+            proxy::observeToDestroy(server, stack.as<LuaUserdata*>(-1));
 
             socketServer->listen(QHostAddress::Any, port);
         }
@@ -391,11 +266,11 @@ Rainback::Rainback(Lua& lua) :
             }
             auto hostname = stack.as<QString>(1);
             auto port = stack.as<int>(2);
-            validatePort(port);
+            proxy::validatePort(port);
             stack.clear();
 
-            auto socket = new QTcpSocket(this);
-            lua::push<QObject*>(stack, socket, true);
+            QAbstractSocket* socket = new QTcpSocket(this);
+            lua::push<QAbstractSocket*>(stack, socket, true);
             buildSocket(stack, socket);
 
             socket->connectToHost(hostname, static_cast<quint16>(port));
@@ -404,9 +279,15 @@ Rainback::Rainback(Lua& lua) :
         }
     );
 
-    _lua["Rainback"]["Network"]["pascalProtocol"] = std::function<std::shared_ptr<protocol::Pascal>()>(
-        [this]() {
-            return std::make_shared<protocol::Pascal>();
+    _lua["Rainback"]["Network"]["pascalProtocol"] = std::function<std::shared_ptr<protocol::Pascal>(LuaStack& stack)>(
+        [this](LuaStack& stack) {
+            auto ptl = std::make_shared<protocol::Pascal>();
+
+            if (stack.size() > 0) {
+                ptl->listen(stack.as<QAbstractSocket*>());
+            }
+
+            return ptl;
         }
     );
 

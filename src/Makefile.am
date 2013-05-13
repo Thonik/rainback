@@ -19,6 +19,8 @@ librainback_la_SOURCES = \
 	protocol/Human.cpp \
 	protocol/Pascal.cpp \
 	proxy/TCPServer.cpp \
+	proxy/QObject.cpp \
+	proxy/Socket.cpp \
 	Rainback.cpp \
 	LuaWidget.cpp \
 	LuaFont.cpp \
