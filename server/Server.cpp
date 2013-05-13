@@ -16,7 +16,6 @@ Server::Server()
 void Server::listen()
 {
     socketServer.listen(QHostAddress::Any, 28123);
-
 }
 
 void Server::newConnection()
