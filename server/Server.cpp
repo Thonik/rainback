@@ -24,6 +24,7 @@ void Server::newConnection()
     connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
 
     auto ptl = new protocol::Human;
+    std::cout << "New connection from " << socket->peerAddress().toString().toStdString() << std::endl;
     ptl->listen(socket);
 }
 
