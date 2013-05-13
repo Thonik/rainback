@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE rainback
 #include "init.hpp"
 
-#include <QApplication>
+#include <QCoreApplication>
 
 struct QApplicationFixture
 {
@@ -9,14 +9,14 @@ struct QApplicationFixture
     char name[100];
     char* argv[1];
 
-    QApplication* app;
+    QCoreApplication* app;
 public:
     QApplicationFixture() :
         argc(1)
     {
         strcpy(name, "rainback");
         argv[0] = name;
-        app = new QApplication(argc, argv);
+        app = new QCoreApplication(argc, argv);
     }
 
     ~QApplicationFixture()
