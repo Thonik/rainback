@@ -24,6 +24,11 @@ void Human::listen(QIODevice* const io)
     flush();
 }
 
+QIODevice* Human::io()
+{
+    return _io;
+}
+
 void Human::close()
 {
     listen(nullptr);

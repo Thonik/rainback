@@ -17,6 +17,8 @@ public:
     void listen(QIODevice* const io);
     void close();
 
+    QIODevice* io();
+
 public slots:
     void write(const QString& line);
     void flush();

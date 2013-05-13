@@ -20,6 +20,8 @@ public:
     Pascal();
     void listen(QIODevice* const io);
 
+    QIODevice* io();
+
 public slots:
     void write(const QString& line);
     void close();

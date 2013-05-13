@@ -26,6 +26,11 @@ void Pascal::listen(QIODevice* const io)
     flush();
 }
 
+QIODevice* Pascal::io()
+{
+    return _io;
+}
+
 void Pascal::close()
 {
     listen(nullptr);
