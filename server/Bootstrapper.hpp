@@ -5,6 +5,8 @@
 #include <lua-cxx/LuaEnvironment.hpp>
 #include "Server.hpp"
 
+using namespace rainback;
+
 class Bootstrapper
 {
     Lua _lua;

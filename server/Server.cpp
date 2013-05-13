@@ -4,6 +4,10 @@
 #include <QTextStream>
 #include <QTcpSocket>
 
+#include "protocol/Human.hpp"
+
+namespace rainback {
+
 Server::Server()
 {
     connect(&socketServer, SIGNAL(newConnection()), this, SLOT(newConnection()));
@@ -20,9 +24,8 @@ void Server::newConnection()
     QTcpSocket* const socket = socketServer.nextPendingConnection();
     connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
 
-    QTextStream stream(socket);
-
-    stream << "No fucking time" << '\n';
-    socket->close();
+    auto ptl = new protocol::Human;
+    ptl->listen(socket);
 }
 
+} // namespace rainback

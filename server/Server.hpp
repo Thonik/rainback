@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTcpServer>
 
+namespace rainback {
+
 class Server : public QObject
 {
     Q_OBJECT
@@ -16,6 +18,8 @@ public slots:
     void listen();
     void newConnection();
 };
+
+} // namespace rainback
 
 #endif // RAINBACK_SERVER_HEADER
 

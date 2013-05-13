@@ -1,12 +1,57 @@
 #include "init.hpp"
+#include "TestIODevice.hpp"
 
-BOOST_AUTO_TEST_CASE(checkSanity)
+#include "protocol/Human.hpp"
+#include <QBuffer>
+
+#include <QCoreApplication>
+
+#include <QObject>
+
+using namespace rainback;
+
+BOOST_AUTO_TEST_CASE(checkProtocol)
 {
-    // Check will fail, but continue
-    BOOST_CHECK_EQUAL(4, 2 + 2);
+    TestIODevice io;
+    io.open(QIODevice::ReadWrite);
 
-    // Require fails immediately
-    BOOST_REQUIRE_EQUAL(5, 2 + 3);
+    protocol::Human ptl;
+
+    StringSink dump;
+
+    QObject::connect(&ptl, SIGNAL(commandReceived(const QString&)), &dump, SLOT(add(const QString&)));
+
+    ptl.listen(&io);
+
+    BOOST_TEST_CHECKPOINT("Protocol receives commands");
+    io.fakeWrite("A\n");
+    BOOST_CHECK_EQUAL(dump.strings.size(), 1);
+    BOOST_CHECK_EQUAL(dump.strings[0].toStdString(), "A");
+
+    dump.strings.clear();
+    BOOST_REQUIRE(dump.strings.isEmpty());
+
+    BOOST_TEST_CHECKPOINT("Protocol removes carriage return");
+    io.fakeWrite("B\r\n");
+    BOOST_CHECK_EQUAL(dump.strings.size(), 1);
+    BOOST_CHECK_EQUAL(dump.strings[0].toStdString(), "B");
+
+    dump.strings.clear();
+
+    BOOST_TEST_CHECKPOINT("Protocol handles segmented data");
+    io.fakeWrite("B");
+    io.fakeWrite("C");
+    io.fakeWrite("\n");
+    BOOST_CHECK_EQUAL(dump.strings.size(), 1);
+    BOOST_CHECK_EQUAL(dump.strings[0].toStdString(), "BC");
+
+    dump.strings.clear();
+
+    BOOST_TEST_CHECKPOINT("Protocol can split a single packet containing multiple commands");
+    io.fakeWrite("D\nE\n");
+    BOOST_CHECK_EQUAL(dump.strings.size(), 2);
+    BOOST_CHECK_EQUAL(dump.strings[0].toStdString(), "D");
+    BOOST_CHECK_EQUAL(dump.strings[1].toStdString(), "E");
 }
 
 // vim: set ts=4 sw=4 :
