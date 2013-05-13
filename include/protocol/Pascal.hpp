@@ -19,10 +19,10 @@ class Pascal : public QObject
 public:
     Pascal();
     void listen(QIODevice* const io);
-    void close();
 
 public slots:
     void write(const QString& line);
+    void close();
     void flush();
 
 signals:
