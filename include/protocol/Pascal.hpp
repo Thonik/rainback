@@ -1,34 +1,24 @@
 #ifndef RAINBACK_PASCAL_HEADER
 #define RAINBACK_PASCAL_HEADER
 
-#include <QObject>
-#include <QIODevice>
+#include "protocol/AbstractLine.hpp"
 
 namespace rainback {
 namespace protocol {
 
-class Pascal : public QObject
+class Pascal : public AbstractLine
 {
     Q_OBJECT
 
     typedef quint32 packetsize;
-    QIODevice* _io;
-
     packetsize lineSize;
 
 public:
     Pascal();
-    void listen(QIODevice* const io);
-
-    QIODevice* io();
 
 public slots:
     void write(const QString& line);
-    void close();
     void flush();
-
-signals:
-    void lineRead(const QString& cmd);
 };
 
 } // namespace protocol

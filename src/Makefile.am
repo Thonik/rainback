@@ -7,6 +7,7 @@ librainback_la_LDFLAGS = -version-info 0:0:0
 librainback_la_MOC_SOURCES = \
 	protocol/moc_Human.cpp \
 	protocol/moc_Pascal.cpp \
+	protocol/moc_AbstractLine.cpp \
 	proxy/moc_TCPServer.cpp \
 	moc_Rainback.cpp \
 	moc_LuaWidget.cpp \
@@ -18,6 +19,7 @@ nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 librainback_la_SOURCES = \
 	protocol/Human.cpp \
 	protocol/Pascal.cpp \
+	protocol/AbstractLine.cpp \
 	proxy/TCPServer.cpp \
 	proxy/QObject.cpp \
 	proxy/Socket.cpp \

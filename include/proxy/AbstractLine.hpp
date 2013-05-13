@@ -1,24 +1,24 @@
-#ifndef RAINBACK_PROXY_PASCAL_HEADER
-#define RAINBACK_PROXY_PASCAL_HEADER
+#ifndef RAINBACK_PROXY_ABSTRACTLINE_HEADER
+#define RAINBACK_PROXY_ABSTRACTLINE_HEADER
 
 #include "proxy/QObject.hpp"
 #include "proxy/Socket.hpp"
-#include "protocol/Pascal.hpp"
+#include "protocol/AbstractLine.hpp"
 
 namespace lua {
 
 template<>
-struct UserdataType<rainback::protocol::Pascal>
+struct UserdataType<rainback::protocol::AbstractLine>
 {
-    constexpr static const char* name = "rainback::protocol::Pascal";
+    constexpr static const char* name = "rainback::protocol::AbstractLine";
 
-    static void initialize(LuaStack& stack, rainback::protocol::Pascal& ptl)
+    static void initialize(LuaStack& stack, rainback::protocol::AbstractLine& ptl)
     {
         lua::push(stack, lua::value::table);
         auto methods = stack.save();
 
-        methods["listen"] = std::function<void(rainback::protocol::Pascal&, QAbstractSocket*)>(
-            [](rainback::protocol::Pascal& ptl, QAbstractSocket* obj) {
+        methods["listen"] = std::function<void(rainback::protocol::AbstractLine&, QAbstractSocket*)>(
+            [](rainback::protocol::AbstractLine& ptl, QAbstractSocket* obj) {
                 auto socket = qobject_cast<QAbstractSocket*>(obj);
                 if (!socket) {
                     throw LuaException("A socket or other IO device must be provided");
@@ -27,8 +27,8 @@ struct UserdataType<rainback::protocol::Pascal>
             }
         );
 
-        methods["write"] = std::function<void(rainback::protocol::Pascal&, const QString&)>(
-            [](rainback::protocol::Pascal& ptl, const QString& data) {
+        methods["write"] = std::function<void(rainback::protocol::AbstractLine&, const QString&)>(
+            [](rainback::protocol::AbstractLine& ptl, const QString& data) {
                 if (!ptl.io()) {
                     throw LuaException("Write must have a socket or IO device to write to");
                 }
@@ -55,4 +55,4 @@ struct UserdataType<rainback::protocol::Pascal>
 
 } // namespace lua
 
-#endif // RAINBACK_PROXY_PASCAL_HEADER
+#endif // RAINBACK_PROXY_ABSTRACTLINE_HEADER

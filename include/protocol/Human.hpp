@@ -1,30 +1,18 @@
 #ifndef RAINBACK_HUMAN_HEADER
 #define RAINBACK_HUMAN_HEADER
 
-#include <QObject>
-#include <QIODevice>
+#include "protocol/AbstractLine.hpp"
 
 namespace rainback {
 namespace protocol {
 
-class Human : public QObject
+class Human : public AbstractLine
 {
     Q_OBJECT
-    QIODevice* _io;
-
-public:
-    Human();
-    void listen(QIODevice* const io);
-    void close();
-
-    QIODevice* io();
 
 public slots:
     void write(const QString& line);
     void flush();
-
-signals:
-    void lineRead(const QString& cmd);
 };
 
 } // namespace protocol

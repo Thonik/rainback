@@ -6,34 +6,6 @@
 namespace rainback {
 namespace protocol {
 
-Human::Human() :
-    _io(nullptr)
-{
-}
-
-void Human::listen(QIODevice* const io)
-{
-    if (_io) {
-        disconnect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
-    }
-    _io = io;
-    if (!_io) {
-        return;
-    }
-    connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
-    flush();
-}
-
-QIODevice* Human::io()
-{
-    return _io;
-}
-
-void Human::close()
-{
-    listen(nullptr);
-}
-
 void Human::write(const QString& line)
 {
     _io->write(line.toUtf8());

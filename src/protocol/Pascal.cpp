@@ -1,39 +1,15 @@
 #include "protocol/Pascal.hpp"
 
-#include <iostream>
-#include <cassert>
 #include <QDataStream>
+#include <cassert>
+#include <iostream>
 
 namespace rainback {
 namespace protocol {
 
 Pascal::Pascal() :
-    _io(nullptr),
-    lineSize(0)
+    lineSize(0), AbstractLine()
 {
-}
-
-void Pascal::listen(QIODevice* const io)
-{
-    if (_io) {
-        disconnect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
-    }
-    _io = io;
-    if (!_io) {
-        return;
-    }
-    connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
-    flush();
-}
-
-QIODevice* Pascal::io()
-{
-    return _io;
-}
-
-void Pascal::close()
-{
-    listen(nullptr);
 }
 
 void Pascal::write(const QString& line)

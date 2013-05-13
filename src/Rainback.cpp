@@ -27,7 +27,7 @@
 #include "proxy/Socket.hpp"
 #include "proxy/TCPServer.hpp"
 #include "proxy/QWidget.hpp"
-#include "proxy/Pascal.hpp"
+#include "proxy/AbstractLine.hpp"
 
 using namespace rainback;
 
@@ -279,9 +279,21 @@ Rainback::Rainback(Lua& lua) :
         }
     );
 
-    _lua["Rainback"]["Network"]["pascalProtocol"] = std::function<std::shared_ptr<protocol::Pascal>(LuaStack& stack)>(
+    _lua["Rainback"]["Network"]["pascalProtocol"] = std::function<std::shared_ptr<protocol::AbstractLine>(LuaStack& stack)>(
         [this](LuaStack& stack) {
-            auto ptl = std::make_shared<protocol::Pascal>();
+            std::shared_ptr<protocol::AbstractLine> ptl(std::make_shared<protocol::Pascal>());
+
+            if (stack.size() > 0) {
+                ptl->listen(stack.as<QAbstractSocket*>());
+            }
+
+            return ptl;
+        }
+    );
+
+    _lua["Rainback"]["Network"]["humanProtocol"] = std::function<std::shared_ptr<protocol::AbstractLine>(LuaStack& stack)>(
+        [this](LuaStack& stack) {
+            std::shared_ptr<protocol::AbstractLine> ptl(std::make_shared<protocol::Human>());
 
             if (stack.size() > 0) {
                 ptl->listen(stack.as<QAbstractSocket*>());
