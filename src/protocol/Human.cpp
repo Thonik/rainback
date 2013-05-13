@@ -9,6 +9,9 @@ namespace protocol {
 void Human::write(const QString& line)
 {
     _io->write(line.toUtf8());
+    if (!line.endsWith("\n")) {
+        _io->write("\n");
+    }
 }
 
 void Human::flush()
