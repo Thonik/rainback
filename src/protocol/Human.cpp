@@ -35,7 +35,7 @@ void Human::flush()
             continue;
         }
 
-        std::cout << "Received " << line.length() << " byte(s): " << line.toStdString() << std::endl;
+        //std::cout << "Received " << line.length() << " byte(s): " << line.toStdString() << std::endl;
         emit lineRead(line);
     }
 }

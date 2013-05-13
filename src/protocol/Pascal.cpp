@@ -60,7 +60,7 @@ void Pascal::flush()
         QString line;
         stream >> line;
 
-        std::cout << "Received " << line.length() << " byte(s): " << line.toStdString() << std::endl;
+        //std::cout << "Received " << line.length() << " byte(s): " << line.toStdString() << std::endl;
         emit lineRead(line);
     }
 }
