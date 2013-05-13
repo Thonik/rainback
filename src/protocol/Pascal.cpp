@@ -23,6 +23,7 @@ void Pascal::listen(QIODevice* const io)
         return;
     }
     connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
+    flush();
 }
 
 void Pascal::close()

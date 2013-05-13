@@ -21,6 +21,7 @@ void Human::listen(QIODevice* const io)
         return;
     }
     connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
+    flush();
 }
 
 void Human::close()
