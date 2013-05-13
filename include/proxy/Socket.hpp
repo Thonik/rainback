@@ -39,6 +39,7 @@ struct UserdataType<QAbstractSocket>
             }
         );
 
+        QObject::connect(&socket, SIGNAL(disconnected()), &socket, SLOT(deleteLater()));
         rainback::proxy::wrapQObject(stack, socket, methods);
     }
 };
