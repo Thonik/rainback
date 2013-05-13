@@ -1,8 +1,6 @@
 #include "protocol/Human.hpp"
 
-#include <QTextStream>
 #include <iostream>
-
 #include <cassert>
 
 namespace rainback {
@@ -23,11 +21,6 @@ void Human::listen(QIODevice* const io)
         return;
     }
     connect(_io, SIGNAL(readyRead()), this, SLOT(readData()));
-
-    QTextStream stream(_io);
-
-    stream << "# Rainback server protocol for humans\n";
-    stream << "# Each command can be sent using a Unicode string followed by a newline.\n";
 }
 
 void Human::readData()
