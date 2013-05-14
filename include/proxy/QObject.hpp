@@ -11,7 +11,7 @@
 namespace rainback {
 namespace proxy {
 
-void observeToDestroy(LuaStack& stack, QObject* obj, bool destroyOnGC);
+void observeToDestroy(LuaStack& stack, QObject& obj, bool destroyOnGC);
 void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods);
 
 } // namespace proxy

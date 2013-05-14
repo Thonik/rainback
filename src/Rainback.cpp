@@ -211,7 +211,7 @@ Rainback::Rainback(Lua& lua) :
             stack.clear();
 
             lua::push<QObject*>(stack, watcher, true);
-            proxy::observeToDestroy(watcher, stack.as<LuaUserdata*>(-1));
+            proxy::observeToDestroy(stack, *watcher, true);
         }
     );
 
@@ -246,7 +246,7 @@ Rainback::Rainback(Lua& lua) :
             server->setServer(socketServer);
 
             lua::push<QObject*>(stack, server, true);
-            proxy::observeToDestroy(server, stack.as<LuaUserdata*>(-1));
+            proxy::observeToDestroy(stack, *server, true);
 
             socketServer->listen(QHostAddress::Any, port);
         }
