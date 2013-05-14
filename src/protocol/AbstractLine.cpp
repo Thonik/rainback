@@ -15,6 +15,7 @@ AbstractLine::AbstractLine() :
 void AbstractLine::listen(QIODevice* const io)
 {
     if (_io) {
+        disconnect(_io, SIGNAL(destroyed()), this, SLOT(ioDestroyed()));
         disconnect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
     }
     _io = io;
@@ -22,6 +23,7 @@ void AbstractLine::listen(QIODevice* const io)
         return;
     }
     connect(_io, SIGNAL(readyRead()), this, SLOT(flush()));
+    connect(_io, SIGNAL(destroyed()), this, SLOT(ioDestroyed()));
     flush();
 }
 
@@ -33,6 +35,11 @@ QIODevice* AbstractLine::io()
 void AbstractLine::close()
 {
     listen(nullptr);
+}
+
+void AbstractLine::ioDestroyed()
+{
+    _io = nullptr;
 }
 
 } // namespace protocol

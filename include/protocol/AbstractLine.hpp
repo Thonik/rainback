@@ -18,13 +18,16 @@ protected:
 public:
     AbstractLine();
     void listen(QIODevice* const io);
-    void close();
 
     QIODevice* io();
 
 public slots:
     virtual void write(const QString& line)=0;
     virtual void flush()=0;
+    void close();
+
+private slots:
+    void ioDestroyed();
 
 signals:
     void lineRead(const QString& cmd);
