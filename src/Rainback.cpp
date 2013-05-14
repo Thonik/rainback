@@ -275,7 +275,7 @@ Rainback::Rainback(Lua& lua) :
 
     _lua["Rainback"]["Network"]["pascalProtocol"] = std::function<std::shared_ptr<protocol::AbstractLine>(LuaStack& stack)>(
         [this](LuaStack& stack) {
-            std::shared_ptr<protocol::AbstractLine> ptl(std::make_shared<protocol::Pascal>());
+            auto ptl = std::make_shared<protocol::Pascal>();
 
             if (stack.size() > 0) {
                 ptl->listen(stack.as<QAbstractSocket*>());
