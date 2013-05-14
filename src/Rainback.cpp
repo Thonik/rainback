@@ -231,11 +231,6 @@ Rainback::Rainback(Lua& lua) :
 
     _lua["Rainback"]["Network"] = lua::value::table;
 
-    auto buildSocket = [](LuaStack& stack, QAbstractSocket* socket) {
-        proxy::observeToDestroy(socket, stack.as<LuaUserdata*>(-1));
-        connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
-    };
-
     _lua["Rainback"]["Network"]["serveTCP"] = lua::LuaCallable(
         [this](LuaStack& stack) {
             if (stack.size() < 1) {
@@ -258,7 +253,7 @@ Rainback::Rainback(Lua& lua) :
     );
 
     _lua["Rainback"]["Network"]["connectTCP"] = lua::LuaCallable(
-        [this, buildSocket](LuaStack& stack) {
+        [this](LuaStack& stack) {
             if (stack.size() < 2) {
                 std::stringstream str;
                 str << "connectTCP requires 2 arguments, but was given only " << stack.size();
@@ -271,7 +266,6 @@ Rainback::Rainback(Lua& lua) :
 
             QAbstractSocket* socket = new QTcpSocket(this);
             lua::push<QAbstractSocket*>(stack, socket, true);
-            buildSocket(stack, socket);
 
             socket->connectToHost(hostname, static_cast<quint16>(port));
 
