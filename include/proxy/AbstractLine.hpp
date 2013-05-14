@@ -50,6 +50,7 @@ struct UserdataType<rainback::protocol::AbstractLine>
         );
 
         rainback::proxy::wrapQObject(stack, ptl, methods);
+        rainback::proxy::observeToDestroy(stack, ptl, true);
     }
 };
 

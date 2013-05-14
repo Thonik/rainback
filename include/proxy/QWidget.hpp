@@ -28,6 +28,7 @@ struct UserdataType<QWidget>
         );
 
         rainback::proxy::wrapQObject(stack, widget, methods);
+        rainback::proxy::observeToDestroy(stack, widget, true);
     }
 };
 

@@ -3,10 +3,15 @@
 namespace rainback {
 namespace proxy {
 
-void observeToDestroy(QObject* obj, LuaUserdata* userdata)
+void observeToDestroy(LuaStack& stack, QObject* obj, bool destroyOnGC)
 {
-    auto observer = new lua::QObjectObserver(obj, userdata);
+    auto ptr = stack.as<LuaUserdata*>();
+    if (!ptr->managed()) {
+        return;
+    }
+    auto observer = new lua::QObjectObserver(obj, ptr);
     observer->setDestroyOnGC(true);
+    return observer;
 }
 
 void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods)
@@ -28,11 +33,6 @@ void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods)
         "end;\n"
     );
     worker(userdata, methods);
-
-    auto ptr = userdata.as<LuaUserdata*>();
-    if (ptr->managed()) {
-        observeToDestroy(&obj, userdata.as<LuaUserdata*>());
-    }
 }
 
 } // namespace proxy
