@@ -29,7 +29,10 @@ void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods)
     );
     worker(userdata, methods);
 
-    observeToDestroy(&obj, userdata.as<LuaUserdata*>());
+    auto ptr = userdata.as<LuaUserdata*>();
+    if (ptr->managed()) {
+        observeToDestroy(&obj, userdata.as<LuaUserdata*>());
+    }
 }
 
 } // namespace proxy
