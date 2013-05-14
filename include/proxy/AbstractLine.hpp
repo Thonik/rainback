@@ -17,13 +17,26 @@ struct UserdataType<rainback::protocol::AbstractLine>
         lua::push(stack, lua::value::table);
         auto methods = stack.saveAndPop();
 
-        methods["listen"] = std::function<void(rainback::protocol::AbstractLine&, QAbstractSocket*)>(
-            [](rainback::protocol::AbstractLine& ptl, QAbstractSocket* obj) {
-                auto socket = qobject_cast<QAbstractSocket*>(obj);
+        methods["listen"] = std::function<void(LuaStack&)>(
+            [](LuaStack& stack) {
+                rainback::protocol::AbstractLine& ptl = stack.as<rainback::protocol::AbstractLine&>(1);
+                auto socket = stack.as<QAbstractSocket*>(2);
                 if (!socket) {
                     throw LuaException("A socket or other IO device must be provided");
                 }
+
+                // Introduce a reference visible from Lua to ensure the socket doesn't get prematurely GC'd
+                auto worker = stack.lua()(""
+                    "return function(proto, socket)\n"
+                    "    proto.__extra.io = socket;\n"
+                    "end;"
+                );
+                lua::push(stack, worker);
+                stack.insert(1);
+                stack.pushedInvoke(2);
+
                 ptl.listen(socket);
+                stack.clear();
             }
         );
 
