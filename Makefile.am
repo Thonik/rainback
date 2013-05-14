@@ -1,5 +1,5 @@
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src include demo server tests
+SUBDIRS = src include demo tests
 
 EXTRA_DIST = rainback wow
 
