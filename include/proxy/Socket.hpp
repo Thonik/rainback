@@ -31,7 +31,7 @@ struct UserdataType<QAbstractSocket>
     static void initialize(LuaStack& stack, QAbstractSocket& socket)
     {
         lua::push(stack, lua::value::table);
-        auto methods = stack.save();
+        auto methods = stack.saveAndPop();
 
         methods["state"] = std::function<std::string(QAbstractSocket& socket)>(
             [](QAbstractSocket& socket) {

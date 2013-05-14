@@ -17,7 +17,6 @@ void observeToDestroy(LuaStack& stack, QObject* obj, bool destroyOnGC)
 void wrapQObject(LuaStack& stack, QObject& obj, LuaReference& methods)
 {
     auto userdata = stack.save();
-    lua::push(stack, userdata);
     lua::qobject(stack, obj);
 
     methods["__methods"] = methods;

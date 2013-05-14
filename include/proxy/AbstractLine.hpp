@@ -15,7 +15,7 @@ struct UserdataType<rainback::protocol::AbstractLine>
     static void initialize(LuaStack& stack, rainback::protocol::AbstractLine& ptl)
     {
         lua::push(stack, lua::value::table);
-        auto methods = stack.save();
+        auto methods = stack.saveAndPop();
 
         methods["listen"] = std::function<void(rainback::protocol::AbstractLine&, QAbstractSocket*)>(
             [](rainback::protocol::AbstractLine& ptl, QAbstractSocket* obj) {

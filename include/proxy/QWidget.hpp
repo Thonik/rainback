@@ -13,7 +13,7 @@ struct UserdataType<QWidget>
     static void initialize(LuaStack& stack, QWidget& widget)
     {
         lua::push(stack, lua::value::table);
-        auto methods = stack.save();
+        auto methods = stack.saveAndPop();
 
         methods["resize"] = std::function<void(QWidget&, const int, const int)>(
             [](QWidget& widget, const int w, const int h) {
