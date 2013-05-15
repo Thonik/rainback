@@ -84,6 +84,10 @@ function ScriptPage:RemoveCommand(command)
     self:FireUpdate();
 end;
 
+function ScriptPage:RemoveAllCommands()
+    Lists.Each(self.commands, self, "RemoveCommand");
+end;
+
 function ScriptPage:GetCommands()
     return self.commands;
 end;

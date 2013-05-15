@@ -234,7 +234,11 @@ Receive(function(command, name, ...)
 
         local content, commands = ...;
         page:SetContent(content);
-        -- TODO Handle commands
+
+        if commands then
+            self:RemoveAllCommands();
+            Lists.Each(commands, page, "AddCommand");
+        end;
     end;
 end);
 
