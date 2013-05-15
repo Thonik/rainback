@@ -152,6 +152,10 @@ Rainback::Rainback(Lua& lua) :
         qApp->closeAllWindows();
     });
 
+    _lua["Rainback"]["Exit"] = std::function<void()>([this]() {
+        QCoreApplication::exit();
+    });
+
     _lua["Rainback"]["SetBackgroundColor"] = std::function<void(const int, const int, const int)>(
         [this](const int r, const int g, const int b) {
             assertWidget();
@@ -165,6 +169,12 @@ Rainback::Rainback(Lua& lua) :
     _lua["Rainback"]["FileExists"] = std::function<bool(const QString&)>(
         [this](const QString& fileName) {
             return QFile(fileName).exists();
+        }
+    );
+
+    _lua["Rainback"]["CreateDirectory"] = std::function<bool(const QString&)>(
+        [this](const QString& dirName) {
+            return QDir::current().mkpath(dirName);
         }
     );
 
