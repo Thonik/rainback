@@ -236,7 +236,7 @@ Receive(function(command, name, ...)
         page:SetContent(content);
 
         if commands then
-            self:RemoveAllCommands();
+            page:RemoveAllCommands();
             Lists.Each(commands, page, "AddCommand");
         end;
 
