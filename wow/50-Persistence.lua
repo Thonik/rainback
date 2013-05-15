@@ -73,8 +73,10 @@ function Rainback.LoadPersistence(persistenceFile)
     end);
 
     Rainback.OnNamedEvent("CLOSE", function()
+        trace("Saving persistence...");
         remover();
         Persistence.Save();
         Rainback.WriteFile(persistenceFile, Serializers.WriteSource(persisted));
+        trace("Persistence saved");
     end);
 end;
