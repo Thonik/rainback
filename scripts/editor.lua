@@ -243,6 +243,10 @@ Callbacks.PersistentValue("Toolbox", function(pagesData)
     Lists.Each(pagesData, function(pageData)
         local page = NewPage(pageData.name, pageData.text);
 
+        if pageData.sync then
+            page:Sync();
+        end;
+
         if pageData.commands then
             Lists.Each(pageData.commands, page, "AddCommand");
         end;
@@ -254,6 +258,7 @@ Callbacks.PersistentValue("Toolbox", function(pagesData)
                 name = page:GetName(),
                 text = page:GetContent(),
                 commands = page:GetCommands(),
+                sync = page:IsSynced()
             };
         end);
     end;
