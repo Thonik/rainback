@@ -58,13 +58,25 @@ function Rainback.LoadRemote(hostname, port)
 end;
 
 local server;
+local connections = {};
 function Rainback.ServeRemote(port)
+    if server then
+        server:close();
+        connections = {};
+    end;
     server = Rainback.Network.serveTCP(port);
 
     server:connect("newConnection", function()
         local socket = server:nextPendingConnection();
-        InitializeProtocol(socket);
+        assert(socket, "Spurious newConnection");
+        print("New connection from: " .. socket:address() ..":".. socket:port());
 
-        -- TODO Do something with this socket.
+        local protocol = InitializeProtocol(socket);
+
+        table.insert(connections, protocol);
+
+        socket:connect("disconnected", function()
+            Lists.Remove(connections, protocol);
+        end);
     end);
 end;
