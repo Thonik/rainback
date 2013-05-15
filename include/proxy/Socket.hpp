@@ -9,6 +9,7 @@
 #include <lua-cxx/LuaValue.hpp>
 
 #include <QAbstractSocket>
+#include <QHostAddress>
 
 #include "proxy/QObject.hpp"
 
@@ -33,11 +34,21 @@ struct UserdataType<QAbstractSocket>
         lua::push(stack, lua::value::table);
         auto methods = stack.saveAndPop();
 
-        methods["state"] = std::function<std::string(QAbstractSocket& socket)>(
-            [](QAbstractSocket& socket) {
-                return rainback::proxy::getSocketStateName(socket.state());
-            }
-        );
+        methods["state"] = std::function<std::string(QAbstractSocket&)>([](QAbstractSocket& socket) {
+            return rainback::proxy::getSocketStateName(socket.state());
+        });
+
+        methods["address"] = std::function<QString(QAbstractSocket&)>([](QAbstractSocket& socket) {
+            return socket.peerAddress().toString();
+        });
+
+        methods["port"] = std::function<int(QAbstractSocket&)>([](QAbstractSocket& socket) {
+            return socket.peerPort();
+        });
+
+        methods["hostname"] = std::function<QString(QAbstractSocket&)>([](QAbstractSocket& socket) {
+            return socket.peerName();
+        });
 
         QObject::connect(&socket, SIGNAL(disconnected()), &socket, SLOT(deleteLater()));
         rainback::proxy::wrapQObject(stack, socket, methods);
