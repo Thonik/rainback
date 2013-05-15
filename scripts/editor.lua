@@ -239,6 +239,8 @@ Receive(function(command, name, ...)
             self:RemoveAllCommands();
             Lists.Each(commands, page, "AddCommand");
         end;
+
+        mapper:Update();
     end;
 end);
 
