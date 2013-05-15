@@ -179,3 +179,5 @@ Callbacks.PersistentValue("Toolbox", function(pagesData)
         end);
     end;
 end);
+
+Rainback.Multicast("rainback.Editor");

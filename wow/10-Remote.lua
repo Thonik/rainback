@@ -80,4 +80,15 @@ function Rainback.ServeRemote(port)
             Lists.Remove(connections, protocol);
         end);
     end);
+
+    function Rainback.Multicast(channel)
+        return Remote[channel](function(msg, source)
+            for i=1, #connections do
+                local target = connections[i];
+                if target ~= source then
+                    target:write(channel .. ":" .. msg);
+                end;
+            end;
+        end);
+    end;
 end;
