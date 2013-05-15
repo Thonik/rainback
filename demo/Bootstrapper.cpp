@@ -22,6 +22,10 @@ Bootstrapper::Bootstrapper() :
 	const QString buildDir(TOP_BUILDDIR);
 	const QString srcDir(TOP_SRCDIR);
 
+	_lua["Rainback"]["globals"]["srcdir"] = srcDir;
+	_lua["Rainback"]["globals"]["buildDir"] = buildDir;
+	_lua["Rainback"]["globals"]["profile"] = "client";
+
 	QFile buildProps(buildDir + "/settings.lua");
 	QFile srcProps(srcDir + "/settings.lua");
 
@@ -38,8 +42,6 @@ Bootstrapper::Bootstrapper() :
 		QCoreApplication::exit(1);
 		return;
 	}
-	_lua["Rainback"]["globals"]["srcdir"] = srcDir;
-	_lua["Rainback"]["globals"]["buildDir"] = buildDir;
 
 	QFile initFile(srcDir + "/demo/init.lua");
 	_lua(initFile);

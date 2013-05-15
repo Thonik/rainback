@@ -23,11 +23,11 @@ Rainback.AddModuleDirectory(FRITOMOD .. "/hack", "hack/");
 Rainback.AddModuleDirectory(FRITOMOD .. "/wow", "wow/");
 Rainback.AddModuleDirectory(SRCDIR .. "/rainback", "rainback/");
 
-Rainback.SetBackgroundColor(255, 255, 221);
-
 -- Load the WoW stuff before scripts
 Rainback.LoadDirectory(SRCDIR .. "/wow", true);
-
+assert(Rainback.CreateDirectory(PERSISTENCE_DIR),
+    "Persistence directory could not be created"
+);
 Rainback.LoadPersistence(PERSISTENCE_DIR .. "/persistence");
 
 Callbacks.PersistValue("DEBUG_TRACE", function(value)
@@ -37,10 +37,47 @@ Callbacks.PersistValue("DEBUG_TRACE", function(value)
     end;
 end);
 
-Rainback.OnNamedEvent("RENDER", Rainback.Render);
+local profiles = {};
 
--- Finally, load the scripts themselves
-Callbacks.Later(Rainback.LoadDirectory, SRCDIR .. "/scripts", true);
+if not globals.remotePort then
+    globals.remotePort = 28123;
+end;
+if not globals.remoteHostname then
+    globals.remoteHostname = "dafrito.com";
+end;
+
+function profiles:client()
+    print("Running Rainback client");
+    Rainback.SetBackgroundColor(255, 255, 221);
+    Rainback.OnNamedEvent("RENDER", Rainback.Render);
+    Rainback.LoadRemote(globals.remoteHostname, globals.remotePort);
+    Callbacks.Later(Rainback.LoadDirectory, SRCDIR .. "/scripts", true);
+end;
+
+function profiles:server()
+    print("Running Rainback server on port " .. globals.remotePort);
+    Rainback.ServeRemote(globals.remotePort);
+
+    Remote["rainback.control"](function(msg, who)
+        msg = msg:lower();
+        if msg == "quit" or msg == "exit" or msg == "close" then
+            Rainback.Exit();
+        elseif msg == "debug on" then
+            DEBUG_TRACE = true;
+        elseif msg == "debug off" then
+            DEBUG_TRACE = false;
+        elseif msg:grep("^run") then
+            local _, cmd = unpack(Strings.Split(" ", msg, 2));
+            local loadstring = loadstring or load;
+            local func = assert(loadstring(cmd));
+            func();
+        end;
+    end);
+
+    Callbacks.Later(Rainback.LoadDirectory, SRCDIR .. "/server", true);
+end;
+
+profiles[globals.profile]();
 
 require "fritomod/Callbacks-Timing";
 

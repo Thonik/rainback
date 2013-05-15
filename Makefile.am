@@ -22,7 +22,7 @@ run:
 	cd demo && ./rainback
 
 runserver:
-	cd server && ./rainbackserver
+	cd demo && ./rainback server
 
 debug:
 	cd demo && gdb .libs/lt-rainback
