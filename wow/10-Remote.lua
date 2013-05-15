@@ -19,7 +19,7 @@ local function InitializeProtocol(socket)
             print("Malformed data: " .. tostring(data));
             return;
         end;
-        Remote:Dispatch(channel, msg, socket);
+        Remote:Dispatch(channel, msg, protocol);
     end);
 
     return protocol;
