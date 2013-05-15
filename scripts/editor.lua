@@ -222,11 +222,12 @@ end;
 
 Receive(function(command, name, ...)
     if command == "Publish" then
-        local page = PageForName(nmae);
+        local page = PageForName(name);
         if not page then
             page = NewPage(name);
             page:Sync();
         end;
+
         if not page:IsSynced() then
             return;
         end;
