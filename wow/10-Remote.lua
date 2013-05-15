@@ -76,6 +76,7 @@ function Rainback.ServeRemote(port)
         table.insert(connections, protocol);
 
         socket:connect("disconnected", function()
+            print("Lost connection from: " .. socket:address() ..":".. socket:port());
             Lists.Remove(connections, protocol);
         end);
     end);
