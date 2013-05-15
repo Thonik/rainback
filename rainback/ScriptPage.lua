@@ -14,6 +14,8 @@ function ScriptPage:Constructor(script)
 
     self.commands = {};
     self.commandRemovers = {};
+
+    self.sync = false;
 end;
 
 function ScriptPage:GetName()
@@ -23,6 +25,19 @@ end;
 function ScriptPage:SetName(name)
     self.name = name;
     self:FireUpdate()
+end;
+
+function ScriptPage:Sync()
+    -- TODO Refresh this page immediately
+    self.sync = true;
+end;
+
+function ScriptPage:StopSync()
+    self.sync = false;
+end;
+
+function ScriptPage:IsSynced()
+    return self.sync;
 end;
 
 function ScriptPage:GetScript()

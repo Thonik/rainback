@@ -3,6 +3,7 @@ require "fritomod/Lists";
 require "fritomod/Frames-Position";
 require "fritomod/LuaEnvironment";
 require "rainback/ScriptPage";
+require "fritomod/Serializers-Data";
 
 UI = UI or {};
 UI.Editor = OOP.Class();
@@ -59,7 +60,18 @@ function Editor:Constructor(parent)
     reset:SetText("Reset");
     Callbacks.Click(reset, self, "Reset");
 
-    local links = {run, reset};
+    local publish = Frames.Text(self.title, "default", 10);
+    Frames.Color(publish, "white");
+    publish:SetText("Publish");
+    Callbacks.Click(publish, self, "Publish");
+
+    local sync = Frames.Text(self.title, "default", 10);
+    Frames.Color(sync, "white");
+    sync:SetText("Sync");
+    Callbacks.Click(sync, self, "ToggleSync");
+    self.syncButton = sync;
+
+    local links = {publish, sync, run, reset};
     Anchors.Share(Anchors.HJustify("right", 6, links), "right", self.title, 2);
 
     local scriptName = Frames.Text(self.title, "default", 10);
@@ -200,6 +212,32 @@ function Editor:Reset()
         Frames.Color(self.title, "orange");
         print(rv);
     end;
+end;
+
+local function Send(...)
+    Remote:Send("rainback.Editor", Serializers.WriteData(...));
+end;
+
+function Editor:Publish()
+    Send("Publish",
+        self.page:GetName(),
+        self.page:GetContent(),
+        self.page:GetCommands()
+    );
+end;
+
+function Editor:ToggleSync()
+    if self:IsSynced() then
+        self.page:StopSync();
+        self.syncButton:SetText("Sync");
+    else
+        self.page:Sync();
+        self.syncButton:SetText("Unsync");
+    end;
+end;
+
+function Editor:IsSynced()
+    return self.page:IsSynced();
 end;
 
 function Editor:Clear()

@@ -4,6 +4,7 @@ require "fritomod/Frames-Position";
 require "fritomod/Mapper";
 require "fritomod/UI-List";
 require "rainback/Editor";
+require "fritomod/Serializers-Data";
 require "hack/Toolbox";
 
 local editor = UI.Editor:New(UIParent);
@@ -211,6 +212,30 @@ list:OnUpdate(function(ref)
     Anchors.Share(ref, listBG, "topleft", 3);
 end);
 mapper:OnUpdate(list, "Update");
+
+local function Receive(func, ...)
+    func = Curry(func, ...);
+    Remote["rainback.Editor"](function(msg)
+        func(Serializers.ReadData(msg));
+    end);
+end;
+
+Receive(function(command, name, ...)
+    if command == "Publish" then
+        local page = PageForName(nmae);
+        if not page then
+            page = NewPage(name);
+            page:Sync();
+        end;
+        if not page:IsSynced() then
+            return;
+        end;
+
+        local content, commands = ...;
+        page:SetContent(content);
+        -- TODO Handle commands
+    end;
+end);
 
 Callbacks.PersistentValue("Toolbox", function(pagesData)
     pagesData = pagesData or {};
