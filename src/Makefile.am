@@ -9,10 +9,10 @@ librainback_la_MOC_SOURCES = \
 	protocol/moc_Pascal.cpp \
 	protocol/moc_AbstractLine.cpp \
 	proxy/moc_TCPServer.cpp \
+	proxy/moc_Font.cpp \
+	proxy/moc_Painter.cpp \
 	moc_Rainback.cpp \
-	moc_LuaWidget.cpp \
-	moc_LuaFont.cpp \
-	moc_LuaPainter.cpp
+	moc_LuaWidget.cpp
 
 nodist_librainback_la_SOURCES = $(librainback_la_MOC_SOURCES)
 
@@ -23,10 +23,10 @@ librainback_la_SOURCES = \
 	proxy/TCPServer.cpp \
 	proxy/QObject.cpp \
 	proxy/Socket.cpp \
+	proxy/Font.cpp \
+	proxy/Painter.cpp \
 	Rainback.cpp \
-	LuaWidget.cpp \
-	LuaFont.cpp \
-	LuaPainter.cpp
+	LuaWidget.cpp
 
 mostlyclean-local:
 	rm -f $(librainback_la_MOC_SOURCES)

@@ -1,57 +1,60 @@
-#include "LuaFont.hpp"
+#include "proxy/Font.hpp"
 #include <lua-cxx/LuaStack.hpp>
 #include <lua-cxx/userdata.hpp>
 
 #include <QFontMetrics>
 
-LuaFont::LuaFont() :
+namespace rainback {
+namespace proxy {
+
+Font::Font() :
     _font()
 {
 }
 
-LuaFont::LuaFont(const QString& fontFamily) :
+Font::Font(const QString& fontFamily) :
     _font(fontFamily)
 {
 }
 
-LuaFont::LuaFont(const QString& fontFamily, const int size) :
+Font::Font(const QString& fontFamily, const int size) :
     _font(fontFamily, size)
 {
 }
 
-const QFont& LuaFont::getFont() const
+const QFont& Font::getFont() const
 {
     return _font;
 }
 
-QString LuaFont::family() const
+QString Font::family() const
 {
     return _font.family();
 }
 
-void LuaFont::setFamily(const QString& font)
+void Font::setFamily(const QString& font)
 {
     _font.setFamily(font);
 }
 
-int LuaFont::pointSize() const
+int Font::pointSize() const
 {
     return _font.pointSize();
 }
 
-void LuaFont::setPointSize(const int pointSize)
+void Font::setPointSize(const int pointSize)
 {
     _font.setPointSize(pointSize);
 }
 
-int LuaFont::width(const QString& text) const
+int Font::width(const QString& text) const
 {
     QFontMetrics metrics(getFont());
 
     return metrics.boundingRect(0, 0, INT_MAX, INT_MAX, Qt::TextWordWrap, text).width();
 }
 
-int LuaFont::height(LuaStack& stack) const
+int Font::height(LuaStack& stack) const
 {
     int width = INT_MAX;
     if (stack.size() == 2 && !stack.isNil(2)) {
@@ -60,11 +63,14 @@ int LuaFont::height(LuaStack& stack) const
     return height(stack.as<QString>(1), width);
 }
 
-int LuaFont::height(const QString& text, const int width) const
+int Font::height(const QString& text, const int width) const
 {
     QFontMetrics metrics(getFont());
 
     return metrics.boundingRect(0, 0, width, INT_MAX, Qt::TextWordWrap, text).height();
 }
+
+} // namespace proxy
+} // namespace rainback
 
 // vim: set ts=4 sw=4 :

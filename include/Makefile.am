@@ -7,7 +7,7 @@ pkginclude_HEADERS = \
 	proxy/QObject.hpp \
 	proxy/QWidget.hpp \
 	proxy/Socket.hpp \
+	proxy/Font.hpp \
+	proxy/Painter.hpp \
 	Rainback.hpp \
-	LuaWidget.hpp \
-	LuaFont.hpp \
-	LuaPainter.hpp
+	LuaWidget.hpp

@@ -1,5 +1,5 @@
-#ifndef RAINBACK_LUAPAINTER_HEADER
-#define RAINBACK_LUAPAINTER_HEADER
+#ifndef RAINBACK_PROXY_PAINTER_HEADER
+#define RAINBACK_PROXY_PAINTER_HEADER
 
 #include <QPainter>
 #include <QObject>
@@ -7,7 +7,10 @@
 #include <lua-cxx/LuaStack.hpp>
 #include <lua-cxx/userdata.hpp>
 
-class LuaPainter : public QObject
+namespace rainback {
+namespace proxy {
+
+class Painter : public QObject
 {
     Q_OBJECT
 
@@ -33,7 +36,7 @@ class LuaPainter : public QObject
 
 public:
 
-    LuaPainter(QPaintDevice* const device) :
+    Painter(QPaintDevice* const device) :
         _painter(device),
         _x(0),
         _y(0)
@@ -121,14 +124,17 @@ public slots:
     void reset();
 };
 
+} // namespace proxy
+} // namespace rainback
+
 namespace lua {
 
 template<>
-struct UserdataType<LuaPainter>
+struct UserdataType<rainback::proxy::Painter>
 {
-    constexpr static const char* name = "LuaPainter";
+    constexpr static const char* name = "rainback::proxy::Painter";
 
-    static void initialize(LuaStack& stack, LuaPainter& painter)
+    static void initialize(LuaStack& stack, rainback::proxy::Painter& painter)
     {
         lua::qobject(stack, painter);
     }
@@ -136,6 +142,6 @@ struct UserdataType<LuaPainter>
 
 } // namespace lua
 
-#endif // RAINBACK_LUAPAINTER_HEADER
+#endif // RAINBACK_PROXY_PAINTER_HEADER
 
 // vim: set ts=4 sw=4 :

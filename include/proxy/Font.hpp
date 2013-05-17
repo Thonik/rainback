@@ -1,5 +1,5 @@
-#ifndef RAINBACK_LUAFONT_HEADER
-#define RAINBACK_LUAFONT_HEADER
+#ifndef RAINBACK_PROXY_FONT_HEADER
+#define RAINBACK_PROXY_FONT_HEADER
 
 #include <QObject>
 #include <QFont>
@@ -8,15 +8,18 @@
 #include <lua-cxx/LuaStack.hpp>
 #include <lua-cxx/userdata.hpp>
 
-class LuaFont : public QObject
+namespace rainback {
+namespace proxy {
+
+class Font : public QObject
 {
     Q_OBJECT
 
     QFont _font;
 public:
-    LuaFont();
-    LuaFont(const QString& fontFamily);
-    LuaFont(const QString& fontFamily, const int size);
+    Font();
+    Font(const QString& fontFamily);
+    Font(const QString& fontFamily, const int size);
 
     const QFont& getFont() const;
 
@@ -36,14 +39,17 @@ public slots:
     int width(const QString& text) const;
 };
 
+} // namespace proxy
+} // namespace rainback
+
 namespace lua {
 
 template<>
-struct UserdataType<LuaFont>
+struct UserdataType<rainback::proxy::Font>
 {
-    constexpr static const char* name = "LuaFont";
+    constexpr static const char* name = "rainback::proxy::Font";
 
-    static void initialize(LuaStack& stack, LuaFont& font)
+    static void initialize(LuaStack& stack, rainback::proxy::Font& font)
     {
         lua::qobject(stack, font);
     }
@@ -51,6 +57,6 @@ struct UserdataType<LuaFont>
 
 } // namespace lua
 
-#endif // RAINBACK_LUAFONT_HEADER
+#endif // RAINBACK_PROXY_FONT_HEADER
 
 // vim: set ts=4 sw=4 :

@@ -1,9 +1,11 @@
 #include "LuaWidget.hpp"
 
-#include "LuaPainter.hpp"
+#include "proxy/Painter.hpp"
 #include "Rainback.hpp"
 
 #include <QWheelEvent>
+
+using namespace rainback;
 
 LuaWidget::LuaWidget(Lua& lua) :
     _lua(lua)
@@ -15,7 +17,7 @@ LuaWidget::LuaWidget(Lua& lua) :
 
 void LuaWidget::paintEvent(QPaintEvent* const event)
 {
-    rainback::dispatch(_lua, "RENDER", LuaPainter(this));
+    rainback::dispatch(_lua, "RENDER", proxy::Painter(this));
 }
 
 void LuaWidget::wheelEvent(QWheelEvent* const event)

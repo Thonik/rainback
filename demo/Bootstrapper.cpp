@@ -7,10 +7,9 @@
 #include <lua-cxx/loaders.hpp>
 #include <lua-cxx/userdata.hpp>
 
-#include "LuaPainter.hpp"
-#include "LuaFont.hpp"
-
 #include <QCoreApplication>
+
+using namespace rainback;
 
 Bootstrapper::Bootstrapper() :
     _lua(),

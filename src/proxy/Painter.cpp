@@ -1,6 +1,6 @@
-#include "LuaPainter.hpp"
+#include "proxy/Painter.hpp"
 
-#include "LuaFont.hpp"
+#include "proxy/Font.hpp"
 
 #include <lua-cxx/LuaEnvironment.hpp>
 #include <lua-cxx/LuaException.hpp>
@@ -9,7 +9,10 @@
 
 #include <QPaintDevice>
 
-void LuaPainter::initialize()
+namespace rainback {
+namespace proxy {
+
+void Painter::initialize()
 {
     // Set some high-quality defaults. I haven't benchmarked these
     // so I don't know how much they'll affect performance.
@@ -20,13 +23,13 @@ void LuaPainter::initialize()
     setFontWeight(QFont::Normal);
 }
 
-void LuaPainter::position(const qreal& x, const qreal& y)
+void Painter::position(const qreal& x, const qreal& y)
 {
     _x = x;
     _y = y;
 }
 
-void LuaPainter::setFillColor(LuaStack& stack)
+void Painter::setFillColor(LuaStack& stack)
 {
     setFillColor(
         stack.as<int>(1),
@@ -38,7 +41,7 @@ void LuaPainter::setFillColor(LuaStack& stack)
     }
 }
 
-void LuaPainter::setFillColor(const int r, const int g, const int b)
+void Painter::setFillColor(const int r, const int g, const int b)
 {
     QBrush brush(painter()->brush());
 
@@ -54,7 +57,7 @@ void LuaPainter::setFillColor(const int r, const int g, const int b)
     painter()->setBrush(brush);
 }
 
-void LuaPainter::setFillAlpha(const int alpha)
+void Painter::setFillAlpha(const int alpha)
 {
     QBrush brush(painter()->brush());
 
@@ -65,7 +68,7 @@ void LuaPainter::setFillAlpha(const int alpha)
     painter()->setBrush(brush);
 }
 
-void LuaPainter::setPenColor(LuaStack& stack)
+void Painter::setPenColor(LuaStack& stack)
 {
     setPenColor(
         stack.as<int>(1),
@@ -77,7 +80,7 @@ void LuaPainter::setPenColor(LuaStack& stack)
     }
 }
 
-void LuaPainter::setPenColor(const int r, const int g, const int b)
+void Painter::setPenColor(const int r, const int g, const int b)
 {
     QPen pen(painter()->pen());
 
@@ -90,7 +93,7 @@ void LuaPainter::setPenColor(const int r, const int g, const int b)
     painter()->setPen(pen);
 }
 
-void LuaPainter::setPenAlpha(const int alpha)
+void Painter::setPenAlpha(const int alpha)
 {
     QPen pen(painter()->pen());
 
@@ -101,19 +104,19 @@ void LuaPainter::setPenAlpha(const int alpha)
     painter()->setPen(pen);
 }
 
-qreal LuaPainter::penWidth() const
+qreal Painter::penWidth() const
 {
     return pen().width();
 }
 
-void LuaPainter::setPenWidth(const qreal& width)
+void Painter::setPenWidth(const qreal& width)
 {
     QPen pen(painter()->pen());
     pen.setWidth(width);
     painter()->setPen(pen);
 }
 
-QString LuaPainter::capStyle() const
+QString Painter::capStyle() const
 {
     switch (pen().capStyle()) {
     case Qt::SquareCap:
@@ -127,7 +130,7 @@ QString LuaPainter::capStyle() const
     }
 }
 
-void LuaPainter::setCapStyle(const QString& capStyle)
+void Painter::setCapStyle(const QString& capStyle)
 {
     QPen pen(painter()->pen());
 
@@ -147,7 +150,7 @@ void LuaPainter::setCapStyle(const QString& capStyle)
     painter()->setPen(pen);
 }
 
-QString LuaPainter::joinStyle() const
+QString Painter::joinStyle() const
 {
     switch (painter()->pen().joinStyle()) {
     case Qt::BevelJoin:
@@ -161,7 +164,7 @@ QString LuaPainter::joinStyle() const
     }
 }
 
-void LuaPainter::setJoinStyle(const QString& joinStyle)
+void Painter::setJoinStyle(const QString& joinStyle)
 {
     QPen pen(painter()->pen());
 
@@ -181,27 +184,27 @@ void LuaPainter::setJoinStyle(const QString& joinStyle)
     painter()->setPen(pen);
 }
 
-qreal LuaPainter::miterLimit() const
+qreal Painter::miterLimit() const
 {
     return pen().miterLimit();
 }
 
-void LuaPainter::setMiterLimit(const qreal& limit)
+void Painter::setMiterLimit(const qreal& limit)
 {
     QPen pen(painter()->pen());
     pen.setMiterLimit(limit);
     painter()->setPen(pen);
 }
 
-void LuaPainter::setOpacity(const qreal& opacity)
+void Painter::setOpacity(const qreal& opacity)
 {
     painter()->setOpacity(opacity);
 }
 
-void LuaPainter::setFont(LuaStack& stack)
+void Painter::setFont(LuaStack& stack)
 {
     if (stack.size() == 1 && stack.type(1) == lua::Type::USERDATA) {
-        std::shared_ptr<LuaFont> font;
+        std::shared_ptr<Font> font;
         stack >> font;
         if (font) {
             painter()->setFont(font->getFont());
@@ -215,7 +218,7 @@ void LuaPainter::setFont(LuaStack& stack)
     }
 }
 
-void LuaPainter::setFontFamily(const QString& fontFamily)
+void Painter::setFontFamily(const QString& fontFamily)
 {
     QFont font(painter()->font());
 
@@ -224,7 +227,7 @@ void LuaPainter::setFontFamily(const QString& fontFamily)
     painter()->setFont(font);
 }
 
-void LuaPainter::setFontWeight(const int weight)
+void Painter::setFontWeight(const int weight)
 {
     QFont font(painter()->font());
 
@@ -233,7 +236,7 @@ void LuaPainter::setFontWeight(const int weight)
     painter()->setFont(font);
 }
 
-void LuaPainter::setFontSize(const int fontSize)
+void Painter::setFontSize(const int fontSize)
 {
     QFont font(painter()->font());
 
@@ -242,7 +245,7 @@ void LuaPainter::setFontSize(const int fontSize)
     painter()->setFont(font);
 }
 
-void LuaPainter::setItalic(const bool isItalic)
+void Painter::setItalic(const bool isItalic)
 {
     QFont font(painter()->font());
 
@@ -251,7 +254,7 @@ void LuaPainter::setItalic(const bool isItalic)
     painter()->setFont(font);
 }
 
-void LuaPainter::setBold(const bool isBold)
+void Painter::setBold(const bool isBold)
 {
     QFont font(painter()->font());
 
@@ -260,7 +263,7 @@ void LuaPainter::setBold(const bool isBold)
     painter()->setFont(font);
 }
 
-void LuaPainter::setUnderline(const bool isUnderline)
+void Painter::setUnderline(const bool isUnderline)
 {
     QFont font(painter()->font());
 
@@ -269,62 +272,62 @@ void LuaPainter::setUnderline(const bool isUnderline)
     painter()->setFont(font);
 }
 
-void LuaPainter::drawText(const QString& text)
+void Painter::drawText(const QString& text)
 {
     painter()->drawText(x(), y(), INT_MAX, INT_MAX, Qt::TextExpandTabs, text);
 }
 
-int LuaPainter::textWidth(const QString& text)
+int Painter::textWidth(const QString& text)
 {
     return painter()->fontMetrics().width(text);
 }
 
-int LuaPainter::textHeight()
+int Painter::textHeight()
 {
     return painter()->fontMetrics().height();
 }
 
-void LuaPainter::drawPoint()
+void Painter::drawPoint()
 {
     painter()->drawPoint(QPointF(x(), y()));
 }
 
-void LuaPainter::drawRect(const qreal& width, const qreal& height)
+void Painter::drawRect(const qreal& width, const qreal& height)
 {
     painter()->drawRect(QRectF(x(), y(), width, height));
 }
 
-void LuaPainter::drawRoundedRect(const qreal& width, const qreal& height, const qreal& xRadius, const qreal& yRadius)
+void Painter::drawRoundedRect(const qreal& width, const qreal& height, const qreal& xRadius, const qreal& yRadius)
 {
     painter()->drawRoundedRect(QRectF(x(), y(), width, height), xRadius, yRadius);
 }
 
-void LuaPainter::drawEllipse(const qreal& width, const qreal& height)
+void Painter::drawEllipse(const qreal& width, const qreal& height)
 {
     painter()->drawEllipse(QRectF(x(), y(), width, height));
 }
 
-void LuaPainter::drawArc(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
+void Painter::drawArc(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
     painter()->drawArc(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawChord(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
+void Painter::drawChord(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
     painter()->drawChord(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawPie(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
+void Painter::drawPie(const qreal& width, const qreal& height, const int startAngle, const int spanAngle)
 {
     painter()->drawPie(QRectF(x(), y(), width, height), startAngle, spanAngle);
 }
 
-void LuaPainter::drawLine(const qreal& toX, const qreal& toY)
+void Painter::drawLine(const qreal& toX, const qreal& toY)
 {
     painter()->drawLine(QPointF(x(), y()), QPointF(toX, toY));
 }
 
-QPolygonF getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
+QPolygonF getPolygonFromStack(Painter& painter, LuaStack& stack)
 {
     LuaReference points(stack.saveAndPop());
 
@@ -340,17 +343,17 @@ QPolygonF getPolygonFromStack(LuaPainter& painter, LuaStack& stack)
     return polygon;
 }
 
-void LuaPainter::drawPolygon(LuaStack& stack)
+void Painter::drawPolygon(LuaStack& stack)
 {
     painter()->drawPolygon(getPolygonFromStack(*this, stack));
 }
 
-void LuaPainter::drawPolyline(LuaStack& stack)
+void Painter::drawPolyline(LuaStack& stack)
 {
     painter()->drawPolyline(getPolygonFromStack(*this, stack));
 }
 
-void LuaPainter::drawPixmap(LuaStack& stack)
+void Painter::drawPixmap(LuaStack& stack)
 {
     switch (stack.size()) {
         case 1:
@@ -386,22 +389,25 @@ void LuaPainter::drawPixmap(LuaStack& stack)
     stack.clear();
 }
 
-int LuaPainter::width()
+int Painter::width()
 {
     return painter()->device()->width();
 }
 
-int LuaPainter::height()
+int Painter::height()
 {
     return painter()->device()->height();
 }
 
-void LuaPainter::reset()
+void Painter::reset()
 {
     _x = _y = 0;
     painter()->end();
     painter()->begin(painter()->device());
     initialize();
 }
+
+} // namespace proxy
+} // namespace rainback
 
 // vim: set ts=4 sw=4 :

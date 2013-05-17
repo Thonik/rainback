@@ -17,8 +17,8 @@
 #include <lua-cxx/userdata.hpp>
 #include <lua-cxx/QObjectObserver.hpp>
 
-#include "LuaPainter.hpp"
-#include "LuaFont.hpp"
+#include "proxy/Painter.hpp"
+#include "proxy/Font.hpp"
 #include "proxy/TCPServer.hpp"
 #include "protocol/Human.hpp"
 #include "protocol/Pascal.hpp"
@@ -31,15 +31,15 @@
 
 using namespace rainback;
 
-std::shared_ptr<LuaFont> newFont(LuaStack& stack)
+std::shared_ptr<proxy::Font> newFont(LuaStack& stack)
 {
     switch (stack.size()) {
     case 0:
-        return std::make_shared<LuaFont>();
+        return std::make_shared<proxy::Font>();
     case 1:
-        return std::make_shared<LuaFont>(stack.as<QString>(1));
+        return std::make_shared<proxy::Font>(stack.as<QString>(1));
     default:
-        return std::make_shared<LuaFont>(
+        return std::make_shared<proxy::Font>(
             stack.as<QString>(1),
             stack.as<int>(2)
         );
