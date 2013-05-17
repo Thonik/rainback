@@ -6,7 +6,21 @@ require "fritomod/Slash";
 
 local traceOutput = Frames.Text(UIParent, "default", 10, "black");
 traceOutput:SetText("Debug trace");
-Anchors.Share(traceOutput, "bottomright", 3);
+
+local saveButton = Frames.Text(UIParent, "default", 10, "black");
+saveButton:SetText("Save");
+
+Anchors.Share(Anchors.Justify("right", 3, {traceOutput, saveButton}), "bottomright", 3);
+
+local r;
+Callbacks.Click(saveButton, function()
+    if r then
+        r();
+    end;
+    Rainback.Save();
+    saveButton:SetText("Saved.");
+    r=Timing.After("3s", saveButton, "SetText", "Save");
+end);
 
 local function DrawTrace()
     if DEBUG_TRACE then
