@@ -203,19 +203,18 @@ void Painter::setOpacity(const qreal& opacity)
 
 void Painter::setFont(LuaStack& stack)
 {
-    if (stack.size() == 1 && stack.type(1) == lua::Type::USERDATA) {
-        std::shared_ptr<Font> font;
-        stack >> font;
-        if (font) {
-            painter()->setFont(font->getFont());
-            return;
-        } else {
-            throw LuaException("Userdata provided was not a font");
-        }
+    if (stack.size() < 1) {
+        throw LuaException("setFont must be passed a string or font");
     }
-    if (stack.type(1) == lua::Type::STRING) {
+    if (stack.isNil(1)) {
+        throw LuaException("setFont must be passed a non-nil value");
+    }
+    if (stack.type(1) == lua::type::userdata) {
+        painter()->setFont(stack.as<Font&>(1).getFont());
+    } else if (stack.type(1) == lua::type::string) {
         setFontFamily(stack.as<QString>(1));
     }
+    stack.clear();
 }
 
 void Painter::setFontFamily(const QString& fontFamily)
