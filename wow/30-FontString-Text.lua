@@ -77,7 +77,7 @@ function Delegate:SetFont(family, size)
 end;
 
 function Delegate:GetFont()
-    return self.font.family, self.folnt.pointSize;
+    return self.font.family, self.font.pointSize;
 end;
 
 function Delegate:SetTextColor(r, g, b, a)
