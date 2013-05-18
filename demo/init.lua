@@ -59,17 +59,17 @@ function profiles:server()
     Rainback.ServeRemote(globals.remotePort);
 
     Remote["rainback.control"](function(msg, who)
-        msg = msg:lower();
-        if msg == "quit" or msg == "exit" or msg == "close" then
+        local cmd, rest = unpack(Strings.Split(" ", msg, 2));
+        cmd = cmd:lower();
+        if cmd == "quit" or cmd == "exit" or cmd == "close" then
             Rainback.Exit();
-        elseif msg == "debug on" then
+        elseif cmd == "debug on" then
             DEBUG_TRACE = true;
-        elseif msg == "debug off" then
+        elseif cmd == "debug off" then
             DEBUG_TRACE = false;
-        elseif msg:grep("^run") then
-            local _, cmd = unpack(Strings.Split(" ", msg, 2));
+        elseif cmd:grep("^run") then
             local loadstring = loadstring or load;
-            local func = assert(loadstring(cmd));
+            local func = assert(loadstring(rest));
             func();
         end;
     end);
