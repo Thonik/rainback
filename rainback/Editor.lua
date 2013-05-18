@@ -20,7 +20,7 @@ function Editor:Constructor(parent)
     self.editor = Rainback.TextEdit();
     self.editor.tabStopWidth = 30;
     self.editor.styleSheet = [[
-        font-family: Inconsolata;
+        font-family: Consolas, Inconsolata, monospace;
         font-size: 13px;
         color: black;
         border: 1px solid black;
@@ -41,7 +41,7 @@ function Editor:Constructor(parent)
         color: black;
         border: 1px solid grey;
         border-top: none;
-        font-family: Inconsolata;
+        font-family: Consolas, Inconsolata, monospace;
     ]];
     self.commandFrame:SetWidget(self.command);
 
