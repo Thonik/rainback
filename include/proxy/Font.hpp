@@ -51,7 +51,7 @@ struct UserdataType<rainback::proxy::Font>
 
     static void initialize(LuaStack& stack, rainback::proxy::Font& font)
     {
-        lua::qobject(stack, font);
+        lua::UserdataType<QObject>::initialize(stack, font);
     }
 };
 
