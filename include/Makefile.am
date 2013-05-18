@@ -9,5 +9,6 @@ pkginclude_HEADERS = \
 	proxy/Socket.hpp \
 	proxy/Font.hpp \
 	proxy/Painter.hpp \
+	proxy/ByteArray.hpp \
 	Rainback.hpp \
 	LuaWidget.hpp

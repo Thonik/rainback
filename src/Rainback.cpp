@@ -11,6 +11,7 @@
 #include <QRegExp>
 #include <QFileSystemWatcher>
 #include <QTcpSocket>
+#include <QProcess>
 
 #include <lua-cxx/LuaValue.hpp>
 #include <lua-cxx/loaders.hpp>
@@ -20,6 +21,7 @@
 #include "proxy/Painter.hpp"
 #include "proxy/Font.hpp"
 #include "proxy/TCPServer.hpp"
+#include "proxy/ByteArray.hpp"
 #include "protocol/Human.hpp"
 #include "protocol/Pascal.hpp"
 
@@ -238,6 +240,27 @@ Rainback::Rainback(Lua& lua) :
             lua::push(stack, re.cap(i));
         }
     });
+
+    _lua["Rainback"]["Exec"] = lua::LuaCallable(
+        [this](LuaStack& stack) {
+            QProcess process;
+
+            QString progName = stack.as<QString>(1);
+            stack.shift();
+
+            QStringList args;
+            while (!stack.empty()) {
+                args << stack.as<QString>(1);
+                stack.shift();
+            }
+            stack.clear();
+
+            process.start(progName, args);
+            process.waitForFinished(3000);
+
+            lua::push(stack, std::make_shared<QByteArray>(process.readAllStandardOutput()));
+        }
+    );
 
     _lua["Rainback"]["Network"] = lua::value::table;
 

@@ -25,6 +25,7 @@ librainback_la_SOURCES = \
 	proxy/Socket.cpp \
 	proxy/Font.cpp \
 	proxy/Painter.cpp \
+	proxy/ByteArray.cpp \
 	Rainback.cpp \
 	LuaWidget.cpp
 
