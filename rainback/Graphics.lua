@@ -57,16 +57,16 @@ function Rainback.Render(painter)
 
         local numRenderers = renderers:GetListenerCount();
 
-        printf("%3dms elapsed, %3dfps %3d renderers %s",
+        trace(("%3dms elapsed, %3dfps %3d renderers %s"):format(
             elapsed,
             fps,
             numRenderers,
             bar
-        );
+        ));
     else
-        printf("  0ms elapsed, ---fps %4d renderers",
+        trace(("  0ms elapsed, ---fps %4d renderers"):format(
             numRenderers
-        );
+        ));
     end;
     trace("FRAME complete");
 end;
