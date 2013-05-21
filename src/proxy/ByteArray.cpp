@@ -42,8 +42,6 @@ namespace proxy {
 
 void initializeByteArray(LuaStack& stack, QByteArray& array)
 {
-    auto userdata = stack.save();
-
     stack.pushMetatable(1);
     auto mt = stack.saveAndPop();
 
