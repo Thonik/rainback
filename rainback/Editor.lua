@@ -66,8 +66,8 @@ function Editor:Constructor(parent)
     Callbacks.Click(publish, self, "Publish");
 
     local sync = Frames.Text(self.title, "default", 10);
-    Frames.Color(sync, "white");
-    sync:SetText("Sync");
+    Frames.Color(sync, "green");
+    sync:SetText("Syncing");
     Callbacks.Click(sync, self, "ToggleSync");
     self.syncButton = sync;
 
@@ -229,10 +229,12 @@ end;
 function Editor:ToggleSync()
     if self:IsSynced() then
         self.page:StopSync();
-        self.syncButton:SetText("Sync");
+        self.syncButton:SetText("Unsynced");
+        Frames.Color(self.syncButton, "red");
     else
         self.page:Sync();
-        self.syncButton:SetText("Unsync");
+        self.syncButton:SetText("Syncing");
+        Frames.Color(self.syncButton, "green");
     end;
 end;
 
