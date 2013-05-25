@@ -31,9 +31,15 @@ function Editor:Constructor(parent)
     Frames.WH(self.title, WIDTH, 20);
     Frames.Color(self.title, "grey");
 
+    self.menubar = Frames.New(parent, "Texture");
+    Frames.Color(self.menubar, "gray");
+    Frames.WH(self.menubar,WIDTH, 20);
+    Anchors.VFlip(self.menubar, self.title, "bottomleft");
+    Anchors.VFlip(self.menubar, self.title, "bottomright");
+
     self.commandFrame = Frames.New(parent, "Widget");
-    Anchors.VFlip(self.commandFrame, self.title, "bottomleft");
-    Anchors.VFlip(self.commandFrame, self.title, "bottomright");
+    Anchors.VFlip(self.commandFrame, self.menubar, "bottomleft");
+    Anchors.VFlip(self.commandFrame, self.menubar, "bottomright");
 
     self.command = Rainback.LineEdit();
     self.command.styleSheet = [[
@@ -50,34 +56,34 @@ function Editor:Constructor(parent)
     Anchors.VFlipFromTop(self.editorFrame, self.commandFrame);
     self.editorFrame:SetWidget(self.editor);
 
-    local run = Frames.Text(self.title, "default", 10);
+    local run = Frames.Text(self.menubar, "default", 10);
     Frames.Color(run, "white");
     run:SetText("Run");
     Callbacks.Click(run, self, "Run");
 
-    local reset = Frames.Text(self.title, "default", 10);
+    local reset = Frames.Text(self.menubar, "default", 10);
     Frames.Color(reset, "white");
     reset:SetText("Reset");
     Callbacks.Click(reset, self, "Reset");
 
-    local publish = Frames.Text(self.title, "default", 10);
+    local publish = Frames.Text(self.menubar, "default", 10);
     Frames.Color(publish, "white");
     publish:SetText("Publish");
     Callbacks.Click(publish, self, "Publish");
 
-    local sync = Frames.Text(self.title, "default", 10);
+    local sync = Frames.Text(self.menubar, "default", 10);
     Frames.Color(sync, "green");
     sync:SetText("Syncing");
     Callbacks.Click(sync, self, "ToggleSync");
     self.syncButton = sync;
 
     local links = {publish, sync, run, reset};
-    Anchors.Share(Anchors.HJustify("right", 6, links), "right", self.title, 2);
+    Anchors.Share(Anchors.HJustify("right", 6, links), "right", self.menubar, 2);
 
-    local scriptName = Frames.Text(self.title, "default", 10);
+    local scriptName = Frames.Text(self.menubar, "default", 10);
     Frames.Color(scriptName, "white");
     scriptName:SetText("<untitled>");
-    Anchors.Share(scriptName, self.title, "left", 3, 3);
+    Anchors.Share(scriptName, self.menubar, "left", 3, 3);
 
     function Editor:SetName(name)
         scriptName:SetText(name or "<untitled>");
@@ -165,7 +171,7 @@ function Editor:SetPage(page)
 
     self.scriptRemover = Seal(Lists.CallEach, {
         function()
-            Frames.Color(self.title, "grey");
+            Frames.Color(self.menubar, "grey");
         end,
         self.editor:connect("textChanged", function()
             if self.page then
@@ -262,6 +268,7 @@ end;
 function Editor:Destroy()
     self:Clear();
     Frames.Destroy(
+       	self.menubar, 
         self.title,
         self.editorFrame
     );
