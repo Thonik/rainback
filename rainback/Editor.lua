@@ -91,7 +91,6 @@ function Editor:Constructor(parent)
 
     self.commands = {};
 
-    Anchors.VFlipFromTop(self.editorFrame, self.commandFrame);
     self.command:connect("returnPressed", function()
         local cmd = self.command.text;
         local remover = self:AddCommand(cmd);
