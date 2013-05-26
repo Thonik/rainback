@@ -26,15 +26,15 @@ function Editor:Constructor(parent)
         border: 1px solid black;
         border-top: none;
     ]];
+    self.listWidth = 100; -- default width of the lists on the left
 
     self.title = Frames.New(parent, "Texture");
-    Frames.WH(self.title, WIDTH, 20);
+    Frames.WH(self.title, WIDTH + self.listWidth, 20);
     Frames.Color(self.title, "grey");
 
     self.menubar = Frames.New(parent, "Texture");
     Frames.Color(self.menubar, "gray");
     Frames.WH(self.menubar,WIDTH, 20);
-    Anchors.VFlip(self.menubar, self.title, "bottomleft");
     Anchors.VFlip(self.menubar, self.title, "bottomright");
 
     self.commandFrame = Frames.New(parent, "Widget");

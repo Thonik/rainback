@@ -165,15 +165,10 @@ local function NewPage(name, content)
     return page;
 end;
 
-local listHeader = Frames.New();
-Frames.WH(listHeader, 100, 20);
-Frames.Color(listHeader, "grey");
-Anchors.HFlip(listHeader, handle, "topleft", -1);
-
 local listBG = Frames.New();
-Frames.Width(listBG, 100);
+Frames.Width(listBG, editor.listWidth);
 Frames.Color(listBG, "white", .5);
-Anchors.VFlip(listBG, listHeader, "bottomleft", -1);
+Anchors.VFlip(listBG, editor.title, "bottomLeft", -1);
 Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
 
 function mapper:CanReuseContent(text, page)
