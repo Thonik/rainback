@@ -46,7 +46,10 @@ end;
 
 function Delegate:SetPoint(anchor, ref, anchorTo, x, y)
     Rainback.Update();
-    return self.bound:SetPoint(anchor, ref:GetDelegate("layout"):GetBounds(), anchorTo, x, -y);
+    if not OOP.InstanceOf(Rainback.AnchoredBound, ref) then
+        ref = ref:GetDelegate("layout"):GetBounds();
+    end;
+    return self.bound:SetPoint(anchor, ref, anchorTo, x, -y);
 end;
 
 function Delegate:GetCenter()
