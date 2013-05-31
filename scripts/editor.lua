@@ -35,6 +35,34 @@ end;
 
 local mapper = Mapper:New();
 
+-- the list of fontstrings that you use to select the scripts 
+local frames = {};
+
+-- background for list of scripts
+local listBG = Frames.New();
+Frames.Width(listBG, editor.listWidth);
+Frames.Color(listBG, "white", .5);
+Anchors.VFlip(listBG, editor.title, "bottomLeft", -1);
+Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
+
+-- marks the selected frame
+local highlight = Frames.New()
+Frames.Color(highlight, "grey", .4);
+
+local function SelectPage(page)
+    -- BUG: about 10 nils are passed on startup
+    if type(page) == "table" then
+        editor:SetPage(page);
+        for _, fs in ipairs(frames) do
+            if fs:GetText() == page:GetName() then
+                highlight:SetAllPoints(fs);
+                highlight:SetPoint("left", listBG, "left");
+            end
+        end
+    end
+
+end
+
 local function RenamePage(page, newName)
     if PageForName(newName) then
         print("Refusing to overwrite a name in use: " .. tostring(newName));
@@ -54,9 +82,9 @@ local function DeletePage(page)
         else
             local i = Lists.KeyFor(pages, page);
             if i == #pages then
-                editor:SetPage(pages[i - 1]);
+                SelectPage(pages[i - 1]);
             else
-                editor:SetPage(pages[i + 1]);
+                SelectPage(pages[i + 1]);
             end;
         end;
     end;
@@ -77,7 +105,7 @@ toolbox:OnUpdate(function()
     if first == nil then
         return;
     end;
-    editor:SetPage(PageForScript(first));
+    SelectPage(PageForScript(first));
 end);
 
 local function Parser(page, command)
@@ -165,12 +193,6 @@ local function NewPage(name, content)
     return page;
 end;
 
-local listBG = Frames.New();
-Frames.Width(listBG, editor.listWidth);
-Frames.Color(listBG, "white", .5);
-Anchors.VFlip(listBG, editor.title, "bottomLeft", -1);
-Anchors.HFlip(listBG, editor.editorFrame, "bottomleft", -1);
-
 function mapper:CanReuseContent(text, page)
     text:SetText(page:GetName());
     return true;
@@ -179,15 +201,13 @@ end;
 mapper:SetMapper(function(page)
     local text = Frames.Text(UIParent, "default", 10);
     text:SetText(page:GetName());
-    Callbacks.Click(text, function()
-        editor:SetPage(page);
-    end);
+    Anchors.Share(text, listBG, "right");
+    Callbacks.Click(text, SelectPage, page);
     return text;
 end);
 
 mapper:AddSourceList(pages);
 
-local frames = {};
 mapper:AddDestination(frames);
 
 mapper:AddDestination(function(name, frame)
@@ -198,6 +218,7 @@ end);
 toolbox:OnUpdate(mapper, "Update");
 
 local list = UI.List:New();
+list:SetCleaner(Anchors.ClearVertical);
 list:SetLayout(Anchors.VJustify, "topleft");
 list:SetContent(frames);
 list:OnUpdate(function(ref)
@@ -269,7 +290,7 @@ Callbacks.PersistentValue("Toolbox-Selection", function(selection)
     if selection ~= nil then
         local page = PageForName(selection);
         if page then
-            editor:SetPage(page);
+            SelectPage(page);
         end;
     end;
     return function()
@@ -284,8 +305,8 @@ function Slash.scr(cmd)
     local cmd, name = unpack(Strings.Split(" ", cmd, 2));
     if cmd == "new" or cmd == "add" then
         local page = NewPage(name);
-        editor:SetPage(page);
-        mapper:Update();
+        mapper:Update()
+        SelectPage(page);
     elseif cmd == "rename" or cmd == "mv" then
         local old, new = unpack(Strings.Split(" ", name));
         if not old or not new then
