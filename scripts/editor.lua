@@ -89,6 +89,12 @@ local function DeletePage(page)
         end;
     end;
     Lists.Remove(pages, page);
+    -- XXX: For whatever reason UI.Lists or Mapper isn't destroying frames upon removal; so doing it here
+    for _,fontstring in ipairs(frames) do
+        if fontstring:GetText() == page:GetName() then
+            Frames.Destroy(fontstring)
+        end
+    end
     toolbox:RemoveScript(page:GetName());
     mapper:Update();
 end;
