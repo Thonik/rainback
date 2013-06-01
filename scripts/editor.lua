@@ -336,5 +336,8 @@ function Slash.scr(cmd)
             return;
         end;
         DeletePage(page);
+    elseif cmd == "reset" then
+        editor.title:ClearAllPoints();
+        editor.title:SetPoint("TOP");
     end;
 end;
