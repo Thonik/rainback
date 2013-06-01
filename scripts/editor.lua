@@ -50,17 +50,16 @@ local highlight = Frames.New()
 Frames.Color(highlight, "grey", .4);
 
 local function SelectPage(page)
-    -- BUG: about 10 nils are passed on startup
-    if type(page) == "table" then
-        editor:SetPage(page);
-        for _, fs in ipairs(frames) do
-            if fs:GetText() == page:GetName() then
-                highlight:SetAllPoints(fs);
-                highlight:SetPoint("left", listBG, "left");
-            end
+    if type(page) ~= "table" then
+        return;
+    end
+    editor:SetPage(page);
+    for _, fs in ipairs(frames) do
+        if fs:GetText() == page:GetName() then
+            highlight:SetAllPoints(fs);
+            highlight:SetPoint("left", listBG, "left");
         end
     end
-
 end
 
 local function RenamePage(page, newName)
@@ -111,7 +110,11 @@ toolbox:OnUpdate(function()
     if first == nil then
         return;
     end;
-    SelectPage(PageForScript(first));
+    local page = PageForScript(first);
+    if page == nil then
+        return;
+    end
+    SelectPage(page);
 end);
 
 local function Parser(page, command)
